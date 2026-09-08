@@ -253,3 +253,58 @@ def test_unknown_entry_context_start_case_raises(kb):
 
 def test_all_five_entry_contexts_are_configured(kb):
     assert set(kb.entry_contexts.keys()) == {"fish", "water", "plants", "aquarium_environment", "unsure"}
+
+
+# ============================================================ L ===
+# dissolved_oxygen_ppm reclassification: was mistagged `water_parameter`,
+# now `environment_system` (low oxygen is at least as much an
+# aquarium/environment problem as a water-chemistry one -- see
+# PROJECT_STATUS.md limitation #2). Routing/metadata-only change.
+def test_dissolved_oxygen_reclassified_as_environment_system(kb):
+    assert kb.evidence["dissolved_oxygen_ppm"].topic == "environment_system"
+
+    # aquarium_environment must no longer be disadvantaged relative to
+    # water for this evidence: it now gets the same environment_system
+    # weight as the KB's other environment_system-tagged evidence.
+    env_bonus = routing_bonus(kb, "aquarium_environment", "dissolved_oxygen_ppm", num_observations=0)
+    co2_bonus = routing_bonus(kb, "aquarium_environment", "planted_tank_with_co2_injection", num_observations=0)
+    assert env_bonus > 0
+    assert env_bonus == co2_bonus
+
+    # water loses its topic-specific routing push for this evidence (that
+    # is the correction) -- but this only affects ranking preference, not
+    # eligibility (see next test).
+    assert routing_bonus(kb, "water", "dissolved_oxygen_ppm", num_observations=0) == 0.0
+
+
+def test_water_can_still_reach_dissolved_oxygen_via_information_gain(kb):
+    """Losing the routing preference must not make dissolved_oxygen_ppm
+    unreachable under the 'water' context -- it should remain an eligible,
+    informative question that real information gain can still surface."""
+    engine = AquariumInferenceEngine(kb)
+    case_id = engine.start_case(entry_context="water")
+    engine.answer(case_id, "gasping", state="true")
+    engine.answer(case_id, "surface_breathing", state="true")
+
+    status = engine.get_status(case_id)
+    answered = engine.store.get(case_id).answered_evidence_ids()
+    candidates = eligible_questions(kb, answered)
+    assert any(q.evidence_id == "dissolved_oxygen_ppm" for q in candidates)
+
+    post = posterior(score_problems(kb, engine.store.get(case_id).active_observations()))
+    explanation = build_question_explanation(
+        kb, "ask_dissolved_oxygen_ppm", post, engine.store.get(case_id).active_observations(), "water"
+    )
+    assert explanation.information_gain > 0
+    assert status.best_next_question is not None
+
+
+def test_dissolved_oxygen_topic_change_does_not_affect_scoring(kb):
+    """Evidence.topic is a routing-only label -- changing it must not
+    alter diagnostic scoring for observations on this evidence item."""
+    observations = [obs("dissolved_oxygen_ppm", "critical"), obs("gasping", "true")]
+    baseline = posterior(score_problems(kb, observations))
+    for _ in range(3):
+        assert posterior(score_problems(kb, observations)) == baseline
+    ranked = sorted(baseline, key=lambda pid: baseline[pid], reverse=True)
+    assert ranked[0] == "low_oxygen"

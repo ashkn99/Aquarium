@@ -141,7 +141,7 @@
   name: Dissolved oxygen
   data_type: numeric
   unit: ppm
-  topic: water_parameter
+  topic: environment_system
 
 - id: tank_age_days
   name: Tank age
