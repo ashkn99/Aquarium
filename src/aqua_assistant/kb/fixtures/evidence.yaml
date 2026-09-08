@@ -2,24 +2,38 @@
 # a value is captured: boolean (yes/no), categorical (one of a fixed set
 # of states), or numeric (a raw reading, bucketed via evidence_ranges.yaml
 # into the states problem_evidence.yaml actually reasons about).
+#
+# `topic` is a free-text routing label (no separate registry table, same
+# unenforced-categorical convention as Problem.category) consumed only by
+# the entry-context routing layer in questions/selection.py -- it never
+# reaches inference/scoring.py and has no effect on diagnostic scores.
+# Topics in use: general_context (broad orienting facts -- affected scope,
+# timing, recent changes -- useful regardless of where the user thinks the
+# problem is), fish_symptom (observable signs/behavior), fish_disease_marker
+# (highly specific pathognomonic-style signs), water_parameter (numeric
+# readings), water_history (testing/maintenance habits and history),
+# environment_system (tank setup/equipment/stocking).
 
 # --- respiratory_distress group ---
 - id: gasping
   name: Gasping at the surface
   data_type: boolean
   evidence_group_id: respiratory_distress
+  topic: fish_symptom
   rationale: Classic acute-distress sign, shared by several water-quality/oxygen problems.
 
 - id: rapid_breathing
   name: Rapid gill movement
   data_type: boolean
   evidence_group_id: respiratory_distress
+  topic: fish_symptom
   rationale: Same underlying oxygen-exchange stress as gasping, observed differently.
 
 - id: surface_breathing
   name: Spending unusual time at the surface
   data_type: boolean
   evidence_group_id: respiratory_distress
+  topic: fish_symptom
   rationale: A milder/earlier form of the same respiratory-distress signal.
 
 # --- lethargy_cluster group ---
@@ -27,21 +41,25 @@
   name: Reduced activity
   data_type: boolean
   evidence_group_id: lethargy_cluster
+  topic: fish_symptom
 
 - id: appetite_loss
   name: Loss of appetite
   data_type: boolean
   evidence_group_id: lethargy_cluster
+  topic: fish_symptom
 
 - id: hiding
   name: Hiding more than usual
   data_type: boolean
   evidence_group_id: lethargy_cluster
+  topic: fish_symptom
 
 # --- ungrouped, highly specific symptom ---
 - id: white_spots
   name: Small white, salt-grain-like spots
   data_type: boolean
+  topic: fish_disease_marker
   rationale: Pathognomonic for Ich -- not correlated with other symptom groups, kept standalone.
 
 # --- fin_damage group ---
@@ -49,191 +67,229 @@
   name: Frayed or eroding fins
   data_type: boolean
   evidence_group_id: fin_damage
+  topic: fish_symptom
 
 - id: clamped_fins
   name: Fins held clamped to the body
   data_type: boolean
   evidence_group_id: fin_damage
+  topic: fish_symptom
 
 # --- external_irritation group ---
 - id: red_streaks_or_gills
   name: Red streaks or inflamed gills
   data_type: boolean
   evidence_group_id: external_irritation
+  topic: fish_symptom
 
 - id: excess_mucus
   name: Excessive slime/mucus coating
   data_type: boolean
   evidence_group_id: external_irritation
+  topic: fish_symptom
 
 - id: flashing_scratching
   name: Darting/scratching against decor or substrate
   data_type: boolean
   evidence_group_id: external_irritation
+  topic: fish_symptom
 
 # --- progression / scope (categorical, ungrouped -- these describe the
 # case as a whole rather than a single correlated symptom) ---
 - id: num_fish_affected
   name: Number of fish showing symptoms
   data_type: categorical
+  topic: general_context
 
 - id: onset_timing
   name: How quickly symptoms started
   data_type: categorical
+  topic: general_context
 
 # --- water parameters (numeric, bucketed via evidence_ranges.yaml) ---
 - id: ammonia_ppm
   name: Ammonia
   data_type: numeric
   unit: ppm
+  topic: water_parameter
 
 - id: nitrite_ppm
   name: Nitrite
   data_type: numeric
   unit: ppm
+  topic: water_parameter
 
 - id: nitrate_ppm
   name: Nitrate
   data_type: numeric
   unit: ppm
+  topic: water_parameter
 
 - id: ph_level
   name: pH
   data_type: numeric
   unit: pH
+  topic: water_parameter
 
 - id: temperature_f
   name: Water temperature
   data_type: numeric
   unit: "°F"
+  topic: water_parameter
 
 - id: dissolved_oxygen_ppm
   name: Dissolved oxygen
   data_type: numeric
   unit: ppm
+  topic: water_parameter
 
 - id: tank_age_days
   name: Tank age
   data_type: numeric
   unit: days
+  topic: general_context
 
 # --- setup / recent-change context (ungrouped booleans) ---
 - id: recent_fish_added
   name: New fish added in the last 2 weeks
   data_type: boolean
+  topic: general_context
 
 - id: recent_water_change_large
   name: Large (>30%) water change in the last 2 days
   data_type: boolean
+  topic: general_context
 
 - id: filter_disrupted
   name: Filter cleaned, replaced, or turned off recently
   data_type: boolean
+  topic: general_context
 
 - id: ph_swings_reported
   name: pH fluctuates noticeably between tests
   data_type: boolean
+  topic: water_history
 
 # --- water quality (batch 1) ---
 - id: used_untreated_tap_water
   name: Used tap water without a dechlorinator
   data_type: boolean
+  topic: water_history
   rationale: Direct causal-history question -- the single most diagnostic fact for chlorine/chloramine poisoning.
 
 - id: water_change_frequency
   name: How often water changes are performed
   data_type: categorical
+  topic: water_history
 
 - id: copper_source_exposure
   name: Recent copper-based medication, old copper plumbing, or copper-alloy decor/fixtures
   data_type: boolean
+  topic: water_history
 
 # --- environmental/system (batch 2) ---
 - id: overstocking_reported
   name: Tank feels overstocked (more fish than filter/tank size comfortably supports)
   data_type: boolean
+  topic: environment_system
   rationale: A subjective but genuinely useful self-assessment question -- exact "safe" stocking varies by species and setup, so a direct history question is more practical than deriving it from other evidence.
 
 - id: planted_tank_with_co2_injection
   name: Planted tank running injected CO2
   data_type: boolean
+  topic: environment_system
   rationale: Essentially a precondition for co2_injection_excess -- highly discriminating on its own.
 
 - id: visible_debris_or_detritus_buildup
   name: Visible debris/detritus buildup in a specific area of the tank
   data_type: boolean
+  topic: environment_system
 
 # --- infectious/parasitic disease (batch 3) ---
 - id: cottony_fuzzy_growth
   name: Cottony/fuzzy grey-white growth on the body or fins
   data_type: boolean
+  topic: fish_disease_marker
   rationale: Pathognomonic-ish for Saprolegnia fungal infection; kept ungrouped like white_spots since it's a standalone defining sign.
 
 - id: gold_rust_dust_coating
   name: Fine gold or rust-colored dusty coating on the skin
   data_type: boolean
+  topic: fish_disease_marker
   rationale: Pathognomonic-ish for velvet disease (Oodinium); kept ungrouped as a standalone defining sign.
 
 - id: white_fuzzy_patches_around_mouth
   name: White/grey fuzzy patches specifically around the mouth
   data_type: boolean
+  topic: fish_disease_marker
   rationale: Pathognomonic-ish for columnaris ("cotton mouth"); location (mouth) distinguishes it from Saprolegnia's body-wide growth.
 
 - id: abnormal_buoyancy_or_swimming
   name: Abnormal buoyancy or swimming (floating, sinking, swimming sideways/upside-down)
   data_type: boolean
+  topic: fish_disease_marker
   rationale: The defining symptom of swim bladder disorder.
 
 - id: pinecone_scales
   name: Scales standing out from the body like a pinecone
   data_type: boolean
   evidence_group_id: dropsy_signs
+  topic: fish_disease_marker
   rationale: Pathognomonic sign for dropsy, though it appears later than general bloating.
 
 - id: bloated_body
   name: Noticeably bloated/swollen body
   data_type: boolean
   evidence_group_id: dropsy_signs
+  topic: fish_disease_marker
 
 # --- husbandry/behavior (batch 4) ---
 - id: torn_or_missing_fins_from_biting
   name: Torn or missing chunks of fin, consistent with biting (not frayed edges)
   data_type: boolean
   evidence_group_id: aggression_signs
+  topic: fish_symptom
   rationale: Distinguished from frayed_fins (disease/water-quality erosion pattern) by the bitten/torn appearance.
 
 - id: chasing_or_nipping_observed
   name: Observed another fish chasing or nipping this one
   data_type: boolean
   evidence_group_id: aggression_signs
+  topic: fish_symptom
   rationale: Direct behavioral observation, the most diagnostic single fact for aggression.
 
 - id: overfeeding_reported
   name: Feeding more than fish finish within a couple of minutes
   data_type: boolean
   evidence_group_id: overfeeding_signs
+  topic: general_context
 
 - id: uneaten_food_accumulating
   name: Uneaten food visibly accumulating in the tank
   data_type: boolean
   evidence_group_id: overfeeding_signs
+  topic: general_context
 
 - id: improper_acclimation_reported
   name: New fish added without a slow drip/float acclimation process
   data_type: boolean
+  topic: general_context
 
 - id: insufficient_hiding_places
   name: Tank has little to no cover, decor, or hiding places
   data_type: boolean
+  topic: environment_system
 
 - id: color_fading_or_pale
   name: Noticeable fading or paling of normal coloration
   data_type: boolean
+  topic: fish_symptom
   rationale: A classic sign of chronic, low-grade stress rather than acute illness.
 
 - id: sudden_multiple_fish_death
   name: Multiple fish have died suddenly, close together in time
   data_type: boolean
+  topic: general_context
   rationale: >
     Primarily a safety-relevant meta-signal (drives the mass_mortality_event
     rule), but it does carry genuine, if coarse, diagnostic content: mass

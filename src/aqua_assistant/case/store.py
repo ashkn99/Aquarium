@@ -13,8 +13,8 @@ class CaseStore:
     def __init__(self) -> None:
         self._cases: dict[str, Case] = {}
 
-    def create(self) -> Case:
-        case = Case()
+    def create(self, entry_context: str | None = None) -> Case:
+        case = Case(entry_context=entry_context)
         self._cases[case.id] = case
         return case
 

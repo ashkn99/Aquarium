@@ -51,8 +51,14 @@ class AquariumInferenceEngine:
         self.entropy_stop_threshold = entropy_stop_threshold
         self.info_gain_epsilon = info_gain_epsilon
 
-    def start_case(self) -> str:
-        return self.store.create().id
+    def start_case(self, entry_context: str | None = None) -> str:
+        """`entry_context` (e.g. "fish", "water", "unsure" -- see
+        kb.entry_contexts for the configured set) is purely a question-
+        ordering preference recorded on the case; it is never read by
+        scoring/posterior computation, only by question selection."""
+        if entry_context is not None and entry_context not in self.kb.entry_contexts:
+            raise ValueError(f"unknown entry_context {entry_context!r}")
+        return self.store.create(entry_context=entry_context).id
 
     def answer(
         self,
@@ -118,9 +124,11 @@ class AquariumInferenceEngine:
             and self.kb.questions[primary_alert.forced_question_id].evidence_id not in answered
         )
         if forced_pending:
+            # A safety-forced question is a direct override, not a ranked
+            # pick -- entry-context routing plays no part in it.
             best_question = build_question_explanation(self.kb, primary_alert.forced_question_id, post, observations)
         else:
-            best_question = select_best_question(self.kb, post, observations, answered)
+            best_question = select_best_question(self.kb, post, observations, answered, case.entry_context)
 
         if forced_pending:
             # A pending safety confirmation must never be suppressed by the

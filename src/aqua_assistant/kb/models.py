@@ -49,6 +49,7 @@ class EvidenceORM(Base):
     data_type: Mapped[str]
     unit: Mapped[Optional[str]] = mapped_column(default=None)
     evidence_group_id: Mapped[Optional[str]] = mapped_column(ForeignKey("evidence_groups.id"), default=None)
+    topic: Mapped[str] = mapped_column(default="general_context")
     rationale: Mapped[str] = mapped_column(default="")
     active: Mapped[bool] = mapped_column(default=True)
 
@@ -147,6 +148,24 @@ class SafetyRuleORM(Base):
     message: Mapped[str]
     forced_question_id: Mapped[Optional[str]] = mapped_column(ForeignKey("questions.id"), default=None)
     escalation_text: Mapped[str] = mapped_column(default="")
+
+
+class EntryContextORM(Base):
+    __tablename__ = "entry_contexts"
+
+    id: Mapped[str] = mapped_column(primary_key=True)
+    name: Mapped[str]
+    description: Mapped[str] = mapped_column(default="")
+
+
+class EntryContextTopicWeightORM(Base):
+    __tablename__ = "entry_context_topic_weights"
+    __table_args__ = (UniqueConstraint("entry_context_id", "topic"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    entry_context_id: Mapped[str] = mapped_column(ForeignKey("entry_contexts.id"))
+    topic: Mapped[str]
+    weight: Mapped[float]
 
 
 class CaseORM(Base):

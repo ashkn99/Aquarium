@@ -1,0 +1,76 @@
+# Entry contexts: the broad "what are you concerned about?" starting point
+# a user picks before any observations exist. This is a ROUTING preference
+# only -- topic_weights softly bias which evidence.topic gets asked about
+# early (see questions/selection.py's routing_bonus()), and are never
+# read by inference/scoring.py. The diagnostic math is identical
+# regardless of entry_context (see test_entry_context_routing.py).
+#
+# general_context carries a weight in every context (including `unsure`)
+# because broad orienting facts -- how many fish/plants are affected, how
+# it started, what changed recently -- are useful no matter where the
+# user thinks the problem lives; this is what gives every context a
+# sensible "triage-shaped" opening rather than diving straight into
+# domain-specific or disease-specific questions. Each context then adds a
+# smaller push toward its own domain topic(s) on top of that shared base.
+# fish_disease_marker deliberately has zero weight everywhere: routing
+# should never suppress a genuinely high information-gain disease-marker
+# question, but it shouldn't be artificially boosted either.
+#
+# Weights were calibrated empirically against this KB's actual turn-1
+# adjusted_value landscape (see the final report): the single most
+# dominant question (white_spots, ~1.7) is deliberately left unbeatable --
+# that reflects genuinely exceptional information gain, not a routing
+# failure -- but these weights are large enough that the *next tier* of
+# moderately-informative general/domain questions (roughly 0.1-0.3 raw)
+# out-rank the *next tier* of disease markers (roughly 0.4-0.7 raw) for
+# several turns, which is where the previous "universal disease checklist"
+# problem actually lived.
+#
+# To add a new concern area later: add an entry here with its
+# topic_weights (tagging any new evidence with the relevant topic first,
+# or reusing existing topics) -- no code changes needed.
+
+- id: fish
+  name: My fish
+  description: Concerned about a specific fish or fishes' health, symptoms, or behavior.
+  topic_weights:
+    general_context: 0.5
+    fish_symptom: 0.9
+
+- id: water
+  name: My water
+  description: Concerned about water quality, parameters, or recent water-related changes.
+  topic_weights:
+    general_context: 0.5
+    water_parameter: 0.9
+    water_history: 0.9
+
+- id: plants
+  name: My plants
+  description: >
+    Concerned about plants. The knowledge base does not yet model
+    plant-health evidence directly, so this mainly falls back to general
+    orienting questions plus the one genuinely plant-adjacent topic
+    (CO2/tank-system factors) already in the KB -- see the final report
+    for this limitation.
+  topic_weights:
+    general_context: 0.5
+    environment_system: 0.85
+    water_parameter: 0.4
+
+- id: aquarium_environment
+  name: My aquarium/environment
+  description: Concerned about the tank setup, equipment, filtration, or environment generally.
+  topic_weights:
+    general_context: 0.5
+    environment_system: 0.9
+    water_parameter: 0.35
+
+- id: unsure
+  name: I'm not sure
+  description: >
+    No particular starting guess -- use the shared general-orienting
+    preference only, with no domain-specific push, so this behaves like
+    plain adaptive triage rather than an arbitrary sixth category.
+  topic_weights:
+    general_context: 0.5

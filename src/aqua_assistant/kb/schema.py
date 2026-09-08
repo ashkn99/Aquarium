@@ -60,6 +60,7 @@ class Evidence(Frozen):
     data_type: DataType
     unit: Optional[str] = None
     evidence_group_id: Optional[str] = None
+    topic: str = "general_context"
     rationale: str = ""
     active: bool = True
 
@@ -129,3 +130,23 @@ class SafetyRule(Frozen):
     message: str
     forced_question_id: Optional[str] = None
     escalation_text: str = ""
+
+
+class EntryContext(Frozen):
+    """A broad "where do you think the problem is" starting point the user
+    picks before any observations exist (e.g. "my fish" / "my water").
+
+    This is a routing preference, never diagnostic evidence: it is looked
+    up by question selection to softly prefer certain evidence `topic`s
+    early on, and is never passed into scoring.py's likelihood/posterior
+    math. `topic_weights` keys are free-text topic names (matching
+    Evidence.topic), following the same unenforced-categorical-string
+    convention already used by Problem.category -- no separate Topic
+    registry table, so adding a new topic is just a matter of tagging
+    evidence with it and referencing it here.
+    """
+
+    id: str
+    name: str
+    description: str = ""
+    topic_weights: dict[str, float] = Field(default_factory=dict)

@@ -9,6 +9,7 @@ from __future__ import annotations
 from functools import cached_property
 
 from .schema import (
+    EntryContext,
     Evidence,
     EvidenceGroup,
     EvidenceRange,
@@ -33,6 +34,7 @@ class KnowledgeBase:
         question_answers: list[QuestionAnswer],
         recommendations: list[Recommendation],
         safety_rules: list[SafetyRule],
+        entry_contexts: dict[str, EntryContext] | None = None,
     ) -> None:
         self.problems = problems
         self.evidence = evidence
@@ -43,6 +45,7 @@ class KnowledgeBase:
         self.question_answers = question_answers
         self.recommendations = recommendations
         self.safety_rules = safety_rules
+        self.entry_contexts = entry_contexts or {}
 
     @cached_property
     def problem_evidence_index(self) -> dict[tuple[str, str, str], ProblemEvidence]:
