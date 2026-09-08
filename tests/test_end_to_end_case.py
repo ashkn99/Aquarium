@@ -22,6 +22,8 @@ from aqua_assistant.kb.loader import load_knowledge_base
 from aqua_assistant.kb.schema import SafetyCondition, SafetyRule
 from aqua_assistant.questions.selection import possible_states
 
+from .conftest import neutral_default
+
 # A full answer script keyed by evidence_id, so whichever question the
 # engine dynamically picks (order isn't fixed), a scripted answer is ready.
 # This describes a fairly clear-cut ammonia-toxicity case.
@@ -68,7 +70,12 @@ AMMONIA_CASE_ANSWERS: dict[str, tuple[str, object]] = {
 
 def run_scripted_case(engine: AquariumInferenceEngine, answers: dict, max_turns: int = 30):
     """Drives a case to completion using the answer script, returning the
-    list of (turn_status, question_asked) pairs and the final status."""
+    list of (turn_status, question_asked) pairs and the final status.
+
+    Falls back to conftest.neutral_default() for any evidence the script
+    doesn't cover (e.g. evidence added by a later KB batch) -- an
+    unscripted answer must never accidentally read as remarkable/positive
+    for this fixed ammonia-toxicity scenario."""
     case_id = engine.start_case()
     turns = []
     asked_evidence_ids: list[str] = []
@@ -84,7 +91,7 @@ def run_scripted_case(engine: AquariumInferenceEngine, answers: dict, max_turns:
         assert evidence_id not in asked_evidence_ids, f"redundant question re-asked for {evidence_id}"
         asked_evidence_ids.append(evidence_id)
 
-        kind, value = answers[evidence_id]
+        kind, value = answers.get(evidence_id) or neutral_default(engine.kb, evidence_id)
         if kind == "raw_value":
             engine.answer(case_id, evidence_id, raw_value=value, question_id=q.question_id)
         else:

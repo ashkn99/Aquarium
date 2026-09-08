@@ -1016,6 +1016,17 @@
   evidence_state: "false"
   likelihood_positive: 0.45
   likelihood_background: 0.85
+# --- plant KB expansion (batch 5): cross-link to a new plant-side evidence
+# item -- an unstable CO2 system (timer/solenoid issues, inconsistent
+# bubble count) is a plausible route to an overdose spike, not just to
+# chronic under-dosing (see plant_co2_deficiency below), so it's given a
+# light positive here too.
+- problem_id: co2_injection_excess
+  evidence_id: co2_fluctuation_reported
+  evidence_state: "true"
+  likelihood_positive: 0.35
+  likelihood_background: 0.15
+  rationale: An unreliable injection system can just as plausibly spike high as run low, so this is a mild positive alongside the much stronger respiratory-distress signal above.
 
 # ============================== poor_circulation_dead_spot ==============================
 - problem_id: poor_circulation_dead_spot
@@ -1495,3 +1506,404 @@
   likelihood_positive: 0.05
   likelihood_background: 0.35
   rationale: Chronic nitrate stress is a slow-developing condition, inconsistent with sudden mass death.
+
+# ============================== plant_nutrient_deficiency ==============================
+- problem_id: plant_nutrient_deficiency
+  evidence_id: older_leaves_affected_first
+  evidence_state: "true"
+  likelihood_positive: 0.65
+  likelihood_background: 0.15
+  rationale: Classic mobile-nutrient (nitrogen/potassium/magnesium) deficiency pattern.
+- problem_id: plant_nutrient_deficiency
+  evidence_id: older_leaves_affected_first
+  evidence_state: "false"
+  likelihood_positive: 0.35
+  likelihood_background: 0.5
+  rationale: Weak-moderate negative -- an immobile-nutrient deficiency wouldn't show this pattern either, so absence alone doesn't rule the problem out.
+- problem_id: plant_nutrient_deficiency
+  evidence_id: new_growth_pale_or_distorted
+  evidence_state: "true"
+  likelihood_positive: 0.55
+  likelihood_background: 0.15
+  rationale: Classic immobile-nutrient (iron/calcium/manganese) deficiency pattern.
+- problem_id: plant_nutrient_deficiency
+  evidence_id: new_growth_pale_or_distorted
+  evidence_state: "false"
+  likelihood_positive: 0.4
+  likelihood_background: 0.5
+- problem_id: plant_nutrient_deficiency
+  evidence_id: leaf_yellowing_or_discoloration
+  evidence_state: "true"
+  likelihood_positive: 0.55
+  likelihood_background: 0.25
+- problem_id: plant_nutrient_deficiency
+  evidence_id: leaf_browning_or_holes
+  evidence_state: "true"
+  likelihood_positive: 0.45
+  likelihood_background: 0.2
+  rationale: Pinholes/marginal browning is a common potassium-type deficiency sign.
+- problem_id: plant_nutrient_deficiency
+  evidence_id: stunted_or_slow_new_growth
+  evidence_state: "true"
+  likelihood_positive: 0.5
+  likelihood_background: 0.25
+- problem_id: plant_nutrient_deficiency
+  evidence_id: fertilization_dosing_reported
+  evidence_state: none
+  likelihood_positive: 0.7
+  likelihood_background: 0.15
+  rationale: Direct causal history -- no deliberate fertilization is one of the most common root causes of deficiency.
+- problem_id: plant_nutrient_deficiency
+  evidence_id: fertilization_dosing_reported
+  evidence_state: irregular
+  likelihood_positive: 0.45
+  likelihood_background: 0.25
+- problem_id: plant_nutrient_deficiency
+  evidence_id: fertilization_dosing_reported
+  evidence_state: regular
+  likelihood_positive: 0.1
+  likelihood_background: 0.5
+  rationale: A consistent dosing routine argues against outright deficiency, though dosing the wrong nutrient mix can still produce it.
+- problem_id: plant_nutrient_deficiency
+  evidence_id: onset_timing
+  evidence_state: chronic
+  likelihood_positive: 0.55
+  likelihood_background: 0.2
+- problem_id: plant_nutrient_deficiency
+  evidence_id: onset_timing
+  evidence_state: sudden
+  likelihood_positive: 0.1
+  likelihood_background: 0.35
+  rationale: Nutrient deficiency accumulates over weeks as reserves are depleted, not suddenly.
+- problem_id: plant_nutrient_deficiency
+  evidence_id: num_plants_affected
+  evidence_state: most_or_all
+  likelihood_positive: 0.55
+  likelihood_background: 0.25
+  rationale: A water-column nutrient shortfall is shared by every plant drawing on it.
+- problem_id: plant_nutrient_deficiency
+  evidence_id: num_plants_affected
+  evidence_state: single
+  likelihood_positive: 0.15
+  likelihood_background: 0.35
+- problem_id: plant_nutrient_deficiency
+  evidence_id: nitrate_ppm
+  evidence_state: safe
+  likelihood_positive: 0.35
+  likelihood_background: 0.3
+  rationale: Mild positive only -- in a heavily planted tank, nitrate reading very low can mean plants are nitrogen-starved, though a safe reading is also completely normal on its own.
+- problem_id: plant_nutrient_deficiency
+  evidence_id: nitrate_ppm
+  evidence_state: high
+  likelihood_positive: 0.2
+  likelihood_background: 0.3
+  rationale: Plenty of nitrate in the water argues (mildly) against nitrogen starvation specifically, though other nutrients could still be lacking.
+
+# ============================== plant_insufficient_light ==============================
+- problem_id: plant_insufficient_light
+  evidence_id: leggy_stretching_growth
+  evidence_state: "true"
+  likelihood_positive: 0.75
+  likelihood_background: 0.05
+  rationale: The defining growth-form sign of insufficient light.
+- problem_id: plant_insufficient_light
+  evidence_id: leggy_stretching_growth
+  evidence_state: "false"
+  likelihood_positive: 0.2
+  likelihood_background: 0.85
+  rationale: Absence of the defining sign is fairly strong disconfirmation.
+- problem_id: plant_insufficient_light
+  evidence_id: low_light_duration_or_intensity
+  evidence_state: "true"
+  likelihood_positive: 0.7
+  likelihood_background: 0.1
+  rationale: Direct causal-history question, the most diagnostic single fact for this problem.
+- problem_id: plant_insufficient_light
+  evidence_id: low_light_duration_or_intensity
+  evidence_state: "false"
+  likelihood_positive: 0.15
+  likelihood_background: 0.75
+- problem_id: plant_insufficient_light
+  evidence_id: stunted_or_slow_new_growth
+  evidence_state: "true"
+  likelihood_positive: 0.5
+  likelihood_background: 0.25
+- problem_id: plant_insufficient_light
+  evidence_id: leaf_yellowing_or_discoloration
+  evidence_state: "true"
+  likelihood_positive: 0.4
+  likelihood_background: 0.25
+  rationale: A weaker signal here than for nutrient deficiency -- low light more classically produces leggy growth than yellowing.
+- problem_id: plant_insufficient_light
+  evidence_id: onset_timing
+  evidence_state: chronic
+  likelihood_positive: 0.5
+  likelihood_background: 0.2
+- problem_id: plant_insufficient_light
+  evidence_id: num_plants_affected
+  evidence_state: most_or_all
+  likelihood_positive: 0.5
+  likelihood_background: 0.25
+  rationale: A whole-tank lighting condition affects every plant under it.
+- problem_id: plant_insufficient_light
+  evidence_id: num_plants_affected
+  evidence_state: single
+  likelihood_positive: 0.15
+  likelihood_background: 0.35
+- problem_id: plant_insufficient_light
+  evidence_id: visible_algae_growth
+  evidence_state: none
+  likelihood_positive: 0.4
+  likelihood_background: 0.3
+  rationale: Low light also suppresses algae, mildly supporting the split from plant_algae_competition's opposite-direction lighting problem.
+
+# ============================== plant_algae_competition ==============================
+- problem_id: plant_algae_competition
+  evidence_id: visible_algae_growth
+  evidence_state: heavy
+  likelihood_positive: 0.8
+  likelihood_background: 0.08
+- problem_id: plant_algae_competition
+  evidence_id: visible_algae_growth
+  evidence_state: mild
+  likelihood_positive: 0.5
+  likelihood_background: 0.25
+- problem_id: plant_algae_competition
+  evidence_id: visible_algae_growth
+  evidence_state: none
+  likelihood_positive: 0.05
+  likelihood_background: 0.55
+  rationale: Confirmed absence of algae should sharply reduce this candidate -- it's the defining sign.
+- problem_id: plant_algae_competition
+  evidence_id: long_photoperiod_or_intense_lighting
+  evidence_state: "true"
+  likelihood_positive: 0.65
+  likelihood_background: 0.15
+  rationale: The classic driver -- excess light/photoperiod relative to nutrient uptake feeds algae faster than plants can use it.
+- problem_id: plant_algae_competition
+  evidence_id: long_photoperiod_or_intense_lighting
+  evidence_state: "false"
+  likelihood_positive: 0.3
+  likelihood_background: 0.6
+- problem_id: plant_algae_competition
+  evidence_id: visible_debris_or_detritus_buildup
+  evidence_state: "true"
+  likelihood_positive: 0.4
+  likelihood_background: 0.2
+  rationale: Poor circulation/debris buildup is a known contributing factor to algae, reusing the existing poor_circulation_dead_spot evidence item.
+- problem_id: plant_algae_competition
+  evidence_id: fertilization_dosing_reported
+  evidence_state: irregular
+  likelihood_positive: 0.4
+  likelihood_background: 0.25
+  rationale: Inconsistent dosing produces nutrient swings that algae exploits more opportunistically than plants do.
+- problem_id: plant_algae_competition
+  evidence_id: onset_timing
+  evidence_state: gradual
+  likelihood_positive: 0.45
+  likelihood_background: 0.3
+- problem_id: plant_algae_competition
+  evidence_id: num_plants_affected
+  evidence_state: most_or_all
+  likelihood_positive: 0.4
+  likelihood_background: 0.3
+  rationale: Kept moderate, not strong -- algae competition can also be localized to specific plants/surfaces rather than tank-wide.
+
+# ============================== plant_co2_deficiency ==============================
+- problem_id: plant_co2_deficiency
+  evidence_id: planted_tank_with_co2_injection
+  evidence_state: "false"
+  likelihood_positive: 0.55
+  likelihood_background: 0.35
+  rationale: >-
+    Moderate, not strong -- plenty of successful low-tech planted tanks
+    run without injection at low light, so absence of injection alone is
+    only weakly diagnostic without an accompanying poor-growth sign.
+- problem_id: plant_co2_deficiency
+  evidence_id: co2_fluctuation_reported
+  evidence_state: "true"
+  likelihood_positive: 0.65
+  likelihood_background: 0.1
+  rationale: Among CO2-injecting users, an unstable/unreliable system is a direct, strong signal.
+- problem_id: plant_co2_deficiency
+  evidence_id: co2_fluctuation_reported
+  evidence_state: "false"
+  likelihood_positive: 0.35
+  likelihood_background: 0.55
+  rationale: Moderate negative -- a stable system argues against instability-driven deficiency, though the injection rate itself could still simply be too low.
+- problem_id: plant_co2_deficiency
+  evidence_id: stunted_or_slow_new_growth
+  evidence_state: "true"
+  likelihood_positive: 0.55
+  likelihood_background: 0.25
+- problem_id: plant_co2_deficiency
+  evidence_id: stunted_or_slow_new_growth
+  evidence_state: "false"
+  likelihood_positive: 0.25
+  likelihood_background: 0.5
+- problem_id: plant_co2_deficiency
+  evidence_id: new_growth_pale_or_distorted
+  evidence_state: "true"
+  likelihood_positive: 0.45
+  likelihood_background: 0.2
+  rationale: CO2-starved new growth is often small/twisted, similar in appearance to an immobile-nutrient deficiency.
+- problem_id: plant_co2_deficiency
+  evidence_id: leaf_browning_or_holes
+  evidence_state: "true"
+  likelihood_positive: 0.4
+  likelihood_background: 0.2
+- problem_id: plant_co2_deficiency
+  evidence_id: onset_timing
+  evidence_state: gradual
+  likelihood_positive: 0.5
+  likelihood_background: 0.3
+- problem_id: plant_co2_deficiency
+  evidence_id: num_plants_affected
+  evidence_state: most_or_all
+  likelihood_positive: 0.55
+  likelihood_background: 0.25
+  rationale: CO2 availability is a shared water-column factor like nutrients.
+- problem_id: plant_co2_deficiency
+  evidence_id: num_plants_affected
+  evidence_state: single
+  likelihood_positive: 0.15
+  likelihood_background: 0.35
+
+# ============================== plant_melt_transition ==============================
+- problem_id: plant_melt_transition
+  evidence_id: old_leaves_melting_rapidly
+  evidence_state: "true"
+  likelihood_positive: 0.85
+  likelihood_background: 0.03
+  rationale: The defining sign of post-planting melt.
+- problem_id: plant_melt_transition
+  evidence_id: old_leaves_melting_rapidly
+  evidence_state: "false"
+  likelihood_positive: 0.15
+  likelihood_background: 0.9
+  rationale: Absence of the defining sign makes this diagnosis very unlikely.
+- problem_id: plant_melt_transition
+  evidence_id: recently_planted_or_moved
+  evidence_state: "true"
+  likelihood_positive: 0.75
+  likelihood_background: 0.1
+  rationale: Defining causal-history precondition.
+- problem_id: plant_melt_transition
+  evidence_id: recently_planted_or_moved
+  evidence_state: "false"
+  likelihood_positive: 0.05
+  likelihood_background: 0.75
+  rationale: This problem is definitionally tied to a recent planting/replanting event; without one it's essentially ruled out.
+- problem_id: plant_melt_transition
+  evidence_id: new_growth_pale_or_distorted
+  evidence_state: "false"
+  likelihood_positive: 0.55
+  likelihood_background: 0.45
+  rationale: Healthy new growth alongside melting old leaves is mildly consistent with transition melt rather than an ongoing deficiency, though only weakly informative on its own.
+- problem_id: plant_melt_transition
+  evidence_id: onset_timing
+  evidence_state: gradual
+  likelihood_positive: 0.55
+  likelihood_background: 0.3
+  rationale: Melt typically plays out over days to roughly a week or two after planting.
+- problem_id: plant_melt_transition
+  evidence_id: onset_timing
+  evidence_state: chronic
+  likelihood_positive: 0.05
+  likelihood_background: 0.35
+  rationale: Melt is a short, self-resolving event, not a weeks-long chronic process.
+- problem_id: plant_melt_transition
+  evidence_id: num_plants_affected
+  evidence_state: several
+  likelihood_positive: 0.4
+  likelihood_background: 0.3
+  rationale: A freshly planted batch often includes several specimens melting together, though a single new addition is also common -- kept moderate rather than asserting a strong direction on scope.
+
+# ============================== plant_root_or_planting_problem ==============================
+- problem_id: plant_root_or_planting_problem
+  evidence_id: plant_floating_or_uprooted
+  evidence_state: "true"
+  likelihood_positive: 0.75
+  likelihood_background: 0.05
+  rationale: Direct observation, strongly diagnostic on its own.
+- problem_id: plant_root_or_planting_problem
+  evidence_id: plant_floating_or_uprooted
+  evidence_state: "false"
+  likelihood_positive: 0.3
+  likelihood_background: 0.6
+- problem_id: plant_root_or_planting_problem
+  evidence_id: roots_visibly_rotting_or_blackened
+  evidence_state: "true"
+  likelihood_positive: 0.7
+  likelihood_background: 0.05
+- problem_id: plant_root_or_planting_problem
+  evidence_id: roots_visibly_rotting_or_blackened
+  evidence_state: "false"
+  likelihood_positive: 0.3
+  likelihood_background: 0.6
+- problem_id: plant_root_or_planting_problem
+  evidence_id: substrate_disturbed_or_shallow_for_roots
+  evidence_state: "true"
+  likelihood_positive: 0.55
+  likelihood_background: 0.15
+  rationale: Causal-history context for why roots might be struggling.
+- problem_id: plant_root_or_planting_problem
+  evidence_id: substrate_disturbed_or_shallow_for_roots
+  evidence_state: "false"
+  likelihood_positive: 0.3
+  likelihood_background: 0.6
+- problem_id: plant_root_or_planting_problem
+  evidence_id: stunted_or_slow_new_growth
+  evidence_state: "true"
+  likelihood_positive: 0.4
+  likelihood_background: 0.3
+  rationale: Weak signal -- impaired roots can slow growth, but this is far less specific than the direct observations above.
+- problem_id: plant_root_or_planting_problem
+  evidence_id: num_plants_affected
+  evidence_state: single
+  likelihood_positive: 0.55
+  likelihood_background: 0.3
+  rationale: Typically localized to specific poorly-planted or disturbed specimens.
+- problem_id: plant_root_or_planting_problem
+  evidence_id: num_plants_affected
+  evidence_state: most_or_all
+  likelihood_positive: 0.05
+  likelihood_background: 0.3
+  rationale: A mechanical/localized planting problem rarely affects every plant in the tank at once.
+
+# ============================== plant_livestock_damage ==============================
+- problem_id: plant_livestock_damage
+  evidence_id: leaves_shredded_or_bitten_pattern
+  evidence_state: "true"
+  likelihood_positive: 0.8
+  likelihood_background: 0.05
+  rationale: A shredded/bitten pattern is near-pathognomonic for physical grazing/disturbance damage.
+- problem_id: plant_livestock_damage
+  evidence_id: leaves_shredded_or_bitten_pattern
+  evidence_state: "false"
+  likelihood_positive: 0.15
+  likelihood_background: 0.85
+  rationale: Absence of the defining damage pattern makes this diagnosis unlikely.
+- problem_id: plant_livestock_damage
+  evidence_id: herbivorous_livestock_present
+  evidence_state: "true"
+  likelihood_positive: 0.55
+  likelihood_background: 0.2
+  rationale: A risk factor, weaker alone than the direct damage-pattern observation above.
+- problem_id: plant_livestock_damage
+  evidence_id: herbivorous_livestock_present
+  evidence_state: "false"
+  likelihood_positive: 0.2
+  likelihood_background: 0.7
+- problem_id: plant_livestock_damage
+  evidence_id: num_plants_affected
+  evidence_state: several
+  likelihood_positive: 0.45
+  likelihood_background: 0.3
+  rationale: Grazers commonly target several soft-leaved plants rather than exactly one or the whole tank.
+- problem_id: plant_livestock_damage
+  evidence_id: onset_timing
+  evidence_state: gradual
+  likelihood_positive: 0.45
+  likelihood_background: 0.3
+  rationale: Ongoing grazing typically shows up as gradual, cumulative damage.

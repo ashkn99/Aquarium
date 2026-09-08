@@ -113,12 +113,23 @@ def test_water_routing_favors_water_topics_early(kb):
 
 
 def test_plant_routing_favors_its_plant_adjacent_topic_early(kb):
-    """The KB has no dedicated plant-health evidence yet (see report), so
-    this only verifies the one genuinely plant-adjacent link (CO2
-    injection) gets a real preference -- not a rich plant-specific opener."""
+    """Following the plant-health KB expansion, 'plants' now has a real
+    dedicated topic (plant_symptom) and should lean on it early, not just
+    the one CO2-injection fallback fact from before that milestone."""
     topics = {t for _, t in _first_n(kb, "plants", 4)}
-    assert topics & {"environment_system", "general_context"}
+    assert topics & {"plant_symptom", "environment_system", "general_context"}
     assert routing_bonus(kb, "plants", "planted_tank_with_co2_injection", num_observations=0) > 0
+    assert routing_bonus(kb, "plants", "leaf_yellowing_or_discoloration", num_observations=0) > 0
+
+
+def test_plants_context_is_no_longer_thin(kb):
+    """Regression guard for the previously-documented 'plants entry context
+    is too thin' limitation (a single plant-adjacent evidence item). With
+    real plant-health evidence in the KB, the early opening should include
+    multiple plant_symptom questions, not just a CO2 fallback plus generic
+    triage."""
+    topics = [t for _, t in _first_n(kb, "plants", 6)]
+    assert topics.count("plant_symptom") >= 2
 
 
 def test_environment_routing_favors_system_topics_early(kb):

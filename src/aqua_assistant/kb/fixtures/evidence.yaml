@@ -12,7 +12,8 @@
 # problem is), fish_symptom (observable signs/behavior), fish_disease_marker
 # (highly specific pathognomonic-style signs), water_parameter (numeric
 # readings), water_history (testing/maintenance habits and history),
-# environment_system (tank setup/equipment/stocking).
+# environment_system (tank setup/equipment/stocking), plant_symptom
+# (observable plant signs -- the plant-side parallel to fish_symptom).
 
 # --- respiratory_distress group ---
 - id: gasping
@@ -298,3 +299,133 @@
     exhaustive) set of problem_evidence rows against a few of each kind,
     rather than every problem in the KB, to keep it a light, secondary
     signal rather than the main driver of any diagnosis.
+
+# --- plant health (batch 5) ---
+# New topic: plant_symptom (observable plant signs -- parallel to
+# fish_symptom). Setup/care-regimen facts (lighting, CO2, fertilization,
+# substrate) reuse the existing environment_system topic (tank
+# setup/equipment/stocking) rather than inventing a redundant one; scope
+# and timing facts reuse general_context, the same convention already
+# used by num_fish_affected/recent_fish_added/onset_timing.
+
+# --- plant_general_decline group: nonspecific signs of plant decline,
+# shared across nearly every plant problem below (parallel to
+# lethargy_cluster on the fish side) ---
+- id: leaf_yellowing_or_discoloration
+  name: Leaves yellowing or losing normal color
+  data_type: boolean
+  evidence_group_id: plant_general_decline
+  topic: plant_symptom
+
+- id: leaf_browning_or_holes
+  name: Leaves browning at the edges or developing holes
+  data_type: boolean
+  evidence_group_id: plant_general_decline
+  topic: plant_symptom
+
+- id: stunted_or_slow_new_growth
+  name: New growth is stunted, small, or very slow
+  data_type: boolean
+  evidence_group_id: plant_general_decline
+  topic: plant_symptom
+
+# --- nutrient-deficiency direction markers: genuinely distinguishing
+# (which leaves are affected first), so deliberately NOT grouped with the
+# nonspecific decline signs above -- grouping them would discount away
+# the one thing that makes them useful. ---
+- id: older_leaves_affected_first
+  name: Older/lower leaves are affected before newer growth
+  data_type: boolean
+  topic: plant_symptom
+  rationale: Classic pattern for mobile-nutrient deficiencies (e.g. nitrogen, potassium, magnesium), which the plant reclaims from older leaves first.
+
+- id: new_growth_pale_or_distorted
+  name: New growth specifically is pale, small, or distorted
+  data_type: boolean
+  topic: plant_symptom
+  rationale: Classic pattern for immobile-nutrient deficiencies (e.g. iron, calcium, manganese) and for CO2 limitation, which hit new growth first since the plant can't relocate these from older tissue.
+
+# --- standalone, fairly specific markers (pathognomonic-ish for one
+# problem each, kept ungrouped like white_spots/cottony_fuzzy_growth on
+# the fish side) ---
+- id: leggy_stretching_growth
+  name: Long, leggy stems stretching toward the light source
+  data_type: boolean
+  topic: plant_symptom
+  rationale: The defining growth-form sign of insufficient light.
+
+- id: visible_algae_growth
+  name: Visible algae growth in the tank
+  data_type: categorical
+  topic: plant_symptom
+  rationale: A three-way severity read (none/mild/heavy) is more useful here than yes/no -- algae visibly competing for light/nutrients is the defining sign of algae competing with plants.
+
+- id: old_leaves_melting_rapidly
+  name: Older leaves rapidly turning mushy/translucent and disintegrating
+  data_type: boolean
+  topic: plant_symptom
+  rationale: The defining sign of post-planting "melt" -- distinct in character from the ordinary yellowing/browning decline pattern above.
+
+- id: leaves_shredded_or_bitten_pattern
+  name: Leaves shredded or show a bitten pattern, not a decay/discoloration pattern
+  data_type: boolean
+  topic: plant_symptom
+  rationale: Distinguishes physical grazing/disturbance damage from every chemistry- or light-driven decline pattern above.
+
+# --- root_planting_signs group: two facets of the same underlying
+# physical planting/anchoring problem ---
+- id: plant_floating_or_uprooted
+  name: A plant is floating loose or visibly uprooted
+  data_type: boolean
+  evidence_group_id: root_planting_signs
+  topic: plant_symptom
+
+- id: roots_visibly_rotting_or_blackened
+  name: Roots are visibly rotting, mushy, or blackened
+  data_type: boolean
+  evidence_group_id: root_planting_signs
+  topic: plant_symptom
+
+# --- setup / care-regimen context (environment_system, same convention
+# as planted_tank_with_co2_injection) ---
+- id: low_light_duration_or_intensity
+  name: Lighting duration or intensity is low for these plants' needs
+  data_type: boolean
+  topic: environment_system
+
+- id: long_photoperiod_or_intense_lighting
+  name: Light runs a long photoperiod (10+ hrs/day) or is unusually intense/direct sun
+  data_type: boolean
+  topic: environment_system
+
+- id: co2_fluctuation_reported
+  name: CO2 injection fluctuates or drops out unpredictably (timer/solenoid issues, inconsistent bubble count)
+  data_type: boolean
+  topic: environment_system
+
+- id: fertilization_dosing_reported
+  name: How regularly plant fertilizer (liquid or root tabs) is dosed
+  data_type: categorical
+  topic: environment_system
+
+- id: substrate_disturbed_or_shallow_for_roots
+  name: Substrate is shallow, compacted, or was recently disturbed (cleaning/rescape)
+  data_type: boolean
+  topic: environment_system
+
+- id: herbivorous_livestock_present
+  name: Tank includes fish, snails, or shrimp known to graze on live plants
+  data_type: boolean
+  topic: environment_system
+
+# --- scope / timing context (general_context, same convention as
+# num_fish_affected/recent_fish_added) ---
+- id: recently_planted_or_moved
+  name: These plants were newly added or moved/replanted in the last 2-3 weeks
+  data_type: boolean
+  topic: general_context
+
+- id: num_plants_affected
+  name: Number of plants showing symptoms
+  data_type: categorical
+  topic: general_context

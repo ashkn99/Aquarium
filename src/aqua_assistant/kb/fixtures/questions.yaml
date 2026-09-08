@@ -294,3 +294,125 @@
   effort_cost: 1.0
   reliability: 0.95
   rationale: High priority given its safety relevance, even though its direct diagnostic information gain is modest by design.
+
+# --- plant health (batch 5) ---
+- id: ask_leaf_yellowing_or_discoloration
+  text: Are the leaves yellowing or losing their normal color?
+  evidence_id: leaf_yellowing_or_discoloration
+  priority_weight: 1.0
+  effort_cost: 1.0
+  reliability: 0.8
+- id: ask_leaf_browning_or_holes
+  text: Are the leaves browning at the edges or developing holes?
+  evidence_id: leaf_browning_or_holes
+  priority_weight: 0.9
+  effort_cost: 1.0
+  reliability: 0.75
+- id: ask_stunted_or_slow_new_growth
+  text: Is new growth stunted, unusually small, or very slow?
+  evidence_id: stunted_or_slow_new_growth
+  priority_weight: 1.0
+  effort_cost: 1.0
+  reliability: 0.7
+  rationale: Slow growth is somewhat subjective without a prior baseline for that species, so reliability is a bit lower.
+- id: ask_older_leaves_affected_first
+  text: Are older/lower leaves affected before newer growth?
+  evidence_id: older_leaves_affected_first
+  priority_weight: 1.1
+  effort_cost: 1.5
+  reliability: 0.65
+  rationale: Requires the user to compare leaf age, which takes closer observation than a simple yes/no symptom check.
+- id: ask_new_growth_pale_or_distorted
+  text: Is new growth specifically pale, small, or distorted?
+  evidence_id: new_growth_pale_or_distorted
+  priority_weight: 1.1
+  effort_cost: 1.5
+  reliability: 0.65
+  rationale: Same reasoning as older_leaves_affected_first -- distinguishing new growth from older growth takes closer observation.
+- id: ask_leggy_stretching_growth
+  text: Are stems growing long and leggy, stretching toward the light source?
+  evidence_id: leggy_stretching_growth
+  priority_weight: 1.2
+  effort_cost: 1.0
+  reliability: 0.85
+- id: ask_visible_algae_growth
+  text: How much algae do you see in the tank?
+  evidence_id: visible_algae_growth
+  priority_weight: 1.2
+  effort_cost: 1.0
+  reliability: 0.85
+- id: ask_old_leaves_melting_rapidly
+  text: Are older leaves rapidly turning mushy or translucent and falling apart?
+  evidence_id: old_leaves_melting_rapidly
+  priority_weight: 1.2
+  effort_cost: 1.0
+  reliability: 0.85
+- id: ask_leaves_shredded_or_bitten_pattern
+  text: Do the leaves look shredded or bitten, rather than discolored or decaying?
+  evidence_id: leaves_shredded_or_bitten_pattern
+  priority_weight: 1.2
+  effort_cost: 1.0
+  reliability: 0.85
+- id: ask_plant_floating_or_uprooted
+  text: Is a plant floating loose or visibly uprooted?
+  evidence_id: plant_floating_or_uprooted
+  priority_weight: 1.1
+  effort_cost: 1.0
+  reliability: 0.9
+- id: ask_roots_visibly_rotting_or_blackened
+  text: Are the roots visibly rotting, mushy, or blackened?
+  evidence_id: roots_visibly_rotting_or_blackened
+  priority_weight: 1.1
+  effort_cost: 1.5
+  reliability: 0.7
+  rationale: Checking roots usually means disturbing the substrate a bit, so it's a somewhat higher-effort, lower-reliability observation than a leaf check.
+- id: ask_low_light_duration_or_intensity
+  text: Is your lighting duration or intensity low for these plants' needs?
+  evidence_id: low_light_duration_or_intensity
+  priority_weight: 1.0
+  effort_cost: 1.0
+  reliability: 0.7
+  rationale: Subjective self-assessment against a species' actual light requirement, similar to overstocking_reported.
+- id: ask_long_photoperiod_or_intense_lighting
+  text: Is your light running a long photoperiod (10+ hours/day) or unusually intense/direct sun?
+  evidence_id: long_photoperiod_or_intense_lighting
+  priority_weight: 1.0
+  effort_cost: 1.0
+  reliability: 0.8
+- id: ask_co2_fluctuation_reported
+  text: Does your CO2 injection fluctuate or drop out unpredictably?
+  evidence_id: co2_fluctuation_reported
+  priority_weight: 1.1
+  effort_cost: 1.5
+  reliability: 0.75
+  rationale: Only answerable by CO2-injecting users, and noticing a fluctuation takes closer monitoring than a simple yes/no setup fact.
+- id: ask_fertilization_dosing_reported
+  text: How regularly do you dose plant fertilizer (liquid or root tabs)?
+  evidence_id: fertilization_dosing_reported
+  priority_weight: 1.0
+  effort_cost: 1.0
+  reliability: 0.85
+- id: ask_substrate_disturbed_or_shallow_for_roots
+  text: Is the substrate shallow, compacted, or was it recently disturbed?
+  evidence_id: substrate_disturbed_or_shallow_for_roots
+  priority_weight: 0.9
+  effort_cost: 1.0
+  reliability: 0.75
+- id: ask_herbivorous_livestock_present
+  text: Does your tank include fish, snails, or shrimp known to graze on live plants?
+  evidence_id: herbivorous_livestock_present
+  priority_weight: 0.9
+  effort_cost: 1.0
+  reliability: 0.85
+- id: ask_recently_planted_or_moved
+  text: Were these plants newly added or moved/replanted in the last 2-3 weeks?
+  evidence_id: recently_planted_or_moved
+  priority_weight: 1.2
+  effort_cost: 1.0
+  reliability: 0.95
+- id: ask_num_plants_affected
+  text: How many plants are showing symptoms?
+  evidence_id: num_plants_affected
+  priority_weight: 1.1
+  effort_cost: 1.0
+  reliability: 0.85

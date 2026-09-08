@@ -35,6 +35,20 @@ NEUTRAL_NUMERIC_DEFAULTS: dict[str, float] = {
     "tank_age_days": 150.0,
 }
 
+# Same hazard as NEUTRAL_NUMERIC_DEFAULTS, for categorical evidence with no
+# "false" state: falling back to sorted(states)[0] is an *alphabetical*
+# pick, not a neutral one -- for visible_algae_growth that silently picks
+# "heavy" (the single worst state) instead of "none". Only evidence where
+# the alphabetically-first state is actually misleading needs an entry
+# here; existing categoricals (num_fish_affected, onset_timing,
+# water_change_frequency) already have passing tests relying on today's
+# alphabetical fallback, so they're deliberately left alone.
+NEUTRAL_CATEGORICAL_DEFAULTS: dict[str, str] = {
+    "visible_algae_growth": "none",
+    "num_plants_affected": "single",
+    "fertilization_dosing_reported": "regular",
+}
+
 
 def neutral_default(kb: KnowledgeBase, evidence_id: str) -> tuple[str, object]:
     """('raw_value', x) or ('state', s) -- an unremarkable/negative answer
@@ -45,6 +59,9 @@ def neutral_default(kb: KnowledgeBase, evidence_id: str) -> tuple[str, object]:
     from aqua_assistant.questions.selection import possible_states
 
     states = possible_states(kb, evidence_id)
+    override = NEUTRAL_CATEGORICAL_DEFAULTS.get(evidence_id)
+    if override in states:
+        return "state", override
     return "state", ("false" if "false" in states else states[0])
 
 

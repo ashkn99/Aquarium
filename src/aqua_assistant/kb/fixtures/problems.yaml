@@ -313,3 +313,105 @@
     "off" and more susceptible to other problems, without any single
     acute trigger.
   source: Standard freshwater aquarium husbandry references.
+
+# ============================== plant health (batch 5) ==============================
+
+- id: plant_nutrient_deficiency
+  name: Plant nutrient deficiency/imbalance
+  category: plant_health
+  description: >
+    Plants lacking one or more nutrients (macro or micro) relative to
+    their uptake, producing characteristic leaf-pattern changes rather
+    than a single acute symptom. Not split further by specific nutrient
+    (e.g. nitrogen vs iron) since hobbyist-observable signs and typical
+    test kits can't reliably distinguish them -- the leaf-age pattern
+    (older vs newer leaves affected) is captured as evidence instead.
+  prior_weight: 0.6
+  severity_default: info
+  rationale: One of the most common causes of poor planted-tank appearance, especially without a deliberate fertilization routine.
+  source: Standard planted-aquarium husbandry references.
+
+- id: plant_insufficient_light
+  name: Insufficient light for plants
+  category: plant_health
+  description: >
+    Lighting duration or intensity too low for the plants present,
+    producing leggy/stretching growth and poor new growth rather than
+    the nutrient-pattern or algae signs of the other plant problems.
+  prior_weight: 0.5
+  severity_default: info
+  rationale: A very common setup mismatch, especially with low-output fixtures paired with higher-light plant species.
+  source: Standard planted-aquarium husbandry references.
+
+- id: plant_algae_competition
+  name: Algae competing with plants
+  category: plant_health
+  description: >
+    Algae overgrowth -- typically driven by excess light/photoperiod,
+    nutrient imbalance, or poor circulation/debris buildup -- competing
+    with plants for light and nutrients and visibly overtaking the tank.
+  prior_weight: 0.6
+  severity_default: caution
+  rationale: >
+    Extremely common in planted tanks and easy to conflate with plain
+    nutrient deficiency, but driven by an opposite-direction lighting
+    problem (too much, not too little) and confirmed by a distinct,
+    directly observable sign (visible algae) rather than a leaf pattern.
+  source: Standard planted-aquarium husbandry references.
+
+- id: plant_co2_deficiency
+  name: CO2 limitation or instability
+  category: plant_health
+  description: >
+    Insufficient or unstable CO2 availability for the plants' light
+    level, limiting growth. Deliberately covers both a low baseline level
+    and a fluctuating/unreliable injection system as one problem, since
+    hobbyist-observable signs don't cleanly separate "too low" from "too
+    unstable."
+  prior_weight: 0.5
+  severity_default: info
+  rationale: A very common limiting factor once light exceeds what ambient CO2 can support, especially in non-injected or poorly-tuned injected tanks.
+  source: Standard planted-aquarium husbandry references.
+
+- id: plant_melt_transition
+  name: Post-planting melt / transition
+  category: plant_health
+  description: >
+    A newly planted or recently moved/replanted specimen shedding its
+    older, previously-grown leaves (often emersed-grown) while adapting
+    to new tank conditions, typically resolving on its own as healthy new
+    growth emerges.
+  prior_weight: 0.6
+  severity_default: info
+  rationale: >
+    Extremely common and frequently mistaken by hobbyists for a nutrient
+    or water-quality problem, but self-limiting and tied tightly to a
+    recent planting/replanting event, which is highly discriminating on
+    its own.
+  source: Standard planted-aquarium husbandry references.
+
+- id: plant_root_or_planting_problem
+  name: Root or planting problem
+  category: plant_health
+  description: >
+    A mechanical/physical problem with how a plant is anchored or
+    rooted -- floating loose, uprooted, or roots rotting in compacted or
+    disturbed substrate -- rather than a water-chemistry or lighting
+    issue.
+  prior_weight: 0.35
+  severity_default: info
+  rationale: A commonly overlooked, purely mechanical cause that's easy to misattribute to a nutrient or light problem without directly inspecting the substrate/roots.
+  source: Standard planted-aquarium husbandry references.
+
+- id: plant_livestock_damage
+  name: Plant damage from livestock or physical disturbance
+  category: plant_health
+  description: >
+    Physical damage to plants from grazing fish/snails/shrimp or general
+    tank disturbance, producing a shredded/bitten pattern rather than the
+    chemistry- or light-driven decline patterns of the other plant
+    problems.
+  prior_weight: 0.35
+  severity_default: caution
+  rationale: A common, easy-to-overlook cause once herbivorous or omnivorous livestock is present, distinguished cleanly by damage pattern rather than leaf color/condition.
+  source: Standard planted-aquarium husbandry references.

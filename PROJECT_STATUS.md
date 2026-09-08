@@ -1,6 +1,6 @@
 # Project Status — Aquarium Troubleshooting Assistant
 
-Last updated: 2026-09-08 (checkpoint after the entry-context routing milestone).
+Last updated: 2026-09-08 (checkpoint after the plant-health KB expansion milestone).
 This file exists so a **new Claude Code session with no conversation history** can
 pick this project up safely. Read this before touching any code.
 
@@ -8,12 +8,13 @@ pick this project up safely. Read this before touching any code.
 
 An Akinator-style adaptive diagnostic engine for aquarium troubleshooting.
 Given user-reported symptoms/parameters, it maintains Bayesian log-likelihood
-scores over a knowledge base of ~23 candidate problems, picks the next
-question by expected information gain (with a soft entry-context routing
-preference layered on top), and enforces a safety layer that can override
-normal question selection. **No LLM, no UI, no API, no persistence yet** —
-this is a pure Python library + a knowledge base, driven today only by
-Python calls and a bare CLI (`python -m aqua_assistant.api.cli`).
+scores over a knowledge base of 30 candidate problems (fish, water,
+environment, and now plant health), picks the next question by expected
+information gain (with a soft entry-context routing preference layered on
+top), and enforces a safety layer that can override normal question
+selection. **No LLM, no UI, no API, no persistence yet** — this is a pure
+Python library + a knowledge base, driven today only by Python calls and a
+bare CLI (`python -m aqua_assistant.api.cli`).
 
 ## Current architecture
 
@@ -62,10 +63,21 @@ exists. Nothing outside `safety/rules.py` and `inference/engine.py`'s
    complaint, and safety-relevant questions could get crowded out for many
    turns (CO2-overdose scenario: safety alert didn't fire until the very
    last question of 14).
-5. **Entry-context routing** (this checkpoint) — added a soft "what are you
-   concerned about?" preference (fish / water / plants / aquarium_environment
-   / unsure) that biases early question ordering without ever touching
-   diagnostic scoring. 120 tests. **Committed** (`1416599`).
+5. **Entry-context routing** — added a soft "what are you concerned about?"
+   preference (fish / water / plants / aquarium_environment / unsure) that
+   biases early question ordering without ever touching diagnostic
+   scoring. 120 tests. **Committed** (`1416599`).
+6. **`dissolved_oxygen_ppm` topic reclassification** — retagged from
+   `water_parameter` to `environment_system` so `aquarium_environment` is
+   no longer disadvantaged relative to `water` for oxygen-related routing
+   (previous limitation #2). Routing/metadata-only; scoring untouched.
+   123 tests. **Committed** (`b7ad332`).
+7. **Plant-health KB expansion** (this checkpoint) — added 7 new plant
+   problems, 19 new evidence items (new `plant_symptom` topic), 2 new
+   correlation groups, 19 new questions, and a full recommendation set,
+   closing the previous limitation #1 ("plants entry context is too
+   thin"). `plants`' `topic_weights` recalibrated to lead with
+   `plant_symptom`. 143 tests.
 
 ## Entry-context routing — current design
 
@@ -75,8 +87,8 @@ exists. Nothing outside `safety/rules.py` and `inference/engine.py`'s
 **Mechanism**:
 - Every `Evidence` item has a free-text `topic` (`general_context`,
   `fish_symptom`, `fish_disease_marker`, `water_parameter`, `water_history`,
-  `environment_system`) — same unenforced-categorical-string convention
-  already used by `Problem.category`, no separate registry table.
+  `environment_system`, `plant_symptom`) — same unenforced-categorical-string
+  convention already used by `Problem.category`, no separate registry table.
 - `kb/fixtures/entry_contexts.yaml` maps each of the 5 contexts to
   `topic_weights: {topic: weight}`. `general_context` has weight in *every*
   context (including `unsure`) — this is what gives every context a
@@ -108,7 +120,7 @@ calibration must keep satisfying.
 
 ## Current test count/result
 
-**120 tests, 120 passing**, confirmed from a completely fresh
+**143 tests, 143 passing**, confirmed from a completely fresh
 `pip install -e .[dev]` (no cached state). Run with:
 
 ```bash
@@ -120,44 +132,37 @@ Test files: `test_scoring.py`, `test_entropy.py`, `test_question_selection.py`,
 `test_end_to_end_case.py` (MVP criteria), `test_batch_water_quality.py`,
 `test_batch_environmental.py`, `test_batch_disease.py`,
 `test_batch_husbandry.py` (KB-expansion batch tests),
-`test_entry_context_routing.py` (this milestone).
+`test_entry_context_routing.py`, `test_batch_plants.py` (this milestone's
+plant-health batch, 19 tests).
 
 ## Current KB size
 
 | | count |
 |---|---|
-| problems | 23 (water_quality 6, environmental 5, disease 4, parasite 3, husbandry 5) |
-| evidence items | 45 (fish_symptom 14, fish_disease_marker 7, general_context 10, water_parameter 6, water_history 4, environment_system 4) |
-| evidence groups (correlated-symptom clusters) | 7 |
-| problem_evidence likelihood rows | 259 |
-| questions | 45 |
-| question_answers (answer options) | 79 |
-| recommendations | 124 |
-| safety_rules | 7 |
+| problems | 30 (water_quality 6, environmental 5, disease 4, parasite 3, husbandry 5, plant_health 7) |
+| evidence items | 64 (fish_symptom 14, general_context 12, environment_system 11, plant_symptom 11, fish_disease_marker 7, water_parameter 5, water_history 4) |
+| evidence groups (correlated-symptom clusters) | 9 |
+| problem_evidence likelihood rows | 328 |
+| questions | 64 |
+| question_answers (answer options) | 120 |
+| recommendations | 159 |
+| safety_rules | 7 (unchanged this milestone -- no new safety gap found) |
 | entry_contexts | 5 (fish, water, plants, aquarium_environment, unsure) |
 
 Original target from the founding plan was ~20-30 problems / 50-100
-evidence / 50-100 questions — currently at the low end of that range by
-design ("small and explicit" over padding for its own sake).
+evidence / 50-100 questions — now at the upper end of that range,
+deliberately, to give the `plants` entry context genuine depth rather than
+padding for its own sake.
 
 ## Known behavioral limitations (be honest about these, don't silently "fix")
 
-1. **`plants` entry context is thin.** The KB has exactly one plant-adjacent
-   evidence item (`planted_tank_with_co2_injection`, tagged
-   `environment_system`). There is no dedicated plant-health evidence
-   (leaf condition, algae, melting/yellowing, lighting/fertilization). The
-   `plants` context currently reduces to "ask about CO2 slightly early,
-   then fall back to general triage" — in one replay scenario it produced
-   an *identical* final result and question count to `unsure`. Fixing this
-   properly means adding real plant-health evidence/problems — out of
-   scope until explicitly requested.
-2. **`dissolved_oxygen_ppm` is tagged `water_parameter`, not
-   `environment_system`.** For a low-oxygen scenario, the `water` context
-   reaches the critical reading faster (11 questions) than
-   `aquarium_environment` (13 questions) — arguably backwards, since low
-   oxygen is at least as much an "environment" problem. `Evidence.topic`
-   is a single string; giving an item two topics would need a real schema
-   change (list-valued topic or a many-to-many table), not done here.
+1. ~~`plants` entry context is thin.~~ **Resolved this milestone.** 7 new
+   plant-health problems and 11 `plant_symptom`-tagged evidence items now
+   exist; `plants`' `topic_weights` lead with `plant_symptom: 0.9`. See
+   limitation #7 below for the residual, more modest version of this issue.
+2. ~~`dissolved_oxygen_ppm` mistagged `water_parameter`.~~ **Resolved** in
+   the prior milestone (commit `b7ad332`) — reclassified to
+   `environment_system`.
 3. **A single dominant marker (`white_spots`, raw info gain ~1.7) still
    opens almost every conversation regardless of entry context.** This is
    intentional — routing is calibrated to never overwhelm a genuinely
@@ -183,6 +188,36 @@ design ("small and explicit" over padding for its own sake).
    every symptom (only audited where a confident direction was
    defensible); `sudden_multiple_fish_death` deliberately has only
    representative (not exhaustive) problem_evidence rows.
+7. **`plants` still isn't purely plant-focused past the first 2-3 turns.**
+   Behavioral replay (neutral-answer protocol, see this milestone's final
+   report) shows `plant_symptom` questions winning turns 2-3, then the
+   sequence reverting to `fish_disease_marker` questions (e.g.
+   `cottony_fuzzy_growth`, `pinecone_scales`) for several turns before more
+   plant evidence resurfaces. This is the *same* interleaving pattern the
+   `fish` context already has (its own `fish_symptom` questions get
+   crowded out by `fish_disease_marker` questions in the same way) — not a
+   regression introduced by this milestone, but also not something this
+   milestone fixes, since `fish_disease_marker`-style evidence is
+   deliberately given zero routing weight everywhere (see design decisions
+   below) so it can never be suppressed by any context's preference.
+8. **`plant_nutrient_deficiency` is one problem covering several distinct
+   underlying nutrients** (nitrogen/potassium/magnesium vs iron/calcium/
+   manganese), differentiated only by which leaves are affected
+   (`older_leaves_affected_first` vs `new_growth_pale_or_distorted`), not
+   by specific nutrient. This is deliberate (hobbyist-observable signs and
+   typical test kits can't reliably distinguish further) but means the
+   engine can say "likely a mobile-nutrient deficiency," not "likely
+   potassium." Splitting further would need either lab-grade test kit
+   evidence or accepting much lower confidence per split candidate.
+9. **`fertilization_dosing_reported` and `visible_algae_growth` needed an
+   explicit "neutral default" override in `tests/conftest.py`** — the
+   generic `sorted(states)[0]` fallback used for other categorical
+   evidence happens to be alphabetically wrong for these two (`heavy`
+   sorts before `none` for `visible_algae_growth`). Fixed via a small
+   `NEUTRAL_CATEGORICAL_DEFAULTS` override dict rather than changing the
+   general fallback (which existing passing tests implicitly depend on).
+   Any future categorical evidence without a `false` state should check
+   this before assuming the generic fallback is safe.
 
 ## Important design decisions (and why)
 
@@ -208,8 +243,11 @@ design ("small and explicit" over padding for its own sake).
   never make the engine stop too early or too late; it can only reorder
   which question comes next while evidence is still being gathered.
 - **Entry-context topics are a single free-text string per evidence item,
-  not a list** — kept deliberately simple; the known cost is limitation #2
-  above (an item can't cleanly belong to two topics).
+  not a list** — kept deliberately simple; the known cost is that an item
+  can't cleanly belong to two topics (this was the root cause of the now-
+  resolved `dissolved_oxygen_ppm` mistagging, and is the reason
+  `plant_nutrient_deficiency`'s leaf-pattern evidence is tagged
+  `plant_symptom` rather than something more granular).
 
 ## Explicitly NOT implemented (do not add without being asked)
 
@@ -233,38 +271,38 @@ design ("small and explicit" over padding for its own sake).
 
 ## Exact next recommended milestone
 
-**Either, in priority order depending on what's wanted:**
+**Both prior "close the gap" items (plants KB depth, dissolved_oxygen_ppm
+topic mapping) are now done.** In priority order for what's next:
 
-1. **Close the `plants` gap** — add a small, explicit set of plant-health
-   evidence items (leaf condition, algae, melting/yellowing/browning,
-   lighting) and, if warranted, 1-3 plant-health problems, following the
-   same audit-first + domain-batch process used for the KB expansion
-   milestone. This is the most concrete unfinished thread from this
-   checkpoint.
-2. **Fix the `dissolved_oxygen_ppm` topic mapping** (limitation #2) — either
-   accept a small pragmatic duplication (a second `environment_system`-
-   flavored oxygen-adjacent evidence item) or decide list-valued topics
-   are worth the schema change. Small, isolated, well-understood fix.
-3. **Re-run the same kind of behavioral evaluation** (10 realistic
-   scenarios, read-only, no code changes) done twice before in this
-   project, specifically probing whether entry-context routing plus the
-   current KB still shows any of the 5 previously-fixed/previously-flagged
-   issues at a larger KB size, before deciding whether routing needs a
-   further mechanism (e.g. explicit safety-linked-evidence boosting).
-4. Only after 1-3: persistence, then a real API, are the next
+1. **Re-run a full behavioral evaluation** (10+ realistic scenarios,
+   read-only, no code changes) across the now-30-problem KB, specifically
+   probing: (a) whether `plants` now behaves comparably well to `fish`/
+   `water` end-to-end, not just in the first few turns; (b) whether
+   limitation #7 (fish-disease-marker crowding) is worth addressing with a
+   real mechanism (e.g. a small per-context cap on how many
+   zero-routing-weight markers can run consecutively) rather than left as
+   a documented characteristic. This milestone did a smaller, targeted
+   version of this (4 scenarios + one before/after plants comparison, see
+   the plant-health-milestone final report) — a full pass hasn't been
+   redone since the KB grew from 23 to 30 problems.
+2. **Consider whether `plant_nutrient_deficiency` needs splitting**
+   (limitation #8) once/if the project ever supports asking the user to
+   confirm a lab-grade nutrient test result — not worth doing on
+   hobbyist-observable evidence alone.
+3. Only after 1-2: persistence, then a real API, are the next
    architectural layers per the original founding plan.
 
-Do not jump straight to API/UI/LLM work without doing at least (1) or (3)
-first — the founding instructions and every milestone since have
-prioritized inference/KB quality over surface area.
+Do not jump straight to API/UI/LLM work without doing at least (1) first —
+the founding instructions and every milestone since have prioritized
+inference/KB quality over surface area.
 
 ## What a new Claude Code session needs to know before touching code
 
-- **Read this file first**, then skim `git log --oneline` (3 commits as of
+- **Read this file first**, then skim `git log --oneline` (6 commits as of
   this checkpoint) and the docstrings at the top of `inference/engine.py`,
   `questions/selection.py`, and `safety/rules.py` — they carry real design
   rationale, not just descriptions.
-- **Run `python -m pytest -q` before and after any change.** 120 passing is
+- **Run `python -m pytest -q` before and after any change.** 143 passing is
   the known-good baseline captured here.
 - **Never pass `entry_context` into `inference/scoring.py` or
   `inference/entropy.py`.** This boundary is load-bearing and
@@ -278,12 +316,17 @@ prioritized inference/KB quality over surface area.
   bash's `/tmp` alias hides the real path length from you). If a one-off
   script mysteriously "can't be found," copy it to a short path like
   `C:\Users\<user>\AppData\Local\Temp\` and run it from there.
-- **Test-writing gotcha already hit twice**: when scripting an "answer
-  whatever question comes next" loop for a scenario probe, do not default
-  unscripted numeric answers to a single constant like `0.0` — it means
-  "safe" for ammonia/nitrite but "critical" for dissolved oxygen and
-  silently fabricates a crisis. Use `tests/conftest.py::neutral_default()`
-  (already built for this) instead of reinventing it.
+- **Test-writing gotcha already hit three times**: when scripting an
+  "answer whatever question comes next" loop for a scenario probe, do not
+  default unscripted numeric answers to a single constant like `0.0` — it
+  means "safe" for ammonia/nitrite but "critical" for dissolved oxygen and
+  silently fabricates a crisis. The categorical equivalent bit this
+  milestone too: a naive `sorted(states)[0]` fallback picks `"heavy"` for
+  `visible_algae_growth`, not `"none"`. Always use
+  `tests/conftest.py::neutral_default()` (handles both, via
+  `NEUTRAL_NUMERIC_DEFAULTS` and `NEUTRAL_CATEGORICAL_DEFAULTS`) instead of
+  reinventing either one — including in one-off behavioral-eval scripts,
+  not just committed tests.
 - **The KB fixtures in `src/aqua_assistant/kb/fixtures/*.yaml` are the
   actual source of truth for domain content** — always edit these, never
   try to patch knowledge into Python code.

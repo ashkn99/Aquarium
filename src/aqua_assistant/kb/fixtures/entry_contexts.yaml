@@ -48,15 +48,13 @@
 - id: plants
   name: My plants
   description: >
-    Concerned about plants. The knowledge base does not yet model
-    plant-health evidence directly, so this mainly falls back to general
-    orienting questions plus the one genuinely plant-adjacent topic
-    (CO2/tank-system factors) already in the KB -- see the final report
-    for this limitation.
+    Concerned about plants -- leaf condition, growth, algae, or general
+    plant health.
   topic_weights:
     general_context: 0.5
-    environment_system: 0.85
-    water_parameter: 0.4
+    plant_symptom: 0.9
+    environment_system: 0.55
+    water_parameter: 0.3
 
 - id: aquarium_environment
   name: My aquarium/environment

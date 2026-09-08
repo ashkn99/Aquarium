@@ -172,3 +172,52 @@
 - {problem_id: inadequate_hiding_or_environment_stress, kind: follow_up_action, order: 0, text: "Research the specific cover/territory needs of your species -- some need dense planting, others need caves or open swimming space with occasional cover."}
 - {problem_id: inadequate_hiding_or_environment_stress, kind: avoid, order: 0, text: "Avoid a completely bare tank long-term, even temporarily during setup, since chronic exposure stress can compound with other problems."}
 - {problem_id: inadequate_hiding_or_environment_stress, kind: escalation_criterion, order: 0, text: "Persistent pale coloration and lethargy in a sparsely decorated tank, without any other identified cause, is consistent with chronic environmental stress and warrants improving the setup rather than continuing to test water parameters alone."}
+
+# ============================== plant_nutrient_deficiency ==============================
+- {problem_id: plant_nutrient_deficiency, kind: confirmation_check, order: 0, text: "Compare which leaves are affected -- older/lower leaves pointing to a mobile-nutrient shortfall (nitrogen, potassium, magnesium), new growth pointing to an immobile one (iron, calcium, manganese) -- since that pattern is consistent with which nutrient to prioritize."}
+- {problem_id: plant_nutrient_deficiency, kind: immediate_action, order: 0, text: "Start or increase dosing a comprehensive liquid or root-tab fertilizer matched to your plant load, following the product's dosing schedule."}
+- {problem_id: plant_nutrient_deficiency, kind: follow_up_action, order: 0, text: "Test nitrate and, if available, iron/phosphate, and track whether the leaf pattern improves over the next couple of weeks of consistent dosing."}
+- {problem_id: plant_nutrient_deficiency, kind: avoid, order: 0, text: "Avoid dosing several different products at once without a plan -- it makes it hard to tell what actually helped and can itself cause an imbalance."}
+- {problem_id: plant_nutrient_deficiency, kind: escalation_criterion, order: 0, text: "Rapid decline across most plants despite consistent fertilization is consistent with a different limiting factor (light or CO2) rather than nutrients alone, and is worth reassessing."}
+
+# ============================== plant_insufficient_light ==============================
+- {problem_id: plant_insufficient_light, kind: confirmation_check, order: 0, text: "Check your light's rated output and photoperiod against the actual needs of the plant species you're keeping -- requirements vary widely."}
+- {problem_id: plant_insufficient_light, kind: immediate_action, order: 0, text: "Increase photoperiod modestly (toward 8-10 hours/day) or upgrade to a fixture with more appropriate output for your plants, changing one variable at a time."}
+- {problem_id: plant_insufficient_light, kind: follow_up_action, order: 0, text: "Watch new growth over the following couple of weeks for straighter, more compact growth as a sign the change was sufficient."}
+- {problem_id: plant_insufficient_light, kind: avoid, order: 0, text: "Avoid increasing light and fertilization/CO2 all at once -- a sudden jump in light without matching CO2/nutrients is consistent with triggering algae instead of fixing plant growth."}
+- {problem_id: plant_insufficient_light, kind: escalation_criterion, order: 0, text: "Little to no improvement after a few weeks of increased, appropriately-matched light is consistent with a different or additional limiting factor (nutrients or CO2) and is worth reassessing."}
+
+# ============================== plant_algae_competition ==============================
+- {problem_id: plant_algae_competition, kind: confirmation_check, order: 0, text: "Note where the algae is concentrated (glass, substrate, specific leaves) and check your photoperiod length and fertilization consistency."}
+- {problem_id: plant_algae_competition, kind: immediate_action, order: 0, text: "Reduce photoperiod toward 6-8 hours/day and manually remove visible algae during the next water change."}
+- {problem_id: plant_algae_competition, kind: follow_up_action, order: 0, text: "Stabilize a consistent fertilization routine matched to your plant load -- swinging between excess and deficient nutrients is consistent with favoring algae over plants."}
+- {problem_id: plant_algae_competition, kind: avoid, order: 0, text: "Avoid leaving debris/detritus to accumulate and avoid running lighting on an inconsistent or excessive schedule."}
+- {problem_id: plant_algae_competition, kind: escalation_criterion, order: 0, text: "Algae rapidly smothering most plants despite a reduced photoperiod is consistent with an underlying nutrient imbalance needing a more deliberate fertilization routine, not just less light."}
+
+# ============================== plant_co2_deficiency ==============================
+- {problem_id: plant_co2_deficiency, kind: confirmation_check, order: 0, text: "If you inject CO2, check the bubble count and drop-checker color against your target; if you don't inject, compare your light level against what your plant species can use without it."}
+- {problem_id: plant_co2_deficiency, kind: immediate_action, order: 0, text: "If injecting, recalibrate the injection rate and check for fluctuation sources (timer, solenoid, tank leaks); if not injecting, consider reducing light to match available CO2 or adding low-tech CO2 supplementation."}
+- {problem_id: plant_co2_deficiency, kind: follow_up_action, order: 0, text: "Add a drop checker to visually monitor CO2 stability going forward, rather than relying on bubble count alone."}
+- {problem_id: plant_co2_deficiency, kind: avoid, order: 0, text: "Avoid running high light without either adequate CO2 or a correspondingly reduced photoperiod -- that mismatch is consistent with both poor growth and algae."}
+- {problem_id: plant_co2_deficiency, kind: escalation_criterion, order: 0, text: "Fish gasping or surface breathing alongside CO2 troubleshooting is a separate, urgent concern (possible overdose) and takes priority over adjusting for deficiency."}
+
+# ============================== plant_melt_transition ==============================
+- {problem_id: plant_melt_transition, kind: confirmation_check, order: 0, text: "Confirm when these plants were added or replanted, and check whether new growth emerging is healthier than the melting older leaves."}
+- {problem_id: plant_melt_transition, kind: immediate_action, order: 0, text: "Trim off melting/dying leaves to reduce decay load in the tank, but leave the healthy crown and any new growth intact."}
+- {problem_id: plant_melt_transition, kind: follow_up_action, order: 0, text: "Keep water quality and lighting stable and simply wait -- melt is usually self-resolving over one to a few weeks as new, tank-adapted growth takes over."}
+- {problem_id: plant_melt_transition, kind: avoid, order: 0, text: "Avoid reacting with a big fertilization or lighting change based on melt alone -- it's consistent with a normal adjustment period, not necessarily a deficiency or setup problem."}
+- {problem_id: plant_melt_transition, kind: escalation_criterion, order: 0, text: "No new growth at all after several weeks, or the entire plant (not just older leaves) disintegrating, is consistent with the plant failing to establish rather than ordinary melt."}
+
+# ============================== plant_root_or_planting_problem ==============================
+- {problem_id: plant_root_or_planting_problem, kind: confirmation_check, order: 0, text: "Gently check whether the plant is firmly anchored and inspect the roots/substrate immediately around it for rot, compaction, or a buried crown."}
+- {problem_id: plant_root_or_planting_problem, kind: immediate_action, order: 0, text: "Replant firmly at the correct depth (crown at or just above the substrate line for most species) and trim away any visibly rotten roots."}
+- {problem_id: plant_root_or_planting_problem, kind: follow_up_action, order: 0, text: "Check substrate depth and compaction more broadly, and consider root tabs near heavy root-feeders if the substrate is nutrient-poor."}
+- {problem_id: plant_root_or_planting_problem, kind: avoid, order: 0, text: "Avoid planting too shallowly (roots exposed) or too deeply (crown buried), and avoid heavily disturbing substrate near established root systems."}
+- {problem_id: plant_root_or_planting_problem, kind: escalation_criterion, order: 0, text: "Repeated uprooting or rot in multiple plants despite correct replanting is consistent with a broader substrate or flow problem worth investigating, not just one plant's placement."}
+
+# ============================== plant_livestock_damage ==============================
+- {problem_id: plant_livestock_damage, kind: confirmation_check, order: 0, text: "Watch feeding and normal activity for a few minutes to see whether any fish, snails, or shrimp are actively grazing on the plants."}
+- {problem_id: plant_livestock_damage, kind: immediate_action, order: 0, text: "If a specific species is identified as the grazer, consider moving it to a different tank, or protect the most vulnerable plants with less palatable/hardier species instead."}
+- {problem_id: plant_livestock_damage, kind: follow_up_action, order: 0, text: "Offer supplemental vegetable-based food (e.g. blanched vegetables, algae wafers) if the grazing is from hunger rather than simple foraging behavior."}
+- {problem_id: plant_livestock_damage, kind: avoid, order: 0, text: "Avoid stocking known heavy plant-grazers in a tank you intend to keep densely planted with soft-leaved species."}
+- {problem_id: plant_livestock_damage, kind: escalation_criterion, order: 0, text: "Rapid, severe defoliation across most plants is consistent with overstocked or particularly determined grazers and may need stocking changes, not just supplemental feeding."}

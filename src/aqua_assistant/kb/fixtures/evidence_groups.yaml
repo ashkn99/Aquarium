@@ -51,3 +51,19 @@
     A user's own "I'm overfeeding" self-report and observed leftover food
     are correlated evidence of the same underlying habit.
   correlation_discount: 0.5
+
+- id: plant_general_decline
+  name: General plant decline
+  description: >
+    Leaf yellowing, leaf browning/holes, and stunted new growth are the
+    least specific signs of a struggling plant -- nearly every plant
+    problem in this KB can cause them, so they are heavily discounted
+    when they co-occur.
+  correlation_discount: 0.5
+
+- id: root_planting_signs
+  name: Root/planting integrity signs
+  description: >
+    A floating/uprooted plant and visibly rotting roots are two facets of
+    the same underlying physical planting or root-health problem.
+  correlation_discount: 0.5

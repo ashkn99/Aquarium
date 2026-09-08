@@ -126,3 +126,64 @@
 
 - {id: aq_sudden_multiple_fish_death_yes, question_id: ask_sudden_multiple_fish_death, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.95}
 - {id: aq_sudden_multiple_fish_death_no, question_id: ask_sudden_multiple_fish_death, evidence_state: "false", label: "No", order: 1, default_confidence: 0.9}
+
+# --- plant health (batch 5) ---
+- {id: aq_leaf_yellowing_or_discoloration_yes, question_id: ask_leaf_yellowing_or_discoloration, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.85}
+- {id: aq_leaf_yellowing_or_discoloration_no, question_id: ask_leaf_yellowing_or_discoloration, evidence_state: "false", label: "No", order: 1, default_confidence: 0.8}
+
+- {id: aq_leaf_browning_or_holes_yes, question_id: ask_leaf_browning_or_holes, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.8}
+- {id: aq_leaf_browning_or_holes_no, question_id: ask_leaf_browning_or_holes, evidence_state: "false", label: "No", order: 1, default_confidence: 0.75}
+
+- {id: aq_stunted_or_slow_new_growth_yes, question_id: ask_stunted_or_slow_new_growth, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.75}
+- {id: aq_stunted_or_slow_new_growth_no, question_id: ask_stunted_or_slow_new_growth, evidence_state: "false", label: "No", order: 1, default_confidence: 0.7}
+
+- {id: aq_older_leaves_affected_first_yes, question_id: ask_older_leaves_affected_first, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.7}
+- {id: aq_older_leaves_affected_first_no, question_id: ask_older_leaves_affected_first, evidence_state: "false", label: "No", order: 1, default_confidence: 0.6}
+
+- {id: aq_new_growth_pale_or_distorted_yes, question_id: ask_new_growth_pale_or_distorted, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.7}
+- {id: aq_new_growth_pale_or_distorted_no, question_id: ask_new_growth_pale_or_distorted, evidence_state: "false", label: "No", order: 1, default_confidence: 0.6}
+
+- {id: aq_leggy_stretching_growth_yes, question_id: ask_leggy_stretching_growth, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.9}
+- {id: aq_leggy_stretching_growth_no, question_id: ask_leggy_stretching_growth, evidence_state: "false", label: "No", order: 1, default_confidence: 0.85}
+
+- {id: aq_visible_algae_growth_none, question_id: ask_visible_algae_growth, evidence_state: none, label: "None that I've noticed", order: 0, default_confidence: 0.8}
+- {id: aq_visible_algae_growth_mild, question_id: ask_visible_algae_growth, evidence_state: mild, label: "A mild/manageable amount", order: 1, default_confidence: 0.8}
+- {id: aq_visible_algae_growth_heavy, question_id: ask_visible_algae_growth, evidence_state: heavy, label: "Heavy -- visibly overtaking the tank", order: 2, default_confidence: 0.9}
+
+- {id: aq_old_leaves_melting_rapidly_yes, question_id: ask_old_leaves_melting_rapidly, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.9}
+- {id: aq_old_leaves_melting_rapidly_no, question_id: ask_old_leaves_melting_rapidly, evidence_state: "false", label: "No", order: 1, default_confidence: 0.85}
+
+- {id: aq_leaves_shredded_or_bitten_pattern_yes, question_id: ask_leaves_shredded_or_bitten_pattern, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.9}
+- {id: aq_leaves_shredded_or_bitten_pattern_no, question_id: ask_leaves_shredded_or_bitten_pattern, evidence_state: "false", label: "No", order: 1, default_confidence: 0.85}
+
+- {id: aq_plant_floating_or_uprooted_yes, question_id: ask_plant_floating_or_uprooted, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.9}
+- {id: aq_plant_floating_or_uprooted_no, question_id: ask_plant_floating_or_uprooted, evidence_state: "false", label: "No", order: 1, default_confidence: 0.85}
+
+- {id: aq_roots_visibly_rotting_or_blackened_yes, question_id: ask_roots_visibly_rotting_or_blackened, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.85}
+- {id: aq_roots_visibly_rotting_or_blackened_no, question_id: ask_roots_visibly_rotting_or_blackened, evidence_state: "false", label: "No", order: 1, default_confidence: 0.8}
+
+- {id: aq_low_light_duration_or_intensity_yes, question_id: ask_low_light_duration_or_intensity, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.7}
+- {id: aq_low_light_duration_or_intensity_no, question_id: ask_low_light_duration_or_intensity, evidence_state: "false", label: "No", order: 1, default_confidence: 0.7}
+
+- {id: aq_long_photoperiod_or_intense_lighting_yes, question_id: ask_long_photoperiod_or_intense_lighting, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.8}
+- {id: aq_long_photoperiod_or_intense_lighting_no, question_id: ask_long_photoperiod_or_intense_lighting, evidence_state: "false", label: "No", order: 1, default_confidence: 0.75}
+
+- {id: aq_co2_fluctuation_reported_yes, question_id: ask_co2_fluctuation_reported, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.75}
+- {id: aq_co2_fluctuation_reported_no, question_id: ask_co2_fluctuation_reported, evidence_state: "false", label: "No / not sure", order: 1, default_confidence: 0.6}
+
+- {id: aq_fertilization_dosing_reported_none, question_id: ask_fertilization_dosing_reported, evidence_state: none, label: "I don't dose fertilizer", order: 0, default_confidence: 0.85}
+- {id: aq_fertilization_dosing_reported_irregular, question_id: ask_fertilization_dosing_reported, evidence_state: irregular, label: "Occasionally / irregularly", order: 1, default_confidence: 0.75}
+- {id: aq_fertilization_dosing_reported_regular, question_id: ask_fertilization_dosing_reported, evidence_state: regular, label: "Regularly, on a schedule", order: 2, default_confidence: 0.85}
+
+- {id: aq_substrate_disturbed_or_shallow_for_roots_yes, question_id: ask_substrate_disturbed_or_shallow_for_roots, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.75}
+- {id: aq_substrate_disturbed_or_shallow_for_roots_no, question_id: ask_substrate_disturbed_or_shallow_for_roots, evidence_state: "false", label: "No", order: 1, default_confidence: 0.75}
+
+- {id: aq_herbivorous_livestock_present_yes, question_id: ask_herbivorous_livestock_present, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.85}
+- {id: aq_herbivorous_livestock_present_no, question_id: ask_herbivorous_livestock_present, evidence_state: "false", label: "No", order: 1, default_confidence: 0.85}
+
+- {id: aq_recently_planted_or_moved_yes, question_id: ask_recently_planted_or_moved, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.95}
+- {id: aq_recently_planted_or_moved_no, question_id: ask_recently_planted_or_moved, evidence_state: "false", label: "No", order: 1, default_confidence: 0.95}
+
+- {id: aq_num_plants_affected_single, question_id: ask_num_plants_affected, evidence_state: single, label: "Just one plant", order: 0, default_confidence: 0.9}
+- {id: aq_num_plants_affected_several, question_id: ask_num_plants_affected, evidence_state: several, label: "A few plants", order: 1, default_confidence: 0.85}
+- {id: aq_num_plants_affected_most, question_id: ask_num_plants_affected, evidence_state: most_or_all, label: "Most or all of the plants", order: 2, default_confidence: 0.85}
