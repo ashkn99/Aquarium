@@ -158,3 +158,139 @@
   effort_cost: 1.5
   reliability: 0.8
   rationale: Requires the user to have tested more than once and remembered/recorded results.
+
+# --- water quality (batch 1) ---
+- id: ask_used_untreated_tap_water
+  text: Did you add tap water without a dechlorinator/conditioner recently?
+  evidence_id: used_untreated_tap_water
+  priority_weight: 1.2
+  effort_cost: 1.0
+  reliability: 0.9
+  rationale: Direct causal-history question, highly diagnostic for chlorine/chloramine poisoning.
+- id: ask_water_change_frequency
+  text: How often do you typically do water changes?
+  evidence_id: water_change_frequency
+  priority_weight: 1.0
+  effort_cost: 1.0
+  reliability: 0.85
+- id: ask_copper_source_exposure
+  text: Have you used a copper-based medication recently, or does your tank have copper plumbing/fixtures/decor?
+  evidence_id: copper_source_exposure
+  priority_weight: 1.0
+  effort_cost: 1.5
+  reliability: 0.8
+  rationale: Requires the user to know their medication ingredients or plumbing, so reliability/effort are a bit lower than a simple observation.
+
+# --- environmental/system (batch 2) ---
+- id: ask_overstocking_reported
+  text: Does your tank feel overstocked -- more fish than your filter or tank size comfortably supports?
+  evidence_id: overstocking_reported
+  priority_weight: 1.0
+  effort_cost: 1.0
+  reliability: 0.7
+  rationale: Subjective self-assessment; reliability is lower than an objective reading since "appropriate stocking" varies by species and experience level.
+- id: ask_planted_tank_with_co2_injection
+  text: Is this a planted tank running injected CO2?
+  evidence_id: planted_tank_with_co2_injection
+  priority_weight: 1.1
+  effort_cost: 1.0
+  reliability: 0.95
+- id: ask_visible_debris_or_detritus_buildup
+  text: Do you see debris or detritus building up in one specific area of the tank?
+  evidence_id: visible_debris_or_detritus_buildup
+  priority_weight: 0.9
+  effort_cost: 1.0
+  reliability: 0.8
+
+# --- infectious/parasitic disease (batch 3) ---
+- id: ask_cottony_fuzzy_growth
+  text: Do you see a cottony or fuzzy grey-white growth on the body or fins?
+  evidence_id: cottony_fuzzy_growth
+  priority_weight: 1.2
+  effort_cost: 1.0
+  reliability: 0.85
+- id: ask_gold_rust_dust_coating
+  text: Does the fish have a fine gold or rust-colored dusty coating on the skin?
+  evidence_id: gold_rust_dust_coating
+  priority_weight: 1.2
+  effort_cost: 1.5
+  reliability: 0.75
+  rationale: A fine dusty coating is harder to spot than discrete spots or cottony growths, so reliability is lower and effort (often needs a flashlight at an angle) a bit higher.
+- id: ask_white_fuzzy_patches_around_mouth
+  text: Do you see white or grey fuzzy patches specifically around the mouth?
+  evidence_id: white_fuzzy_patches_around_mouth
+  priority_weight: 1.2
+  effort_cost: 1.0
+  reliability: 0.85
+- id: ask_abnormal_buoyancy_or_swimming
+  text: Is the fish floating, sinking, or swimming sideways/upside-down abnormally?
+  evidence_id: abnormal_buoyancy_or_swimming
+  priority_weight: 1.2
+  effort_cost: 1.0
+  reliability: 0.9
+- id: ask_pinecone_scales
+  text: Do the scales stand out from the body like a pinecone?
+  evidence_id: pinecone_scales
+  priority_weight: 1.1
+  effort_cost: 1.0
+  reliability: 0.85
+- id: ask_bloated_body
+  text: Is the fish's body noticeably bloated or swollen?
+  evidence_id: bloated_body
+  priority_weight: 1.0
+  effort_cost: 1.0
+  reliability: 0.85
+
+# --- husbandry/behavior (batch 4) ---
+- id: ask_torn_or_missing_fins_from_biting
+  text: Are chunks of fin torn or missing, rather than ragged/eroding at the edges?
+  evidence_id: torn_or_missing_fins_from_biting
+  priority_weight: 1.0
+  effort_cost: 1.0
+  reliability: 0.75
+  rationale: Distinguishing "bitten" from "frayed/eroding" damage takes a closer look than a simple yes/no on fin condition.
+- id: ask_chasing_or_nipping_observed
+  text: Have you seen another fish chasing or nipping at this one?
+  evidence_id: chasing_or_nipping_observed
+  priority_weight: 1.1
+  effort_cost: 1.0
+  reliability: 0.85
+- id: ask_overfeeding_reported
+  text: Do you feed more than your fish finish within a couple of minutes?
+  evidence_id: overfeeding_reported
+  priority_weight: 1.0
+  effort_cost: 1.0
+  reliability: 0.75
+  rationale: Self-assessment of "how much is too much" is somewhat subjective.
+- id: ask_uneaten_food_accumulating
+  text: Do you see uneaten food building up in the tank?
+  evidence_id: uneaten_food_accumulating
+  priority_weight: 1.0
+  effort_cost: 1.0
+  reliability: 0.85
+- id: ask_improper_acclimation_reported
+  text: Did you add this fish without a slow drip/float acclimation process?
+  evidence_id: improper_acclimation_reported
+  priority_weight: 1.0
+  effort_cost: 1.0
+  reliability: 0.8
+- id: ask_insufficient_hiding_places
+  text: Does the tank have little to no cover, decor, or hiding places?
+  evidence_id: insufficient_hiding_places
+  priority_weight: 0.9
+  effort_cost: 1.0
+  reliability: 0.85
+- id: ask_color_fading_or_pale
+  text: Has the fish's normal coloration noticeably faded or gone pale?
+  evidence_id: color_fading_or_pale
+  priority_weight: 0.9
+  effort_cost: 1.0
+  reliability: 0.7
+  rationale: Requires the user to know what "normal" coloration looks like for this fish, so reliability is a bit lower.
+- id: ask_sudden_multiple_fish_death
+  text: Have multiple fish died suddenly, close together in time?
+  evidence_id: sudden_multiple_fish_death
+  priority_weight: 1.3
+  effort_cost: 1.0
+  reliability: 0.95
+  rationale: High priority given its safety relevance, even though its direct diagnostic information gain is modest by design.

@@ -37,3 +37,33 @@
   severity: caution
   message: "Gasping or surface breathing can signal a fast-moving emergency (low oxygen, an ammonia/nitrite spike, or overheating)."
   escalation_text: "Test dissolved oxygen, ammonia, nitrite, and temperature now, and add aeration as a precaution while you investigate."
+
+- id: severe_chlorine_exposure
+  description: Untreated tap water used alongside visible respiratory distress.
+  all_of:
+    - {evidence_id: used_untreated_tap_water, equals_state: "true"}
+  any_of:
+    - {evidence_id: gasping, equals_state: "true"}
+    - {evidence_id: surface_breathing, equals_state: "true"}
+  severity: urgent
+  message: "Untreated tap water plus visible respiratory distress is consistent with acute chlorine/chloramine poisoning, which can be fast-acting."
+  escalation_text: "Do an immediate water change with properly dechlorinated water and dose the whole tank with a dechlorinator/conditioner right away."
+
+- id: co2_injection_excess_active
+  description: CO2-injected planted tank with visible respiratory distress.
+  all_of:
+    - {evidence_id: planted_tank_with_co2_injection, equals_state: "true"}
+  any_of:
+    - {evidence_id: gasping, equals_state: "true"}
+    - {evidence_id: surface_breathing, equals_state: "true"}
+  severity: urgent
+  message: "CO2 injection plus visible respiratory distress is consistent with a CO2 overdose, a well-known cause of fast overnight fish loss in planted tanks."
+  escalation_text: "Turn off CO2 injection immediately and increase surface agitation/aeration to off-gas excess CO2."
+
+- id: mass_mortality_event
+  description: Multiple fish have died suddenly, close together in time.
+  all_of:
+    - {evidence_id: sudden_multiple_fish_death, equals_state: "true"}
+  severity: urgent
+  message: "Multiple fish dying suddenly and close together in time is consistent with an acute, tank-wide emergency, regardless of which specific cause is most likely yet."
+  escalation_text: "Test ammonia, nitrite, dissolved oxygen, and temperature immediately; do a partial water change with dechlorinated water; do not add any new fish until the cause is identified."

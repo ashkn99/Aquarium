@@ -51,6 +51,18 @@ AMMONIA_CASE_ANSWERS: dict[str, tuple[str, object]] = {
     "recent_water_change_large": ("state", "false"),
     "filter_disrupted": ("state", "true"),
     "ph_swings_reported": ("state", "false"),
+    "used_untreated_tap_water": ("state", "false"),
+    "water_change_frequency": ("state", "regular"),
+    "copper_source_exposure": ("state", "false"),
+    "overstocking_reported": ("state", "false"),
+    "planted_tank_with_co2_injection": ("state", "false"),
+    "visible_debris_or_detritus_buildup": ("state", "false"),
+    "cottony_fuzzy_growth": ("state", "false"),
+    "gold_rust_dust_coating": ("state", "false"),
+    "white_fuzzy_patches_around_mouth": ("state", "false"),
+    "abnormal_buoyancy_or_swimming": ("state", "false"),
+    "pinecone_scales": ("state", "false"),
+    "bloated_body": ("state", "false"),
 }
 
 

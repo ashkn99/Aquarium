@@ -61,3 +61,68 @@
 - {id: aq_onset_timing_sudden, question_id: ask_onset_timing, evidence_state: sudden, label: "Suddenly, within hours", order: 0, default_confidence: 0.85}
 - {id: aq_onset_timing_gradual, question_id: ask_onset_timing, evidence_state: gradual, label: "Gradually, over a few days", order: 1, default_confidence: 0.8}
 - {id: aq_onset_timing_chronic, question_id: ask_onset_timing, evidence_state: chronic, label: "Slowly, over weeks", order: 2, default_confidence: 0.8}
+
+# --- water quality (batch 1) ---
+- {id: aq_used_untreated_tap_water_yes, question_id: ask_used_untreated_tap_water, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.9}
+- {id: aq_used_untreated_tap_water_no, question_id: ask_used_untreated_tap_water, evidence_state: "false", label: "No", order: 1, default_confidence: 0.9}
+
+- {id: aq_water_change_frequency_regular, question_id: ask_water_change_frequency, evidence_state: regular, label: "Regularly (weekly or more often)", order: 0, default_confidence: 0.85}
+- {id: aq_water_change_frequency_infrequent, question_id: ask_water_change_frequency, evidence_state: infrequent, label: "Occasionally (every few weeks)", order: 1, default_confidence: 0.8}
+- {id: aq_water_change_frequency_rare, question_id: ask_water_change_frequency, evidence_state: rare, label: "Rarely or almost never", order: 2, default_confidence: 0.85}
+
+- {id: aq_copper_source_exposure_yes, question_id: ask_copper_source_exposure, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.8}
+- {id: aq_copper_source_exposure_no, question_id: ask_copper_source_exposure, evidence_state: "false", label: "No / not sure", order: 1, default_confidence: 0.6}
+
+# --- environmental/system (batch 2) ---
+- {id: aq_overstocking_reported_yes, question_id: ask_overstocking_reported, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.7}
+- {id: aq_overstocking_reported_no, question_id: ask_overstocking_reported, evidence_state: "false", label: "No", order: 1, default_confidence: 0.7}
+
+- {id: aq_planted_tank_with_co2_injection_yes, question_id: ask_planted_tank_with_co2_injection, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.95}
+- {id: aq_planted_tank_with_co2_injection_no, question_id: ask_planted_tank_with_co2_injection, evidence_state: "false", label: "No", order: 1, default_confidence: 0.95}
+
+- {id: aq_visible_debris_or_detritus_buildup_yes, question_id: ask_visible_debris_or_detritus_buildup, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.85}
+- {id: aq_visible_debris_or_detritus_buildup_no, question_id: ask_visible_debris_or_detritus_buildup, evidence_state: "false", label: "No", order: 1, default_confidence: 0.8}
+
+# --- infectious/parasitic disease (batch 3) ---
+- {id: aq_cottony_fuzzy_growth_yes, question_id: ask_cottony_fuzzy_growth, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.9}
+- {id: aq_cottony_fuzzy_growth_no, question_id: ask_cottony_fuzzy_growth, evidence_state: "false", label: "No", order: 1, default_confidence: 0.85}
+
+- {id: aq_gold_rust_dust_coating_yes, question_id: ask_gold_rust_dust_coating, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.8}
+- {id: aq_gold_rust_dust_coating_no, question_id: ask_gold_rust_dust_coating, evidence_state: "false", label: "No", order: 1, default_confidence: 0.7}
+
+- {id: aq_white_fuzzy_patches_around_mouth_yes, question_id: ask_white_fuzzy_patches_around_mouth, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.9}
+- {id: aq_white_fuzzy_patches_around_mouth_no, question_id: ask_white_fuzzy_patches_around_mouth, evidence_state: "false", label: "No", order: 1, default_confidence: 0.85}
+
+- {id: aq_abnormal_buoyancy_or_swimming_yes, question_id: ask_abnormal_buoyancy_or_swimming, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.9}
+- {id: aq_abnormal_buoyancy_or_swimming_no, question_id: ask_abnormal_buoyancy_or_swimming, evidence_state: "false", label: "No", order: 1, default_confidence: 0.9}
+
+- {id: aq_pinecone_scales_yes, question_id: ask_pinecone_scales, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.9}
+- {id: aq_pinecone_scales_no, question_id: ask_pinecone_scales, evidence_state: "false", label: "No", order: 1, default_confidence: 0.85}
+
+- {id: aq_bloated_body_yes, question_id: ask_bloated_body, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.9}
+- {id: aq_bloated_body_no, question_id: ask_bloated_body, evidence_state: "false", label: "No", order: 1, default_confidence: 0.85}
+
+# --- husbandry/behavior (batch 4) ---
+- {id: aq_torn_or_missing_fins_from_biting_yes, question_id: ask_torn_or_missing_fins_from_biting, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.8}
+- {id: aq_torn_or_missing_fins_from_biting_no, question_id: ask_torn_or_missing_fins_from_biting, evidence_state: "false", label: "No", order: 1, default_confidence: 0.75}
+
+- {id: aq_chasing_or_nipping_observed_yes, question_id: ask_chasing_or_nipping_observed, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.9}
+- {id: aq_chasing_or_nipping_observed_no, question_id: ask_chasing_or_nipping_observed, evidence_state: "false", label: "No", order: 1, default_confidence: 0.8}
+
+- {id: aq_overfeeding_reported_yes, question_id: ask_overfeeding_reported, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.75}
+- {id: aq_overfeeding_reported_no, question_id: ask_overfeeding_reported, evidence_state: "false", label: "No", order: 1, default_confidence: 0.75}
+
+- {id: aq_uneaten_food_accumulating_yes, question_id: ask_uneaten_food_accumulating, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.85}
+- {id: aq_uneaten_food_accumulating_no, question_id: ask_uneaten_food_accumulating, evidence_state: "false", label: "No", order: 1, default_confidence: 0.8}
+
+- {id: aq_improper_acclimation_reported_yes, question_id: ask_improper_acclimation_reported, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.85}
+- {id: aq_improper_acclimation_reported_no, question_id: ask_improper_acclimation_reported, evidence_state: "false", label: "No", order: 1, default_confidence: 0.8}
+
+- {id: aq_insufficient_hiding_places_yes, question_id: ask_insufficient_hiding_places, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.85}
+- {id: aq_insufficient_hiding_places_no, question_id: ask_insufficient_hiding_places, evidence_state: "false", label: "No", order: 1, default_confidence: 0.8}
+
+- {id: aq_color_fading_or_pale_yes, question_id: ask_color_fading_or_pale, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.75}
+- {id: aq_color_fading_or_pale_no, question_id: ask_color_fading_or_pale, evidence_state: "false", label: "No", order: 1, default_confidence: 0.7}
+
+- {id: aq_sudden_multiple_fish_death_yes, question_id: ask_sudden_multiple_fish_death, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.95}
+- {id: aq_sudden_multiple_fish_death_no, question_id: ask_sudden_multiple_fish_death, evidence_state: "false", label: "No", order: 1, default_confidence: 0.9}

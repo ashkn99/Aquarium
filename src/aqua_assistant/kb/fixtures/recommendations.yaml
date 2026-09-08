@@ -62,3 +62,113 @@
 - {problem_id: new_tank_syndrome, kind: follow_up_action, order: 0, text: "Test ammonia, nitrite, and nitrate every few days and track the trend -- a completed cycle shows both ammonia and nitrite at zero with nitrate present."}
 - {problem_id: new_tank_syndrome, kind: avoid, order: 0, text: "Avoid adding more fish until the tank has fully cycled, since additional bioload is consistent with prolonging the problem."}
 - {problem_id: new_tank_syndrome, kind: escalation_criterion, order: 0, text: "Fish in visible distress in a tank under 30 days old is consistent with a cycling crisis and may need daily water changes until parameters stabilize."}
+
+# ============================== chlorine_chloramine_poisoning ==============================
+- {problem_id: chlorine_chloramine_poisoning, kind: confirmation_check, order: 0, text: "Confirm whether the most recent water added was tap water treated with a dechlorinator/conditioner -- if not, that's the most likely explanation."}
+- {problem_id: chlorine_chloramine_poisoning, kind: immediate_action, order: 0, text: "Do an immediate water change using properly dechlorinated water, and dose the whole tank with an extra measure of dechlorinator/conditioner to neutralize any remaining chlorine or chloramine."}
+- {problem_id: chlorine_chloramine_poisoning, kind: immediate_action, order: 1, text: "Increase surface agitation/aeration -- chlorine exposure damages gill tissue, so fish may need extra oxygen while they recover."}
+- {problem_id: chlorine_chloramine_poisoning, kind: follow_up_action, order: 0, text: "Always treat tap water with a dechlorinator before it touches the tank, and confirm your conditioner neutralizes chloramine specifically (not just chlorine), since some municipal supplies use chloramine."}
+- {problem_id: chlorine_chloramine_poisoning, kind: avoid, order: 0, text: "Avoid topping off or changing water with untreated tap water, even for small amounts."}
+- {problem_id: chlorine_chloramine_poisoning, kind: escalation_criterion, order: 0, text: "Multiple fish gasping or showing red, inflamed gills right after a water change is consistent with a fast-moving chemical burn and needs immediate dilution/dechlorination."}
+
+# ============================== chronic_nitrate_stress ==============================
+- {problem_id: chronic_nitrate_stress, kind: confirmation_check, order: 0, text: "Test nitrate directly, and think back to how long it's been since your last water change."}
+- {problem_id: chronic_nitrate_stress, kind: immediate_action, order: 0, text: "Do a moderate water change (25-30%) to bring nitrate down -- avoid an extremely large change if nitrate has been high for a long time, since a big swing can itself stress fish."}
+- {problem_id: chronic_nitrate_stress, kind: follow_up_action, order: 0, text: "Establish a regular water-change schedule matched to your stocking level, and test nitrate periodically to catch buildup before it becomes chronic."}
+- {problem_id: chronic_nitrate_stress, kind: avoid, order: 0, text: "Avoid overfeeding and avoid leaving a heavily stocked tank on an infrequent water-change schedule."}
+- {problem_id: chronic_nitrate_stress, kind: escalation_criterion, order: 0, text: "Very high nitrate combined with lethargy or appetite loss across multiple fish is consistent with a chronic condition needing a sustained maintenance-schedule fix, not just a one-time water change."}
+
+# ============================== copper_heavy_metal_toxicity ==============================
+- {problem_id: copper_heavy_metal_toxicity, kind: confirmation_check, order: 0, text: "Check whether any recently used medication contains copper (check the label), and consider whether your water source or decor could introduce copper."}
+- {problem_id: copper_heavy_metal_toxicity, kind: immediate_action, order: 0, text: "Do an immediate water change and, if available, use a copper-removing filter media (activated carbon or a copper-specific resin) to pull remaining copper out of the water."}
+- {problem_id: copper_heavy_metal_toxicity, kind: follow_up_action, order: 0, text: "Identify and remove the copper source (stop the medication, check plumbing/fixtures) before restocking or adding new fish."}
+- {problem_id: copper_heavy_metal_toxicity, kind: avoid, order: 0, text: "Avoid using copper-based medications directly in a display tank with sensitive species; treat in a separate quarantine/hospital tank instead where practical."}
+- {problem_id: copper_heavy_metal_toxicity, kind: escalation_criterion, order: 0, text: "Sudden distress across the whole tank shortly after adding a new medication is consistent with a toxic reaction and warrants an immediate water change."}
+
+# ============================== overstocking_chronic ==============================
+- {problem_id: overstocking_chronic, kind: confirmation_check, order: 0, text: "Count your fish and compare against a stocking guideline for your tank size and filter's rated capacity, and check whether nitrate has been trending upward over time."}
+- {problem_id: overstocking_chronic, kind: immediate_action, order: 0, text: "Increase water-change frequency or volume temporarily to bring nitrate and general bioload pressure down while you address the root cause."}
+- {problem_id: overstocking_chronic, kind: follow_up_action, order: 0, text: "Consider rehoming some fish or upgrading filtration capacity to bring stocking in line with what the tank can comfortably support long-term."}
+- {problem_id: overstocking_chronic, kind: avoid, order: 0, text: "Avoid adding more fish without first upgrading filtration or tank size, or confirming the tank has spare capacity."}
+- {problem_id: overstocking_chronic, kind: escalation_criterion, order: 0, text: "Chronic stress signs (lethargy, appetite loss) across most fish in a heavily stocked tank is consistent with capacity being exceeded and needs a stocking-level fix, not just water changes."}
+
+# ============================== co2_injection_excess ==============================
+- {problem_id: co2_injection_excess, kind: confirmation_check, order: 0, text: "Check whether symptoms are worse overnight or right before lights-on, and check your CO2 injection rate/bubble count against your tank size."}
+- {problem_id: co2_injection_excess, kind: immediate_action, order: 0, text: "Turn off CO2 injection immediately and increase surface agitation to off-gas excess CO2 from the water."}
+- {problem_id: co2_injection_excess, kind: follow_up_action, order: 0, text: "Recalibrate the CO2 injection rate, add a drop checker to visually monitor CO2 levels, and make sure CO2 shuts off well before lights-off."}
+- {problem_id: co2_injection_excess, kind: avoid, order: 0, text: "Avoid running CO2 injection without a drop checker or a timer/solenoid controlling when it doses."}
+- {problem_id: co2_injection_excess, kind: escalation_criterion, order: 0, text: "Multiple fish gasping specifically overnight or right before lights-on in a CO2-injected planted tank is consistent with a CO2 overdose and needs immediate aeration."}
+
+# ============================== poor_circulation_dead_spot ==============================
+- {problem_id: poor_circulation_dead_spot, kind: confirmation_check, order: 0, text: "Look for areas of the tank with visible detritus buildup, reduced flow, or where fish seem to avoid or struggle."}
+- {problem_id: poor_circulation_dead_spot, kind: immediate_action, order: 0, text: "Manually stir/vacuum the affected area to remove built-up debris, and reposition or add a powerhead to improve circulation there."}
+- {problem_id: poor_circulation_dead_spot, kind: follow_up_action, order: 0, text: "Rearrange decor or substrate to eliminate the low-flow pocket, and check filter output/placement for adequate tank-wide coverage."}
+- {problem_id: poor_circulation_dead_spot, kind: avoid, order: 0, text: "Avoid dense decor arrangements that block water movement in corners or behind large ornaments."}
+- {problem_id: poor_circulation_dead_spot, kind: escalation_criterion, order: 0, text: "A specific area accumulating heavy detritus alongside localized fish distress is consistent with a dead spot and should be addressed directly, since a water test taken elsewhere in the tank can miss the local problem entirely."}
+
+# ============================== fungal_infection_saprolegnia ==============================
+- {problem_id: fungal_infection_saprolegnia, kind: confirmation_check, order: 0, text: "Look closely for a cottony or fuzzy grey-white growth, and check for an underlying injury, wound, or stressor the fungus may be secondary to."}
+- {problem_id: fungal_infection_saprolegnia, kind: immediate_action, order: 0, text: "Treat with an antifungal medication appropriate for your species, following the product's instructions."}
+- {problem_id: fungal_infection_saprolegnia, kind: immediate_action, order: 1, text: "Improve water quality (test and correct ammonia/nitrite/nitrate), since fungal infections are usually secondary to a stressed or weakened fish."}
+- {problem_id: fungal_infection_saprolegnia, kind: follow_up_action, order: 0, text: "Isolate the affected fish in a hospital tank if possible, and identify/address whatever injury or stress likely triggered the infection."}
+- {problem_id: fungal_infection_saprolegnia, kind: avoid, order: 0, text: "Avoid handling the fish more than necessary and avoid leaving decaying organic matter (uneaten food, dead plant leaves) in the tank, which fungus can spread from."}
+- {problem_id: fungal_infection_saprolegnia, kind: escalation_criterion, order: 0, text: "Rapidly spreading growth or a fish that stops eating alongside visible fungus is consistent with a worsening infection needing prompt treatment."}
+
+# ============================== velvet_disease_oodinium ==============================
+- {problem_id: velvet_disease_oodinium, kind: confirmation_check, order: 0, text: "Shine a flashlight at an angle across the fish in a darkened room -- the fine gold/rust dust is often easier to see that way than under normal tank lighting."}
+- {problem_id: velvet_disease_oodinium, kind: immediate_action, order: 0, text: "Treat with a medication labeled for Oodinium/velvet (often copper-based or a specific antiparasitic), following the product's species-appropriate instructions."}
+- {problem_id: velvet_disease_oodinium, kind: immediate_action, order: 1, text: "Consider dimming tank lighting during treatment, since the parasite relies on light for part of its life cycle."}
+- {problem_id: velvet_disease_oodinium, kind: follow_up_action, order: 0, text: "Continue treatment for the full recommended course, even after the coating fades, since the parasite has a free-swimming stage that can re-infect fish."}
+- {problem_id: velvet_disease_oodinium, kind: avoid, order: 0, text: "Avoid copper-based treatments in tanks with copper-sensitive livestock (invertebrates, scaleless fish) without confirming species safety first."}
+- {problem_id: velvet_disease_oodinium, kind: escalation_criterion, order: 0, text: "Rapid spread across most fish or breathing difficulty alongside the dusty coating is consistent with advanced gill involvement and needs prompt treatment."}
+
+# ============================== columnaris_cotton_mouth ==============================
+- {problem_id: columnaris_cotton_mouth, kind: confirmation_check, order: 0, text: "Look closely at the mouth area for white/grey fuzzy patches, and note how quickly it's progressing -- columnaris is known for spreading fast."}
+- {problem_id: columnaris_cotton_mouth, kind: immediate_action, order: 0, text: "Treat with an antibacterial medication appropriate for columnaris and your species as soon as possible, given how quickly this infection can progress."}
+- {problem_id: columnaris_cotton_mouth, kind: immediate_action, order: 1, text: "Improve water quality and reduce stressors immediately, since columnaris often takes hold fastest in already-stressed fish."}
+- {problem_id: columnaris_cotton_mouth, kind: follow_up_action, order: 0, text: "Isolate affected fish in a hospital tank where practical, since columnaris can spread between tankmates."}
+- {problem_id: columnaris_cotton_mouth, kind: avoid, order: 0, text: "Avoid delaying treatment -- columnaris is notorious for progressing from first signs to serious illness faster than most other bacterial infections."}
+- {problem_id: columnaris_cotton_mouth, kind: escalation_criterion, order: 0, text: "Rapid worsening over a day or two, or the patches spreading beyond the mouth, is consistent with an aggressive case and needs urgent treatment."}
+
+# ============================== swim_bladder_disorder ==============================
+- {problem_id: swim_bladder_disorder, kind: confirmation_check, order: 0, text: "Watch how the fish is floating/sinking/tilting, and think back over recent feeding -- overfeeding or gulping air with food is a very common trigger."}
+- {problem_id: swim_bladder_disorder, kind: immediate_action, order: 0, text: "Skip feeding for 24-48 hours, then offer a skinned, cooked pea (or a comparable fibrous food for your species) to help relieve possible constipation."}
+- {problem_id: swim_bladder_disorder, kind: follow_up_action, order: 0, text: "Switch to a sinking food or pre-soak floating pellets before feeding, and avoid overfeeding, since trapped air/overeating is a very common underlying cause."}
+- {problem_id: swim_bladder_disorder, kind: avoid, order: 0, text: "Avoid assuming this is contagious or treating the whole tank with medication -- it is usually an individual diet/injury issue, not an infection."}
+- {problem_id: swim_bladder_disorder, kind: escalation_criterion, order: 0, text: "A fish that can no longer feed itself because of severe buoyancy loss, or that shows no improvement after a few days of fasting, is consistent with a more serious underlying issue (injury, organ problem) and may not resolve on its own."}
+
+# ============================== dropsy_systemic ==============================
+- {problem_id: dropsy_systemic, kind: confirmation_check, order: 0, text: "Look at the fish from above for a swollen belly and check whether the scales are starting to stand out from the body like a pinecone."}
+- {problem_id: dropsy_systemic, kind: immediate_action, order: 0, text: "Isolate the fish in a hospital tank and treat with a broad-spectrum antibacterial medication, since dropsy is usually a symptom of an underlying bacterial/organ infection rather than a disease in itself."}
+- {problem_id: dropsy_systemic, kind: immediate_action, order: 1, text: "Keep water quality pristine with frequent small water changes to reduce additional stress on already-compromised kidneys."}
+- {problem_id: dropsy_systemic, kind: follow_up_action, order: 0, text: "Monitor closely and be prepared for a guarded prognosis -- by the time pinecone scales are visible, the underlying organ damage is often advanced."}
+- {problem_id: dropsy_systemic, kind: avoid, order: 0, text: "Avoid delaying action once bloating is noticed; waiting for pinecone scales to confirm the diagnosis reduces the chance of a successful outcome."}
+- {problem_id: dropsy_systemic, kind: escalation_criterion, order: 0, text: "Visible pinecone scales combined with severe lethargy and appetite loss is consistent with advanced systemic illness and carries a guarded prognosis even with treatment -- consider consulting an aquatic vet or experienced local fish store."}
+
+# ============================== aggression_bullying_stress ==============================
+- {problem_id: aggression_bullying_stress, kind: confirmation_check, order: 0, text: "Watch the tank for a few minutes at different times of day for chasing, nipping, or one fish consistently avoiding another."}
+- {problem_id: aggression_bullying_stress, kind: immediate_action, order: 0, text: "Separate the aggressor (or the victim, if easier) into a divided section or a separate tank to stop ongoing injury."}
+- {problem_id: aggression_bullying_stress, kind: follow_up_action, order: 0, text: "Add more decor, plants, or line-of-sight breaks to reduce territorial conflict, and re-evaluate whether the current mix of species/sizes is compatible."}
+- {problem_id: aggression_bullying_stress, kind: avoid, order: 0, text: "Avoid mixing known-incompatible species or temperaments, and avoid adding just one or two of a schooling species that needs larger numbers to distribute aggression."}
+- {problem_id: aggression_bullying_stress, kind: escalation_criterion, order: 0, text: "Open wounds or a fish being relentlessly chased and unable to eat is consistent with a situation needing immediate separation, not just monitoring."}
+
+# ============================== overfeeding_poor_diet ==============================
+- {problem_id: overfeeding_poor_diet, kind: confirmation_check, order: 0, text: "Watch a feeding and time how long it takes for food to be fully eaten -- more than about 2 minutes of leftover food is a common sign of overfeeding."}
+- {problem_id: overfeeding_poor_diet, kind: immediate_action, order: 0, text: "Remove any uneaten food promptly, and reduce the amount fed at each meal."}
+- {problem_id: overfeeding_poor_diet, kind: follow_up_action, order: 0, text: "Feed smaller amounts once or twice a day rather than one large feeding, and match food type/amount to what your species actually needs."}
+- {problem_id: overfeeding_poor_diet, kind: avoid, order: 0, text: "Avoid feeding out of habit or on a fixed large portion regardless of how much is actually being eaten."}
+- {problem_id: overfeeding_poor_diet, kind: escalation_criterion, order: 0, text: "Rising ammonia or nitrate alongside consistently uneaten food is consistent with overfeeding actively degrading water quality and needs an immediate feeding-habit change, not just a water change."}
+
+# ============================== acclimation_transport_stress ==============================
+- {problem_id: acclimation_transport_stress, kind: confirmation_check, order: 0, text: "Confirm how the fish was acclimated when added -- a slow drip or float process over 20-60 minutes is the standard recommendation."}
+- {problem_id: acclimation_transport_stress, kind: immediate_action, order: 0, text: "Minimize further handling and keep the lights dim for the newly added fish to reduce additional stress while it settles in."}
+- {problem_id: acclimation_transport_stress, kind: follow_up_action, order: 0, text: "For future additions, use a slow drip or float acclimation process matching both temperature and water chemistry gradually."}
+- {problem_id: acclimation_transport_stress, kind: avoid, order: 0, text: "Avoid dumping a new fish directly into the tank from the bag/container without acclimating it first."}
+- {problem_id: acclimation_transport_stress, kind: escalation_criterion, order: 0, text: "A newly added fish showing severe distress or not recovering within a day or two is consistent with a more serious shock event and may need closer monitoring or isolation."}
+
+# ============================== inadequate_hiding_or_environment_stress ==============================
+- {problem_id: inadequate_hiding_or_environment_stress, kind: confirmation_check, order: 0, text: "Look at the tank from the fish's perspective -- is there anywhere to retreat, feel secure, or establish a territory?"}
+- {problem_id: inadequate_hiding_or_environment_stress, kind: immediate_action, order: 0, text: "Add decor, plants (real or artificial), or other cover to give fish places to retreat and feel secure."}
+- {problem_id: inadequate_hiding_or_environment_stress, kind: follow_up_action, order: 0, text: "Research the specific cover/territory needs of your species -- some need dense planting, others need caves or open swimming space with occasional cover."}
+- {problem_id: inadequate_hiding_or_environment_stress, kind: avoid, order: 0, text: "Avoid a completely bare tank long-term, even temporarily during setup, since chronic exposure stress can compound with other problems."}
+- {problem_id: inadequate_hiding_or_environment_stress, kind: escalation_criterion, order: 0, text: "Persistent pale coloration and lethargy in a sparsely decorated tank, without any other identified cause, is consistent with chronic environmental stress and warrants improving the setup rather than continuing to test water parameters alone."}

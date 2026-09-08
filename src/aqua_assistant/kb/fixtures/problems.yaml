@@ -72,3 +72,244 @@
   prior_weight: 0.7
   severity_default: caution
   rationale: A very common root cause underlying many new-hobbyist water-quality problems.
+
+# ============================== water quality (batch 1) ==============================
+
+- id: chlorine_chloramine_poisoning
+  name: Chlorine/chloramine poisoning
+  category: water_quality
+  description: >
+    Acute toxicity from tap-water treatment chemicals (chlorine or
+    chloramine) that were not neutralized with a dechlorinator before
+    entering the tank.
+  prior_weight: 0.6
+  severity_default: urgent
+  rationale: >
+    A common acute cause of sudden whole-tank distress right after a
+    water change, especially for new fishkeepers who forget to
+    dechlorinate; symptoms overlap with ammonia toxicity but the causal
+    history (untreated tap water) is distinct and highly diagnostic.
+  source: Standard freshwater aquarium husbandry references.
+
+- id: chronic_nitrate_stress
+  name: Chronic nitrate stress (old tank syndrome)
+  category: water_quality
+  description: >
+    Long-term accumulation of nitrate from infrequent water changes and
+    heavy bioload, causing gradual, low-grade stress rather than an
+    acute crisis.
+  prior_weight: 0.5
+  severity_default: caution
+  rationale: >
+    A common, easily overlooked cause of chronic poor fish condition in
+    established, under-maintained tanks -- distinct from the acute
+    ammonia/nitrite spikes of new_tank_syndrome, which is about an
+    immature cycle rather than accumulated neglect.
+  source: Standard freshwater aquarium husbandry references.
+
+- id: copper_heavy_metal_toxicity
+  name: Copper/heavy metal toxicity
+  category: water_quality
+  description: >
+    Toxicity from copper or other heavy metals, typically introduced via
+    a copper-based medication, old plumbing/fixtures, or contaminated
+    decor.
+  prior_weight: 0.3
+  severity_default: urgent
+  rationale: >
+    Less common than the other water-quality problems but important to
+    rule out given how easily it's introduced (many general-purpose fish
+    medications contain copper) and how toxic it is even at low doses.
+  source: Standard freshwater aquarium husbandry references.
+
+# ============================== environmental/system (batch 2) ==============================
+
+- id: overstocking_chronic
+  name: Chronic overstocking
+  category: environmental
+  description: >
+    An established tank carrying more fish than its filtration/water
+    volume can comfortably support, producing gradual, low-grade stress
+    from accumulated bioload rather than an acute spike.
+  prior_weight: 0.4
+  severity_default: caution
+  rationale: >
+    Distinct from new_tank_syndrome (an immature cycle) and
+    chronic_nitrate_stress (neglected maintenance) -- this is specifically
+    about fish count exceeding capacity in an otherwise well-maintained,
+    fully cycled tank.
+  source: Standard freshwater aquarium husbandry references.
+
+- id: co2_injection_excess
+  name: CO2 injection overdose
+  category: environmental
+  description: >
+    In a planted tank running injected CO2, dosing too high (or a
+    misconfigured timer/solenoid) depletes dissolved oxygen and can
+    directly harm fish, classically worst overnight or just before
+    lights-on.
+  prior_weight: 0.3
+  severity_default: urgent
+  rationale: >
+    A well-known, fast-acting cause of overnight fish loss specifically
+    in CO2-injected planted tanks -- essentially impossible without CO2
+    injection present, making that single fact highly discriminating.
+  source: Standard planted-aquarium husbandry references.
+
+- id: poor_circulation_dead_spot
+  name: Poor circulation / dead spot
+  category: environmental
+  description: >
+    A localized area of the tank with insufficient water movement,
+    allowing detritus to accumulate and oxygen/waste exchange to suffer
+    for fish that frequent that spot, while the rest of the tank tests
+    normally.
+  prior_weight: 0.3
+  severity_default: caution
+  rationale: >
+    Explains a genuinely common pattern -- a few fish struggling while
+    bulk water tests come back fine -- that the whole-tank water-quality
+    problems in this KB don't account for.
+  source: Standard freshwater aquarium husbandry references.
+
+# ============================== infectious/parasitic disease (batch 3) ==============================
+
+- id: fungal_infection_saprolegnia
+  name: Fungal infection (Saprolegnia / "cotton wool" fungus)
+  category: parasite
+  description: >
+    A fungal infection producing cottony, fuzzy grey-white growths on the
+    body, fins, or eggs, typically secondary to an injury, poor water
+    quality, or another underlying stressor.
+  prior_weight: 0.4
+  severity_default: caution
+  rationale: >
+    A very common secondary infection in freshwater fishkeeping; the
+    growth's cottony texture visually and causally distinguishes it from
+    both Ich (discrete grain-like spots, primary parasite) and bacterial
+    infection (no cottony growth).
+  source: Standard freshwater aquarium husbandry references.
+
+- id: velvet_disease_oodinium
+  name: Velvet disease (Oodinium / "gold dust" disease)
+  category: parasite
+  description: >
+    Infestation by the parasitic dinoflagellate Oodinium, producing a
+    fine gold or rust-colored dusty coating on the skin, along with
+    irritation and, in advanced cases, gill damage.
+  prior_weight: 0.4
+  severity_default: caution
+  rationale: >
+    Commonly confused with Ich by hobbyists, but the coating is finer and
+    gold/rust-toned rather than discrete white grains, and it spreads
+    faster and can be more lethal if untreated.
+  source: Standard freshwater aquarium husbandry references.
+
+- id: columnaris_cotton_mouth
+  name: Columnaris ("cotton mouth" / saddleback disease)
+  category: disease
+  description: >
+    A bacterial infection (Flavobacterium columnare) classically producing
+    white/grey fuzzy patches around the mouth, sometimes progressing
+    rapidly; a gill-focused variant can also occur.
+  prior_weight: 0.35
+  severity_default: caution
+  rationale: >
+    Distinguished from generic bacterial_infection by its
+    characteristic mouth-focused fuzzy patches and notably fast
+    progression -- worth differentiating because it's often misdiagnosed
+    as a fungal infection due to the fuzzy appearance.
+  source: Standard freshwater aquarium husbandry references.
+
+- id: swim_bladder_disorder
+  name: Swim bladder disorder
+  category: disease
+  description: >
+    A buoyancy-control problem (floating, sinking, swimming sideways or
+    upside-down) usually caused by diet, constipation, injury, or a
+    congenital issue rather than a contagious infection.
+  prior_weight: 0.35
+  severity_default: caution
+  rationale: >
+    A very common, usually non-contagious complaint (especially in
+    goldfish and bettas) that looks alarming but often resolves with a
+    simple diet fix -- worth distinguishing clearly from the infectious
+    problems in this KB so it isn't over-treated.
+  source: Standard freshwater aquarium husbandry references.
+
+- id: dropsy_systemic
+  name: Dropsy (systemic, "pinecone" presentation)
+  category: disease
+  description: >
+    A symptom complex (not a single disease) where kidney/organ failure,
+    often from an underlying bacterial infection, causes fluid
+    retention -- a bloated body and scales standing out like a pinecone.
+  prior_weight: 0.25
+  severity_default: caution
+  rationale: >
+    A classic, highly recognizable presentation that hobbyists specifically
+    search for by name; prognosis is often poor by the time it's visible,
+    so it's included despite being less common than the other diseases.
+  source: Standard freshwater aquarium husbandry references.
+
+# ============================== husbandry/behavior (batch 4) ==============================
+
+- id: aggression_bullying_stress
+  name: Aggression / bullying from tankmates
+  category: husbandry
+  description: >
+    One or a few fish injured or stressed by aggression from other
+    tankmates (chasing, nipping, territorial disputes) rather than by
+    disease or water quality.
+  prior_weight: 0.4
+  severity_default: caution
+  rationale: >
+    A very common non-disease cause of fin damage and localized stress
+    that's easy to misattribute to bacterial_infection or
+    fungal_infection_saprolegnia without directly asking about tankmate
+    behavior.
+  source: Standard freshwater aquarium husbandry references.
+
+- id: overfeeding_poor_diet
+  name: Overfeeding / poor diet
+  category: husbandry
+  description: >
+    Feeding more than fish can consume (or an inappropriate diet),
+    causing water-quality decline from decomposing excess food and/or
+    digestive issues.
+  prior_weight: 0.4
+  severity_default: caution
+  rationale: >
+    One of the most common root causes behind water-quality complaints in
+    new fishkeepers, and worth asking about directly rather than only
+    inferring from downstream ammonia/nitrate readings.
+  source: Standard freshwater aquarium husbandry references.
+
+- id: acclimation_transport_stress
+  name: Acclimation / transport stress
+  category: husbandry
+  description: >
+    Stress in a newly introduced fish from skipped or rushed
+    acclimation (temperature/pH mismatch, transport shock), distinct
+    from a whole-tank cycling problem.
+  prior_weight: 0.35
+  severity_default: caution
+  rationale: >
+    Explains distress isolated to a single recently-added fish that
+    new_tank_syndrome (a whole-tank cycling issue) doesn't cover.
+  source: Standard freshwater aquarium husbandry references.
+
+- id: inadequate_hiding_or_environment_stress
+  name: Inadequate hiding places / chronic environment stress
+  category: husbandry
+  description: >
+    Chronic low-grade stress from a bare or overly exposed environment
+    (insufficient cover, decor, or territory), weakening condition and
+    immune function over time rather than causing acute illness.
+  prior_weight: 0.3
+  severity_default: caution
+  rationale: >
+    A frequently overlooked root cause that can make fish generally
+    "off" and more susceptible to other problems, without any single
+    acute trigger.
+  source: Standard freshwater aquarium husbandry references.

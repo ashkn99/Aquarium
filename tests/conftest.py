@@ -18,6 +18,35 @@ from aqua_assistant.kb.schema import (
     QuestionAnswer,
 )
 
+# Per-parameter "unremarkable" numeric readings, for scenario tests that
+# need to answer whatever unscripted numeric question the engine happens
+# to pick next. A single constant (e.g. 0.0) is NOT safe here: 0.0 means
+# "safe" for ammonia/nitrite but "critical" for dissolved oxygen, so it
+# silently injects a fabricated crisis into what's meant to be a neutral
+# answer. This caused several false test failures during KB expansion
+# before being centralized here -- reuse this in every new batch's tests.
+NEUTRAL_NUMERIC_DEFAULTS: dict[str, float] = {
+    "ammonia_ppm": 0.0,
+    "nitrite_ppm": 0.0,
+    "nitrate_ppm": 10.0,
+    "ph_level": 7.2,
+    "temperature_f": 78.0,
+    "dissolved_oxygen_ppm": 6.5,
+    "tank_age_days": 150.0,
+}
+
+
+def neutral_default(kb: KnowledgeBase, evidence_id: str) -> tuple[str, object]:
+    """('raw_value', x) or ('state', s) -- an unremarkable/negative answer
+    for whatever evidence_id an unscripted turn happens to ask about."""
+    evidence = kb.evidence[evidence_id]
+    if evidence.data_type == "numeric":
+        return "raw_value", NEUTRAL_NUMERIC_DEFAULTS.get(evidence_id, 0.0)
+    from aqua_assistant.questions.selection import possible_states
+
+    states = possible_states(kb, evidence_id)
+    return "state", ("false" if "false" in states else states[0])
+
 
 @pytest.fixture
 def synthetic_kb() -> KnowledgeBase:

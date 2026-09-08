@@ -99,6 +99,36 @@
   likelihood_positive: 0.45
   likelihood_background: 0.1
   rationale: Loss of biofiltration is a classic ammonia-spike trigger.
+# --- audit: negative/disconfirming rows added for completeness ---
+- problem_id: ammonia_toxicity
+  evidence_id: rapid_breathing
+  evidence_state: "false"
+  likelihood_positive: 0.45
+  likelihood_background: 0.8
+  rationale: Absence of rapid breathing weakly argues against significant ammonia burn, though early-stage stress may not yet affect breathing.
+- problem_id: ammonia_toxicity
+  evidence_id: surface_breathing
+  evidence_state: "false"
+  likelihood_positive: 0.45
+  likelihood_background: 0.85
+- problem_id: ammonia_toxicity
+  evidence_id: lethargy
+  evidence_state: "false"
+  likelihood_positive: 0.45
+  likelihood_background: 0.65
+  rationale: Lethargy is nonspecific across nearly every problem in this KB, so its absence is only weak disconfirmation.
+- problem_id: ammonia_toxicity
+  evidence_id: onset_timing
+  evidence_state: chronic
+  likelihood_positive: 0.05
+  likelihood_background: 0.35
+  rationale: Ammonia toxicity is characteristically an acute event; a slow, weeks-long onset is inconsistent with a toxic spike.
+- problem_id: ammonia_toxicity
+  evidence_id: tank_age_days
+  evidence_state: established
+  likelihood_positive: 0.25
+  likelihood_background: 0.45
+  rationale: Established, fully cycled tanks are less prone to spontaneous ammonia spikes absent a specific trigger (overfeeding, filter loss, sudden overstocking) -- kept mild since those triggers remain possible in an old tank.
 
 # ============================== nitrite_toxicity ==============================
 - problem_id: nitrite_toxicity
@@ -164,6 +194,45 @@
   evidence_state: new
   likelihood_positive: 0.35
   likelihood_background: 0.2
+# --- audit: negative/disconfirming rows added for completeness ---
+- problem_id: nitrite_toxicity
+  evidence_id: gasping
+  evidence_state: "false"
+  likelihood_positive: 0.4
+  likelihood_background: 0.85
+- problem_id: nitrite_toxicity
+  evidence_id: rapid_breathing
+  evidence_state: "false"
+  likelihood_positive: 0.45
+  likelihood_background: 0.8
+- problem_id: nitrite_toxicity
+  evidence_id: surface_breathing
+  evidence_state: "false"
+  likelihood_positive: 0.45
+  likelihood_background: 0.85
+- problem_id: nitrite_toxicity
+  evidence_id: lethargy
+  evidence_state: "false"
+  likelihood_positive: 0.45
+  likelihood_background: 0.65
+- problem_id: nitrite_toxicity
+  evidence_id: num_fish_affected
+  evidence_state: single
+  likelihood_positive: 0.1
+  likelihood_background: 0.35
+  rationale: Nitrite toxicity is a whole-tank water condition like ammonia, not a single-fish issue.
+- problem_id: nitrite_toxicity
+  evidence_id: onset_timing
+  evidence_state: sudden
+  likelihood_positive: 0.15
+  likelihood_background: 0.35
+  rationale: Nitrite spikes typically build over the cycling period rather than appearing instantly.
+- problem_id: nitrite_toxicity
+  evidence_id: tank_age_days
+  evidence_state: established
+  likelihood_positive: 0.15
+  likelihood_background: 0.45
+  rationale: Established, cycled tanks rarely show nitrite pressure absent a specific disruption to the biofilter.
 
 # ============================== low_oxygen ==============================
 - problem_id: low_oxygen
@@ -220,6 +289,30 @@
   likelihood_positive: 0.55
   likelihood_background: 0.1
   rationale: Filter/pump downtime often removes the main source of surface agitation.
+# --- audit: negative/disconfirming rows added for completeness ---
+- problem_id: low_oxygen
+  evidence_id: gasping
+  evidence_state: "false"
+  likelihood_positive: 0.35
+  likelihood_background: 0.85
+  rationale: Gasping is the single most classic low-oxygen sign, so its absence is a fairly strong (though not definitive) disconfirmation.
+- problem_id: low_oxygen
+  evidence_id: rapid_breathing
+  evidence_state: "false"
+  likelihood_positive: 0.4
+  likelihood_background: 0.8
+- problem_id: low_oxygen
+  evidence_id: num_fish_affected
+  evidence_state: single
+  likelihood_positive: 0.1
+  likelihood_background: 0.35
+  rationale: Low dissolved oxygen affects every fish sharing the same water, not a single individual.
+- problem_id: low_oxygen
+  evidence_id: onset_timing
+  evidence_state: gradual
+  likelihood_positive: 0.25
+  likelihood_background: 0.35
+  rationale: Low-oxygen crises are usually sudden (equipment failure, heat spike), though slow overstocking creep can also produce a gradual decline.
 
 # ============================== temperature_shock ==============================
 - problem_id: temperature_shock
@@ -266,6 +359,25 @@
   likelihood_positive: 0.5
   likelihood_background: 0.15
   rationale: Mismatched water-change temperature is a common trigger.
+# --- audit: negative/disconfirming rows added for completeness ---
+- problem_id: temperature_shock
+  evidence_id: lethargy
+  evidence_state: "false"
+  likelihood_positive: 0.4
+  likelihood_background: 0.55
+  rationale: Lethargy is nonspecific, so its absence is only weak disconfirmation.
+- problem_id: temperature_shock
+  evidence_id: num_fish_affected
+  evidence_state: single
+  likelihood_positive: 0.15
+  likelihood_background: 0.35
+  rationale: Temperature affects every fish sharing the same water, not a single individual.
+- problem_id: temperature_shock
+  evidence_id: onset_timing
+  evidence_state: gradual
+  likelihood_positive: 0.1
+  likelihood_background: 0.35
+  rationale: By definition "shock" implies a rapid change; a gradual timeline is inconsistent with an acute shock event.
 
 # ============================== ph_instability ==============================
 - problem_id: ph_instability
@@ -310,6 +422,30 @@
   evidence_state: most_or_all
   likelihood_positive: 0.55
   likelihood_background: 0.25
+# --- audit: negative/disconfirming rows added for completeness ---
+- problem_id: ph_instability
+  evidence_id: ph_swings_reported
+  evidence_state: "false"
+  likelihood_positive: 0.1
+  likelihood_background: 0.75
+  rationale: A direct "no, pH has been stable" answer is a strong disconfirmation -- stronger than a single normal reading, which doesn't rule out swings between tests.
+- problem_id: ph_instability
+  evidence_id: lethargy
+  evidence_state: "false"
+  likelihood_positive: 0.4
+  likelihood_background: 0.55
+- problem_id: ph_instability
+  evidence_id: gasping
+  evidence_state: "false"
+  likelihood_positive: 0.5
+  likelihood_background: 0.65
+  rationale: Gasping was already a weak positive signal for pH instability, so its absence is only weakly informative.
+- problem_id: ph_instability
+  evidence_id: num_fish_affected
+  evidence_state: single
+  likelihood_positive: 0.2
+  likelihood_background: 0.35
+  rationale: pH affects the whole tank, though individual sensitivity varies more than with ammonia/nitrite, so this is kept milder than the water-quality problems' equivalent row.
 
 # ============================== ich ==============================
 - problem_id: ich
@@ -361,6 +497,33 @@
   likelihood_positive: 0.55
   likelihood_background: 0.2
   rationale: New fish are the most common vector for introducing the parasite.
+# --- audit: negative/disconfirming rows added for completeness ---
+- problem_id: ich
+  evidence_id: flashing_scratching
+  evidence_state: "false"
+  likelihood_positive: 0.4
+  likelihood_background: 0.75
+  rationale: Scratching is common but not universal in Ich cases, especially early in infestation.
+- problem_id: ich
+  evidence_id: appetite_loss
+  evidence_state: "false"
+  likelihood_positive: 0.45
+  likelihood_background: 0.6
+  rationale: Mild/early Ich cases may not yet affect appetite, so this is only weak disconfirmation.
+- problem_id: ich
+  evidence_id: lethargy
+  evidence_state: "false"
+  likelihood_positive: 0.5
+  likelihood_background: 0.6
+- problem_id: ich
+  evidence_id: recent_fish_added
+  evidence_state: "false"
+  likelihood_positive: 0.35
+  likelihood_background: 0.55
+  rationale: No new fish removes the single most common introduction vector, though Ich can also arrive via plants, decor, or shared equipment.
+# Deliberately no row for num_fish_affected=single: early-stage Ich
+# plausibly presents on just one fish before spreading, so a single
+# affected fish is not a confident disconfirmation either way.
 
 # ============================== bacterial_infection ==============================
 - problem_id: bacterial_infection
@@ -410,6 +573,43 @@
   evidence_state: gradual
   likelihood_positive: 0.55
   likelihood_background: 0.3
+# --- audit: negative/disconfirming rows added for completeness ---
+- problem_id: bacterial_infection
+  evidence_id: frayed_fins
+  evidence_state: "false"
+  likelihood_positive: 0.4
+  likelihood_background: 0.75
+- problem_id: bacterial_infection
+  evidence_id: red_streaks_or_gills
+  evidence_state: "false"
+  likelihood_positive: 0.45
+  likelihood_background: 0.75
+- problem_id: bacterial_infection
+  evidence_id: clamped_fins
+  evidence_state: "false"
+  likelihood_positive: 0.5
+  likelihood_background: 0.65
+- problem_id: bacterial_infection
+  evidence_id: excess_mucus
+  evidence_state: "false"
+  likelihood_positive: 0.5
+  likelihood_background: 0.7
+- problem_id: bacterial_infection
+  evidence_id: lethargy
+  evidence_state: "false"
+  likelihood_positive: 0.45
+  likelihood_background: 0.6
+- problem_id: bacterial_infection
+  evidence_id: appetite_loss
+  evidence_state: "false"
+  likelihood_positive: 0.45
+  likelihood_background: 0.6
+- problem_id: bacterial_infection
+  evidence_id: onset_timing
+  evidence_state: sudden
+  likelihood_positive: 0.2
+  likelihood_background: 0.35
+  rationale: Bacterial infections typically progress over days rather than appearing suddenly, though acute injury-triggered infections can worsen quickly.
 
 # ============================== new_tank_syndrome ==============================
 - problem_id: new_tank_syndrome
@@ -454,3 +654,844 @@
   evidence_state: "true"
   likelihood_positive: 0.45
   likelihood_background: 0.35
+# --- audit: negative/disconfirming rows added for completeness ---
+- problem_id: new_tank_syndrome
+  evidence_id: tank_age_days
+  evidence_state: established
+  likelihood_positive: 0.05
+  likelihood_background: 0.5
+  rationale: New tank syndrome is definitionally about an immature nitrogen cycle; a well-established tank strongly argues against it absent an unusual reset event (full media replacement, tank crash and restart).
+- problem_id: new_tank_syndrome
+  evidence_id: ammonia_ppm
+  evidence_state: safe
+  likelihood_positive: 0.1
+  likelihood_background: 0.55
+  rationale: If ammonia currently reads safe, an incomplete cycle is less likely to be the active driver, though nitrite could still be mid-spike in a typical cycle progression.
+- problem_id: new_tank_syndrome
+  evidence_id: recent_fish_added
+  evidence_state: "false"
+  likelihood_positive: 0.3
+  likelihood_background: 0.5
+  rationale: Without a recent stocking increase, a sudden bioload/filtration mismatch is less likely, though a tank can still be mid-cycle from its original stocking.
+- problem_id: new_tank_syndrome
+  evidence_id: num_fish_affected
+  evidence_state: single
+  likelihood_positive: 0.15
+  likelihood_background: 0.35
+  rationale: An immature cycle is a whole-tank water condition, not a single-fish issue.
+- problem_id: new_tank_syndrome
+  evidence_id: onset_timing
+  evidence_state: sudden
+  likelihood_positive: 0.15
+  likelihood_background: 0.35
+  rationale: Cycling pressure builds gradually as bioload accumulates; a sudden onset is atypical.
+- problem_id: new_tank_syndrome
+  evidence_id: lethargy
+  evidence_state: "false"
+  likelihood_positive: 0.45
+  likelihood_background: 0.6
+# Deliberately no row for nitrite_ppm=safe: early in the cycle (ammonia
+# phase) nitrite can legitimately still read zero, so a safe nitrite
+# reading alone is not a confident disconfirmation of new_tank_syndrome.
+
+# ============================== chlorine_chloramine_poisoning ==============================
+- problem_id: chlorine_chloramine_poisoning
+  evidence_id: used_untreated_tap_water
+  evidence_state: "true"
+  likelihood_positive: 0.85
+  likelihood_background: 0.05
+  rationale: Direct causal history; the single most diagnostic fact for this problem.
+- problem_id: chlorine_chloramine_poisoning
+  evidence_id: used_untreated_tap_water
+  evidence_state: "false"
+  likelihood_positive: 0.05
+  likelihood_background: 0.85
+  rationale: If the user reliably dechlorinates, this problem is very unlikely.
+- problem_id: chlorine_chloramine_poisoning
+  evidence_id: recent_water_change_large
+  evidence_state: "true"
+  likelihood_positive: 0.7
+  likelihood_background: 0.2
+  rationale: Chlorine/chloramine poisoning almost always follows a water change.
+- problem_id: chlorine_chloramine_poisoning
+  evidence_id: gasping
+  evidence_state: "true"
+  likelihood_positive: 0.65
+  likelihood_background: 0.15
+- problem_id: chlorine_chloramine_poisoning
+  evidence_id: gasping
+  evidence_state: "false"
+  likelihood_positive: 0.4
+  likelihood_background: 0.85
+- problem_id: chlorine_chloramine_poisoning
+  evidence_id: red_streaks_or_gills
+  evidence_state: "true"
+  likelihood_positive: 0.6
+  likelihood_background: 0.1
+  rationale: Chlorine/chloramine burns gill tissue, similar in appearance to an ammonia burn.
+- problem_id: chlorine_chloramine_poisoning
+  evidence_id: red_streaks_or_gills
+  evidence_state: "false"
+  likelihood_positive: 0.45
+  likelihood_background: 0.9
+- problem_id: chlorine_chloramine_poisoning
+  evidence_id: num_fish_affected
+  evidence_state: most_or_all
+  likelihood_positive: 0.7
+  likelihood_background: 0.25
+  rationale: All fish share the same freshly-added water simultaneously.
+- problem_id: chlorine_chloramine_poisoning
+  evidence_id: num_fish_affected
+  evidence_state: single
+  likelihood_positive: 0.08
+  likelihood_background: 0.35
+- problem_id: chlorine_chloramine_poisoning
+  evidence_id: onset_timing
+  evidence_state: sudden
+  likelihood_positive: 0.75
+  likelihood_background: 0.3
+  rationale: An extremely fast-acting toxin, often within minutes to hours of exposure.
+# Deliberately no ammonia_ppm/nitrite_ppm rows: the defining feature of
+# this problem is respiratory distress with otherwise unremarkable water
+# tests, but "safe" readings are also common under many other conditions
+# (including no problem at all), so on their own they are not confidently
+# informative either way -- the tap-water history question carries the
+# real signal here.
+
+# ============================== chronic_nitrate_stress ==============================
+- problem_id: chronic_nitrate_stress
+  evidence_id: nitrate_ppm
+  evidence_state: critical
+  likelihood_positive: 0.7
+  likelihood_background: 0.1
+- problem_id: chronic_nitrate_stress
+  evidence_id: nitrate_ppm
+  evidence_state: high
+  likelihood_positive: 0.55
+  likelihood_background: 0.25
+- problem_id: chronic_nitrate_stress
+  evidence_id: nitrate_ppm
+  evidence_state: safe
+  likelihood_positive: 0.05
+  likelihood_background: 0.55
+  rationale: Low nitrate argues against a chronic-accumulation problem.
+- problem_id: chronic_nitrate_stress
+  evidence_id: water_change_frequency
+  evidence_state: rare
+  likelihood_positive: 0.75
+  likelihood_background: 0.08
+- problem_id: chronic_nitrate_stress
+  evidence_id: water_change_frequency
+  evidence_state: infrequent
+  likelihood_positive: 0.6
+  likelihood_background: 0.2
+- problem_id: chronic_nitrate_stress
+  evidence_id: water_change_frequency
+  evidence_state: regular
+  likelihood_positive: 0.05
+  likelihood_background: 0.55
+  rationale: Regular maintenance argues strongly against chronic accumulation.
+- problem_id: chronic_nitrate_stress
+  evidence_id: tank_age_days
+  evidence_state: established
+  likelihood_positive: 0.6
+  likelihood_background: 0.35
+  rationale: Chronic stress by definition takes time to accumulate.
+- problem_id: chronic_nitrate_stress
+  evidence_id: tank_age_days
+  evidence_state: new
+  likelihood_positive: 0.05
+  likelihood_background: 0.4
+  rationale: Too early in a new tank's life for chronic buildup.
+- problem_id: chronic_nitrate_stress
+  evidence_id: onset_timing
+  evidence_state: chronic
+  likelihood_positive: 0.65
+  likelihood_background: 0.15
+- problem_id: chronic_nitrate_stress
+  evidence_id: onset_timing
+  evidence_state: sudden
+  likelihood_positive: 0.05
+  likelihood_background: 0.4
+  rationale: Chronic stress does not appear suddenly by definition.
+- problem_id: chronic_nitrate_stress
+  evidence_id: lethargy
+  evidence_state: "true"
+  likelihood_positive: 0.5
+  likelihood_background: 0.35
+- problem_id: chronic_nitrate_stress
+  evidence_id: appetite_loss
+  evidence_state: "true"
+  likelihood_positive: 0.4
+  likelihood_background: 0.3
+- problem_id: chronic_nitrate_stress
+  evidence_id: num_fish_affected
+  evidence_state: most_or_all
+  likelihood_positive: 0.5
+  likelihood_background: 0.25
+- problem_id: chronic_nitrate_stress
+  evidence_id: lethargy
+  evidence_state: "false"
+  likelihood_positive: 0.45
+  likelihood_background: 0.65
+
+# ============================== copper_heavy_metal_toxicity ==============================
+- problem_id: copper_heavy_metal_toxicity
+  evidence_id: copper_source_exposure
+  evidence_state: "true"
+  likelihood_positive: 0.75
+  likelihood_background: 0.05
+  rationale: Direct causal history; the single most diagnostic fact for this problem.
+- problem_id: copper_heavy_metal_toxicity
+  evidence_id: copper_source_exposure
+  evidence_state: "false"
+  likelihood_positive: 0.1
+  likelihood_background: 0.85
+- problem_id: copper_heavy_metal_toxicity
+  evidence_id: gasping
+  evidence_state: "true"
+  likelihood_positive: 0.55
+  likelihood_background: 0.15
+- problem_id: copper_heavy_metal_toxicity
+  evidence_id: lethargy
+  evidence_state: "true"
+  likelihood_positive: 0.55
+  likelihood_background: 0.35
+- problem_id: copper_heavy_metal_toxicity
+  evidence_id: appetite_loss
+  evidence_state: "true"
+  likelihood_positive: 0.5
+  likelihood_background: 0.3
+- problem_id: copper_heavy_metal_toxicity
+  evidence_id: num_fish_affected
+  evidence_state: most_or_all
+  likelihood_positive: 0.65
+  likelihood_background: 0.25
+  rationale: Copper introduced into the water column affects the whole tank at once.
+- problem_id: copper_heavy_metal_toxicity
+  evidence_id: onset_timing
+  evidence_state: sudden
+  likelihood_positive: 0.6
+  likelihood_background: 0.3
+  rationale: Usually follows a discrete dosing/exposure event rather than building gradually.
+- problem_id: copper_heavy_metal_toxicity
+  evidence_id: gasping
+  evidence_state: "false"
+  likelihood_positive: 0.45
+  likelihood_background: 0.85
+- problem_id: copper_heavy_metal_toxicity
+  evidence_id: lethargy
+  evidence_state: "false"
+  likelihood_positive: 0.45
+  likelihood_background: 0.65
+- problem_id: copper_heavy_metal_toxicity
+  evidence_id: num_fish_affected
+  evidence_state: single
+  likelihood_positive: 0.1
+  likelihood_background: 0.35
+  rationale: Copper in the water column is a whole-tank exposure, not a single-fish issue.
+
+# ============================== overstocking_chronic ==============================
+- problem_id: overstocking_chronic
+  evidence_id: overstocking_reported
+  evidence_state: "true"
+  likelihood_positive: 0.7
+  likelihood_background: 0.1
+  rationale: Direct self-assessment, the most diagnostic single fact for this problem.
+- problem_id: overstocking_chronic
+  evidence_id: overstocking_reported
+  evidence_state: "false"
+  likelihood_positive: 0.05
+  likelihood_background: 0.75
+  rationale: If the user confidently reports appropriate stocking, this problem is unlikely.
+- problem_id: overstocking_chronic
+  evidence_id: nitrate_ppm
+  evidence_state: high
+  likelihood_positive: 0.5
+  likelihood_background: 0.25
+- problem_id: overstocking_chronic
+  evidence_id: nitrate_ppm
+  evidence_state: critical
+  likelihood_positive: 0.6
+  likelihood_background: 0.1
+- problem_id: overstocking_chronic
+  evidence_id: dissolved_oxygen_ppm
+  evidence_state: low
+  likelihood_positive: 0.45
+  likelihood_background: 0.2
+  rationale: More fish competing for oxygen than the tank/filtration comfortably supports.
+- problem_id: overstocking_chronic
+  evidence_id: tank_age_days
+  evidence_state: established
+  likelihood_positive: 0.55
+  likelihood_background: 0.35
+  rationale: Chronic overstocking effects take time to manifest; also distinguishes from new_tank_syndrome's acute cycling pressure.
+- problem_id: overstocking_chronic
+  evidence_id: onset_timing
+  evidence_state: chronic
+  likelihood_positive: 0.55
+  likelihood_background: 0.15
+- problem_id: overstocking_chronic
+  evidence_id: onset_timing
+  evidence_state: sudden
+  likelihood_positive: 0.05
+  likelihood_background: 0.4
+  rationale: Overstocking effects build up gradually as bioload accumulates, not suddenly.
+- problem_id: overstocking_chronic
+  evidence_id: num_fish_affected
+  evidence_state: most_or_all
+  likelihood_positive: 0.55
+  likelihood_background: 0.25
+- problem_id: overstocking_chronic
+  evidence_id: lethargy
+  evidence_state: "true"
+  likelihood_positive: 0.45
+  likelihood_background: 0.35
+- problem_id: overstocking_chronic
+  evidence_id: lethargy
+  evidence_state: "false"
+  likelihood_positive: 0.45
+  likelihood_background: 0.65
+- problem_id: overstocking_chronic
+  evidence_id: nitrate_ppm
+  evidence_state: safe
+  likelihood_positive: 0.05
+  likelihood_background: 0.5
+  rationale: Low nitrate argues against chronic bioload accumulation from overstocking.
+- problem_id: overstocking_chronic
+  evidence_id: dissolved_oxygen_ppm
+  evidence_state: adequate
+  likelihood_positive: 0.15
+  likelihood_background: 0.55
+  rationale: Adequate oxygen despite the fish count argues the tank is coping, weakening (though not ruling out) this candidate.
+
+# ============================== co2_injection_excess ==============================
+- problem_id: co2_injection_excess
+  evidence_id: planted_tank_with_co2_injection
+  evidence_state: "true"
+  likelihood_positive: 0.8
+  likelihood_background: 0.05
+  rationale: Essentially a precondition for this problem.
+- problem_id: co2_injection_excess
+  evidence_id: planted_tank_with_co2_injection
+  evidence_state: "false"
+  likelihood_positive: 0.02
+  likelihood_background: 0.9
+  rationale: Without CO2 injection at all, this diagnosis is very unlikely.
+- problem_id: co2_injection_excess
+  evidence_id: ph_level
+  evidence_state: low
+  likelihood_positive: 0.5
+  likelihood_background: 0.15
+  rationale: Injected CO2 dissolves to carbonic acid, lowering pH.
+- problem_id: co2_injection_excess
+  evidence_id: gasping
+  evidence_state: "true"
+  likelihood_positive: 0.6
+  likelihood_background: 0.15
+- problem_id: co2_injection_excess
+  evidence_id: surface_breathing
+  evidence_state: "true"
+  likelihood_positive: 0.55
+  likelihood_background: 0.15
+- problem_id: co2_injection_excess
+  evidence_id: onset_timing
+  evidence_state: sudden
+  likelihood_positive: 0.5
+  likelihood_background: 0.3
+  rationale: Can appear suddenly if injection rate is increased or a timer/solenoid is misconfigured.
+- problem_id: co2_injection_excess
+  evidence_id: num_fish_affected
+  evidence_state: most_or_all
+  likelihood_positive: 0.6
+  likelihood_background: 0.25
+- problem_id: co2_injection_excess
+  evidence_id: gasping
+  evidence_state: "false"
+  likelihood_positive: 0.4
+  likelihood_background: 0.85
+  rationale: Respiratory distress is the hallmark sign of a CO2 overdose, so its absence is meaningful disconfirmation.
+- problem_id: co2_injection_excess
+  evidence_id: surface_breathing
+  evidence_state: "false"
+  likelihood_positive: 0.45
+  likelihood_background: 0.85
+
+# ============================== poor_circulation_dead_spot ==============================
+- problem_id: poor_circulation_dead_spot
+  evidence_id: visible_debris_or_detritus_buildup
+  evidence_state: "true"
+  likelihood_positive: 0.6
+  likelihood_background: 0.15
+- problem_id: poor_circulation_dead_spot
+  evidence_id: visible_debris_or_detritus_buildup
+  evidence_state: "false"
+  likelihood_positive: 0.15
+  likelihood_background: 0.6
+- problem_id: poor_circulation_dead_spot
+  evidence_id: num_fish_affected
+  evidence_state: several
+  likelihood_positive: 0.5
+  likelihood_background: 0.3
+  rationale: Typically affects fish that frequent the low-flow area, not the whole tank.
+- problem_id: poor_circulation_dead_spot
+  evidence_id: num_fish_affected
+  evidence_state: most_or_all
+  likelihood_positive: 0.1
+  likelihood_background: 0.3
+  rationale: A dead spot is by definition localized; whole-tank symptoms argue against it.
+- problem_id: poor_circulation_dead_spot
+  evidence_id: onset_timing
+  evidence_state: chronic
+  likelihood_positive: 0.5
+  likelihood_background: 0.15
+  rationale: Builds up gradually as debris accumulates in the low-flow area.
+- problem_id: poor_circulation_dead_spot
+  evidence_id: lethargy
+  evidence_state: "true"
+  likelihood_positive: 0.4
+  likelihood_background: 0.35
+
+# ============================== fungal_infection_saprolegnia ==============================
+- problem_id: fungal_infection_saprolegnia
+  evidence_id: cottony_fuzzy_growth
+  evidence_state: "true"
+  likelihood_positive: 0.9
+  likelihood_background: 0.02
+  rationale: Pathognomonic sign for this problem.
+- problem_id: fungal_infection_saprolegnia
+  evidence_id: cottony_fuzzy_growth
+  evidence_state: "false"
+  likelihood_positive: 0.05
+  likelihood_background: 0.92
+  rationale: Absence of the cottony growth makes this diagnosis very unlikely.
+- problem_id: fungal_infection_saprolegnia
+  evidence_id: excess_mucus
+  evidence_state: "true"
+  likelihood_positive: 0.4
+  likelihood_background: 0.15
+- problem_id: fungal_infection_saprolegnia
+  evidence_id: appetite_loss
+  evidence_state: "true"
+  likelihood_positive: 0.4
+  likelihood_background: 0.3
+- problem_id: fungal_infection_saprolegnia
+  evidence_id: lethargy
+  evidence_state: "true"
+  likelihood_positive: 0.45
+  likelihood_background: 0.35
+- problem_id: fungal_infection_saprolegnia
+  evidence_id: lethargy
+  evidence_state: "false"
+  likelihood_positive: 0.45
+  likelihood_background: 0.65
+- problem_id: fungal_infection_saprolegnia
+  evidence_id: num_fish_affected
+  evidence_state: single
+  likelihood_positive: 0.45
+  likelihood_background: 0.3
+  rationale: Saprolegnia often starts on one injured or weakened fish rather than spreading to the whole tank at once.
+- problem_id: fungal_infection_saprolegnia
+  evidence_id: onset_timing
+  evidence_state: gradual
+  likelihood_positive: 0.5
+  likelihood_background: 0.3
+
+# ============================== velvet_disease_oodinium ==============================
+- problem_id: velvet_disease_oodinium
+  evidence_id: gold_rust_dust_coating
+  evidence_state: "true"
+  likelihood_positive: 0.9
+  likelihood_background: 0.02
+  rationale: Pathognomonic sign for this problem.
+- problem_id: velvet_disease_oodinium
+  evidence_id: gold_rust_dust_coating
+  evidence_state: "false"
+  likelihood_positive: 0.05
+  likelihood_background: 0.92
+- problem_id: velvet_disease_oodinium
+  evidence_id: flashing_scratching
+  evidence_state: "true"
+  likelihood_positive: 0.65
+  likelihood_background: 0.1
+- problem_id: velvet_disease_oodinium
+  evidence_id: flashing_scratching
+  evidence_state: "false"
+  likelihood_positive: 0.4
+  likelihood_background: 0.75
+- problem_id: velvet_disease_oodinium
+  evidence_id: rapid_breathing
+  evidence_state: "true"
+  likelihood_positive: 0.5
+  likelihood_background: 0.2
+  rationale: Advanced cases involve gill damage.
+- problem_id: velvet_disease_oodinium
+  evidence_id: appetite_loss
+  evidence_state: "true"
+  likelihood_positive: 0.45
+  likelihood_background: 0.3
+- problem_id: velvet_disease_oodinium
+  evidence_id: lethargy
+  evidence_state: "true"
+  likelihood_positive: 0.45
+  likelihood_background: 0.35
+- problem_id: velvet_disease_oodinium
+  evidence_id: num_fish_affected
+  evidence_state: most_or_all
+  likelihood_positive: 0.55
+  likelihood_background: 0.25
+  rationale: Highly contagious and spreads quickly through a tank once established.
+- problem_id: velvet_disease_oodinium
+  evidence_id: num_fish_affected
+  evidence_state: single
+  likelihood_positive: 0.15
+  likelihood_background: 0.35
+- problem_id: velvet_disease_oodinium
+  evidence_id: onset_timing
+  evidence_state: gradual
+  likelihood_positive: 0.5
+  likelihood_background: 0.3
+- problem_id: velvet_disease_oodinium
+  evidence_id: recent_fish_added
+  evidence_state: "true"
+  likelihood_positive: 0.5
+  likelihood_background: 0.2
+  rationale: New fish are a common introduction vector, similar to Ich.
+
+# ============================== columnaris_cotton_mouth ==============================
+- problem_id: columnaris_cotton_mouth
+  evidence_id: white_fuzzy_patches_around_mouth
+  evidence_state: "true"
+  likelihood_positive: 0.85
+  likelihood_background: 0.02
+  rationale: Pathognomonic sign for this problem.
+- problem_id: columnaris_cotton_mouth
+  evidence_id: white_fuzzy_patches_around_mouth
+  evidence_state: "false"
+  likelihood_positive: 0.1
+  likelihood_background: 0.9
+- problem_id: columnaris_cotton_mouth
+  evidence_id: frayed_fins
+  evidence_state: "true"
+  likelihood_positive: 0.4
+  likelihood_background: 0.15
+- problem_id: columnaris_cotton_mouth
+  evidence_id: red_streaks_or_gills
+  evidence_state: "true"
+  likelihood_positive: 0.45
+  likelihood_background: 0.12
+  rationale: A gill-focused variant of columnaris also occurs.
+- problem_id: columnaris_cotton_mouth
+  evidence_id: lethargy
+  evidence_state: "true"
+  likelihood_positive: 0.45
+  likelihood_background: 0.35
+- problem_id: columnaris_cotton_mouth
+  evidence_id: appetite_loss
+  evidence_state: "true"
+  likelihood_positive: 0.55
+  likelihood_background: 0.3
+  rationale: Mouth lesions directly impair feeding, so this is a somewhat stronger signal than for other diseases.
+- problem_id: columnaris_cotton_mouth
+  evidence_id: num_fish_affected
+  evidence_state: several
+  likelihood_positive: 0.5
+  likelihood_background: 0.3
+- problem_id: columnaris_cotton_mouth
+  evidence_id: onset_timing
+  evidence_state: sudden
+  likelihood_positive: 0.45
+  likelihood_background: 0.3
+  rationale: Columnaris is notorious for very rapid progression, sometimes appearing to onset suddenly even though it's an infection.
+
+# ============================== swim_bladder_disorder ==============================
+- problem_id: swim_bladder_disorder
+  evidence_id: abnormal_buoyancy_or_swimming
+  evidence_state: "true"
+  likelihood_positive: 0.9
+  likelihood_background: 0.03
+  rationale: The defining symptom of this problem.
+- problem_id: swim_bladder_disorder
+  evidence_id: abnormal_buoyancy_or_swimming
+  evidence_state: "false"
+  likelihood_positive: 0.03
+  likelihood_background: 0.9
+  rationale: Without abnormal buoyancy/swimming, this diagnosis is essentially ruled out.
+- problem_id: swim_bladder_disorder
+  evidence_id: appetite_loss
+  evidence_state: "true"
+  likelihood_positive: 0.35
+  likelihood_background: 0.3
+  rationale: Sometimes related (constipation/diet cause) but weak on its own.
+- problem_id: swim_bladder_disorder
+  evidence_id: num_fish_affected
+  evidence_state: single
+  likelihood_positive: 0.6
+  likelihood_background: 0.3
+  rationale: Typically a non-contagious individual issue (diet, injury, or congenital), not a tank-wide problem.
+- problem_id: swim_bladder_disorder
+  evidence_id: num_fish_affected
+  evidence_state: most_or_all
+  likelihood_positive: 0.03
+  likelihood_background: 0.3
+  rationale: Not a contagious or shared-water-condition problem, so widespread occurrence argues strongly against it.
+# Deliberately no lethargy row: swim bladder disorder doesn't reliably
+# make a fish more or less lethargic than baseline (LR would be ~1), so
+# it isn't confidently informative either way.
+
+# ============================== dropsy_systemic ==============================
+- problem_id: dropsy_systemic
+  evidence_id: pinecone_scales
+  evidence_state: "true"
+  likelihood_positive: 0.85
+  likelihood_background: 0.01
+  rationale: Pathognomonic sign, though it appears later in the disease's progression.
+- problem_id: dropsy_systemic
+  evidence_id: pinecone_scales
+  evidence_state: "false"
+  likelihood_positive: 0.15
+  likelihood_background: 0.95
+  rationale: Kept a fairly strong (not absolute) negative, since bloating alone without pinecone scales can still be early-stage dropsy.
+- problem_id: dropsy_systemic
+  evidence_id: bloated_body
+  evidence_state: "true"
+  likelihood_positive: 0.75
+  likelihood_background: 0.05
+- problem_id: dropsy_systemic
+  evidence_id: bloated_body
+  evidence_state: "false"
+  likelihood_positive: 0.2
+  likelihood_background: 0.85
+- problem_id: dropsy_systemic
+  evidence_id: lethargy
+  evidence_state: "true"
+  likelihood_positive: 0.6
+  likelihood_background: 0.35
+  rationale: Dropsy fish are typically very sick and lethargic, more so than milder skin/fin conditions.
+- problem_id: dropsy_systemic
+  evidence_id: appetite_loss
+  evidence_state: "true"
+  likelihood_positive: 0.55
+  likelihood_background: 0.3
+- problem_id: dropsy_systemic
+  evidence_id: num_fish_affected
+  evidence_state: single
+  likelihood_positive: 0.55
+  likelihood_background: 0.3
+  rationale: Typically a systemic internal issue in one fish rather than a contagious tank-wide event.
+- problem_id: dropsy_systemic
+  evidence_id: onset_timing
+  evidence_state: gradual
+  likelihood_positive: 0.5
+  likelihood_background: 0.3
+- problem_id: dropsy_systemic
+  evidence_id: sudden_multiple_fish_death
+  evidence_state: "true"
+  likelihood_positive: 0.05
+  likelihood_background: 0.35
+  rationale: Dropsy is a slow systemic process in one fish, not a mass-mortality event.
+
+# ============================== aggression_bullying_stress ==============================
+- problem_id: aggression_bullying_stress
+  evidence_id: chasing_or_nipping_observed
+  evidence_state: "true"
+  likelihood_positive: 0.8
+  likelihood_background: 0.05
+  rationale: Direct behavioral observation, the most diagnostic single fact for this problem.
+- problem_id: aggression_bullying_stress
+  evidence_id: chasing_or_nipping_observed
+  evidence_state: "false"
+  likelihood_positive: 0.1
+  likelihood_background: 0.85
+- problem_id: aggression_bullying_stress
+  evidence_id: torn_or_missing_fins_from_biting
+  evidence_state: "true"
+  likelihood_positive: 0.75
+  likelihood_background: 0.08
+  rationale: Bitten/torn fin damage has a visually distinct pattern from disease-driven fraying.
+- problem_id: aggression_bullying_stress
+  evidence_id: torn_or_missing_fins_from_biting
+  evidence_state: "false"
+  likelihood_positive: 0.15
+  likelihood_background: 0.85
+- problem_id: aggression_bullying_stress
+  evidence_id: frayed_fins
+  evidence_state: "true"
+  likelihood_positive: 0.35
+  likelihood_background: 0.15
+  rationale: Some users won't distinguish bite damage from generic frayed fins, so this is a weaker, secondary signal.
+- problem_id: aggression_bullying_stress
+  evidence_id: num_fish_affected
+  evidence_state: single
+  likelihood_positive: 0.55
+  likelihood_background: 0.3
+  rationale: Aggression typically targets a specific individual (often the smallest/weakest), not the whole tank.
+- problem_id: aggression_bullying_stress
+  evidence_id: num_fish_affected
+  evidence_state: most_or_all
+  likelihood_positive: 0.05
+  likelihood_background: 0.3
+  rationale: Aggression is targeted, not a shared-water-condition problem, so widespread occurrence argues against it.
+- problem_id: aggression_bullying_stress
+  evidence_id: onset_timing
+  evidence_state: sudden
+  likelihood_positive: 0.4
+  likelihood_background: 0.3
+  rationale: Injury from a specific chasing/biting incident can appear suddenly.
+
+# ============================== overfeeding_poor_diet ==============================
+- problem_id: overfeeding_poor_diet
+  evidence_id: overfeeding_reported
+  evidence_state: "true"
+  likelihood_positive: 0.7
+  likelihood_background: 0.1
+  rationale: Direct self-report, the most diagnostic single fact for this problem.
+- problem_id: overfeeding_poor_diet
+  evidence_id: overfeeding_reported
+  evidence_state: "false"
+  likelihood_positive: 0.1
+  likelihood_background: 0.8
+- problem_id: overfeeding_poor_diet
+  evidence_id: uneaten_food_accumulating
+  evidence_state: "true"
+  likelihood_positive: 0.65
+  likelihood_background: 0.08
+- problem_id: overfeeding_poor_diet
+  evidence_id: uneaten_food_accumulating
+  evidence_state: "false"
+  likelihood_positive: 0.15
+  likelihood_background: 0.75
+- problem_id: overfeeding_poor_diet
+  evidence_id: ammonia_ppm
+  evidence_state: elevated
+  likelihood_positive: 0.4
+  likelihood_background: 0.2
+  rationale: Excess decomposing food raises ammonia, similar to but usually milder than a full bioload/cycling crisis.
+- problem_id: overfeeding_poor_diet
+  evidence_id: num_fish_affected
+  evidence_state: most_or_all
+  likelihood_positive: 0.45
+  likelihood_background: 0.25
+- problem_id: overfeeding_poor_diet
+  evidence_id: onset_timing
+  evidence_state: chronic
+  likelihood_positive: 0.45
+  likelihood_background: 0.15
+  rationale: A gradual water-quality decline pattern from an ongoing habit, not a single event.
+
+# ============================== acclimation_transport_stress ==============================
+- problem_id: acclimation_transport_stress
+  evidence_id: improper_acclimation_reported
+  evidence_state: "true"
+  likelihood_positive: 0.7
+  likelihood_background: 0.1
+  rationale: Direct self-report, the most diagnostic single fact for this problem.
+- problem_id: acclimation_transport_stress
+  evidence_id: improper_acclimation_reported
+  evidence_state: "false"
+  likelihood_positive: 0.1
+  likelihood_background: 0.75
+- problem_id: acclimation_transport_stress
+  evidence_id: recent_fish_added
+  evidence_state: "true"
+  likelihood_positive: 0.6
+  likelihood_background: 0.2
+- problem_id: acclimation_transport_stress
+  evidence_id: recent_fish_added
+  evidence_state: "false"
+  likelihood_positive: 0.03
+  likelihood_background: 0.6
+  rationale: This problem is definitionally about a newly introduced fish; without one it's essentially ruled out.
+- problem_id: acclimation_transport_stress
+  evidence_id: num_fish_affected
+  evidence_state: single
+  likelihood_positive: 0.65
+  likelihood_background: 0.3
+  rationale: Typically affects just the newly introduced individual, not the established tank population.
+- problem_id: acclimation_transport_stress
+  evidence_id: num_fish_affected
+  evidence_state: most_or_all
+  likelihood_positive: 0.05
+  likelihood_background: 0.3
+- problem_id: acclimation_transport_stress
+  evidence_id: lethargy
+  evidence_state: "true"
+  likelihood_positive: 0.45
+  likelihood_background: 0.35
+- problem_id: acclimation_transport_stress
+  evidence_id: onset_timing
+  evidence_state: sudden
+  likelihood_positive: 0.5
+  likelihood_background: 0.3
+  rationale: Stress from a rushed acclimation shows soon after introduction.
+
+# ============================== inadequate_hiding_or_environment_stress ==============================
+- problem_id: inadequate_hiding_or_environment_stress
+  evidence_id: insufficient_hiding_places
+  evidence_state: "true"
+  likelihood_positive: 0.65
+  likelihood_background: 0.15
+  rationale: Direct observation of the environmental setup, the most diagnostic single fact for this problem.
+- problem_id: inadequate_hiding_or_environment_stress
+  evidence_id: insufficient_hiding_places
+  evidence_state: "false"
+  likelihood_positive: 0.15
+  likelihood_background: 0.7
+- problem_id: inadequate_hiding_or_environment_stress
+  evidence_id: color_fading_or_pale
+  evidence_state: "true"
+  likelihood_positive: 0.55
+  likelihood_background: 0.15
+  rationale: A classic sign of chronic, low-grade stress rather than acute illness.
+- problem_id: inadequate_hiding_or_environment_stress
+  evidence_id: color_fading_or_pale
+  evidence_state: "false"
+  likelihood_positive: 0.2
+  likelihood_background: 0.75
+- problem_id: inadequate_hiding_or_environment_stress
+  evidence_id: lethargy
+  evidence_state: "true"
+  likelihood_positive: 0.45
+  likelihood_background: 0.35
+- problem_id: inadequate_hiding_or_environment_stress
+  evidence_id: onset_timing
+  evidence_state: chronic
+  likelihood_positive: 0.5
+  likelihood_background: 0.15
+
+# ---- representative sudden_multiple_fish_death rows (acute vs chronic) ----
+# Deliberately touches only a few problems of each kind, as a light
+# secondary signal rather than the primary driver of any diagnosis --
+# see the rationale on the evidence definition in evidence.yaml.
+- problem_id: ammonia_toxicity
+  evidence_id: sudden_multiple_fish_death
+  evidence_state: "true"
+  likelihood_positive: 0.5
+  likelihood_background: 0.1
+  rationale: Mass mortality is consistent with a fast-acting acute water-chemistry crisis.
+- problem_id: nitrite_toxicity
+  evidence_id: sudden_multiple_fish_death
+  evidence_state: "true"
+  likelihood_positive: 0.5
+  likelihood_background: 0.1
+- problem_id: low_oxygen
+  evidence_id: sudden_multiple_fish_death
+  evidence_state: "true"
+  likelihood_positive: 0.55
+  likelihood_background: 0.1
+- problem_id: chlorine_chloramine_poisoning
+  evidence_id: sudden_multiple_fish_death
+  evidence_state: "true"
+  likelihood_positive: 0.55
+  likelihood_background: 0.1
+- problem_id: co2_injection_excess
+  evidence_id: sudden_multiple_fish_death
+  evidence_state: "true"
+  likelihood_positive: 0.5
+  likelihood_background: 0.1
+- problem_id: chronic_nitrate_stress
+  evidence_id: sudden_multiple_fish_death
+  evidence_state: "true"
+  likelihood_positive: 0.05
+  likelihood_background: 0.35
+  rationale: Chronic nitrate stress is a slow-developing condition, inconsistent with sudden mass death.
