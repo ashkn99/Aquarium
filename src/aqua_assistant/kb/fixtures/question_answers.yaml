@@ -1,0 +1,63 @@
+# Predefined answer options for boolean/categorical questions. Numeric
+# questions don't need entries here -- a raw reading is bucketed via
+# evidence_ranges.yaml instead. default_confidence implements the
+# per-observation confidence value; it's overridable by an actual
+# user-supplied confidence at answer time.
+
+# --- boolean questions: every one gets a yes/no pair ---
+- {id: aq_gasping_yes, question_id: ask_gasping, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.9}
+- {id: aq_gasping_no, question_id: ask_gasping, evidence_state: "false", label: "No", order: 1, default_confidence: 0.85}
+
+- {id: aq_rapid_breathing_yes, question_id: ask_rapid_breathing, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.85}
+- {id: aq_rapid_breathing_no, question_id: ask_rapid_breathing, evidence_state: "false", label: "No", order: 1, default_confidence: 0.8}
+
+- {id: aq_surface_breathing_yes, question_id: ask_surface_breathing, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.9}
+- {id: aq_surface_breathing_no, question_id: ask_surface_breathing, evidence_state: "false", label: "No", order: 1, default_confidence: 0.85}
+
+- {id: aq_lethargy_yes, question_id: ask_lethargy, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.85}
+- {id: aq_lethargy_no, question_id: ask_lethargy, evidence_state: "false", label: "No", order: 1, default_confidence: 0.8}
+
+- {id: aq_appetite_loss_yes, question_id: ask_appetite_loss, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.9}
+- {id: aq_appetite_loss_no, question_id: ask_appetite_loss, evidence_state: "false", label: "No", order: 1, default_confidence: 0.85}
+
+- {id: aq_hiding_yes, question_id: ask_hiding, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.85}
+- {id: aq_hiding_no, question_id: ask_hiding, evidence_state: "false", label: "No", order: 1, default_confidence: 0.8}
+
+- {id: aq_white_spots_yes, question_id: ask_white_spots, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.95}
+- {id: aq_white_spots_no, question_id: ask_white_spots, evidence_state: "false", label: "No", order: 1, default_confidence: 0.9}
+
+- {id: aq_frayed_fins_yes, question_id: ask_frayed_fins, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.9}
+- {id: aq_frayed_fins_no, question_id: ask_frayed_fins, evidence_state: "false", label: "No", order: 1, default_confidence: 0.85}
+
+- {id: aq_clamped_fins_yes, question_id: ask_clamped_fins, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.85}
+- {id: aq_clamped_fins_no, question_id: ask_clamped_fins, evidence_state: "false", label: "No", order: 1, default_confidence: 0.8}
+
+- {id: aq_red_streaks_or_gills_yes, question_id: ask_red_streaks_or_gills, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.9}
+- {id: aq_red_streaks_or_gills_no, question_id: ask_red_streaks_or_gills, evidence_state: "false", label: "No", order: 1, default_confidence: 0.85}
+
+- {id: aq_excess_mucus_yes, question_id: ask_excess_mucus, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.85}
+- {id: aq_excess_mucus_no, question_id: ask_excess_mucus, evidence_state: "false", label: "No", order: 1, default_confidence: 0.8}
+
+- {id: aq_flashing_scratching_yes, question_id: ask_flashing_scratching, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.9}
+- {id: aq_flashing_scratching_no, question_id: ask_flashing_scratching, evidence_state: "false", label: "No", order: 1, default_confidence: 0.85}
+
+- {id: aq_recent_fish_added_yes, question_id: ask_recent_fish_added, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.95}
+- {id: aq_recent_fish_added_no, question_id: ask_recent_fish_added, evidence_state: "false", label: "No", order: 1, default_confidence: 0.95}
+
+- {id: aq_recent_water_change_large_yes, question_id: ask_recent_water_change_large, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.95}
+- {id: aq_recent_water_change_large_no, question_id: ask_recent_water_change_large, evidence_state: "false", label: "No", order: 1, default_confidence: 0.95}
+
+- {id: aq_filter_disrupted_yes, question_id: ask_filter_disrupted, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.9}
+- {id: aq_filter_disrupted_no, question_id: ask_filter_disrupted, evidence_state: "false", label: "No", order: 1, default_confidence: 0.9}
+
+- {id: aq_ph_swings_reported_yes, question_id: ask_ph_swings_reported, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.8}
+- {id: aq_ph_swings_reported_no, question_id: ask_ph_swings_reported, evidence_state: "false", label: "No", order: 1, default_confidence: 0.75}
+
+# --- categorical questions ---
+- {id: aq_num_fish_affected_single, question_id: ask_num_fish_affected, evidence_state: single, label: "Just one fish", order: 0, default_confidence: 0.9}
+- {id: aq_num_fish_affected_several, question_id: ask_num_fish_affected, evidence_state: several, label: "A few fish", order: 1, default_confidence: 0.85}
+- {id: aq_num_fish_affected_most, question_id: ask_num_fish_affected, evidence_state: most_or_all, label: "Most or all of the fish", order: 2, default_confidence: 0.85}
+
+- {id: aq_onset_timing_sudden, question_id: ask_onset_timing, evidence_state: sudden, label: "Suddenly, within hours", order: 0, default_confidence: 0.85}
+- {id: aq_onset_timing_gradual, question_id: ask_onset_timing, evidence_state: gradual, label: "Gradually, over a few days", order: 1, default_confidence: 0.8}
+- {id: aq_onset_timing_chronic, question_id: ask_onset_timing, evidence_state: chronic, label: "Slowly, over weeks", order: 2, default_confidence: 0.8}

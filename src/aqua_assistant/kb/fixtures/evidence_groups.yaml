@@ -1,0 +1,32 @@
+# Correlated-symptom clusters. When several members of a group are
+# observed positive for the same problem, the engine counts the strongest
+# one fully and discounts the rest by correlation_discount^rank, so e.g.
+# three respiratory symptoms don't count as three independent
+# confirmations of the same underlying issue.
+
+- id: respiratory_distress
+  name: Respiratory distress
+  description: >
+    Gasping, rapid gill movement, and surface breathing are different
+    observable facets of the same underlying oxygen-exchange problem.
+  correlation_discount: 0.4
+
+- id: lethargy_cluster
+  name: General malaise
+  description: >
+    Lethargy, appetite loss, and hiding are the least specific signs of
+    illness -- almost every problem in this KB can cause them, so they are
+    heavily discounted when they co-occur.
+  correlation_discount: 0.5
+
+- id: fin_damage
+  name: Fin damage
+  description: Frayed and clamped fins are both visible signs of fin/tissue stress.
+  correlation_discount: 0.6
+
+- id: external_irritation
+  name: External irritation
+  description: >
+    Red streaks/gills, excess mucus, and flashing/scratching are different
+    manifestations of skin or gill irritation.
+  correlation_discount: 0.5

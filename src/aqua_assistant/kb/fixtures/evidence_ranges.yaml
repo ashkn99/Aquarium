@@ -1,0 +1,206 @@
+# Numeric-reading bucketing. min/max are inclusive/exclusive per the flags
+# below; a null bound means unbounded in that direction. These are the
+# single source of truth for "what counts as high ammonia" etc. -- likelihood
+# rows in problem_evidence.yaml reference range_key, never raw thresholds.
+
+# ammonia_ppm
+- id: ammonia_safe
+  evidence_id: ammonia_ppm
+  range_key: safe
+  max_value: 0.25
+  max_inclusive: false
+  label: "< 0.25 ppm (safe)"
+  order: 0
+- id: ammonia_elevated
+  evidence_id: ammonia_ppm
+  range_key: elevated
+  min_value: 0.25
+  max_value: 1.0
+  min_inclusive: true
+  max_inclusive: false
+  label: "0.25 - 1.0 ppm (elevated)"
+  order: 1
+- id: ammonia_high
+  evidence_id: ammonia_ppm
+  range_key: high
+  min_value: 1.0
+  max_value: 2.0
+  min_inclusive: true
+  max_inclusive: false
+  label: "1.0 - 2.0 ppm (high)"
+  order: 2
+- id: ammonia_critical
+  evidence_id: ammonia_ppm
+  range_key: critical
+  min_value: 2.0
+  min_inclusive: true
+  label: ">= 2.0 ppm (critical)"
+  order: 3
+
+# nitrite_ppm
+- id: nitrite_safe
+  evidence_id: nitrite_ppm
+  range_key: safe
+  max_value: 0.25
+  max_inclusive: false
+  label: "< 0.25 ppm (safe)"
+  order: 0
+- id: nitrite_elevated
+  evidence_id: nitrite_ppm
+  range_key: elevated
+  min_value: 0.25
+  max_value: 0.5
+  min_inclusive: true
+  max_inclusive: false
+  label: "0.25 - 0.5 ppm (elevated)"
+  order: 1
+- id: nitrite_high
+  evidence_id: nitrite_ppm
+  range_key: high
+  min_value: 0.5
+  max_value: 1.0
+  min_inclusive: true
+  max_inclusive: false
+  label: "0.5 - 1.0 ppm (high)"
+  order: 2
+- id: nitrite_critical
+  evidence_id: nitrite_ppm
+  range_key: critical
+  min_value: 1.0
+  min_inclusive: true
+  label: ">= 1.0 ppm (critical)"
+  order: 3
+
+# nitrate_ppm
+- id: nitrate_safe
+  evidence_id: nitrate_ppm
+  range_key: safe
+  max_value: 20
+  max_inclusive: false
+  label: "< 20 ppm (safe)"
+  order: 0
+- id: nitrate_elevated
+  evidence_id: nitrate_ppm
+  range_key: elevated
+  min_value: 20
+  max_value: 40
+  min_inclusive: true
+  max_inclusive: false
+  label: "20 - 40 ppm (elevated)"
+  order: 1
+- id: nitrate_high
+  evidence_id: nitrate_ppm
+  range_key: high
+  min_value: 40
+  max_value: 80
+  min_inclusive: true
+  max_inclusive: false
+  label: "40 - 80 ppm (high)"
+  order: 2
+- id: nitrate_critical
+  evidence_id: nitrate_ppm
+  range_key: critical
+  min_value: 80
+  min_inclusive: true
+  label: ">= 80 ppm (critical)"
+  order: 3
+
+# ph_level (generic freshwater community range -- not species-adjusted in MVP)
+- id: ph_low
+  evidence_id: ph_level
+  range_key: low
+  max_value: 6.5
+  max_inclusive: false
+  label: "< 6.5 (low)"
+  order: 0
+- id: ph_normal
+  evidence_id: ph_level
+  range_key: normal
+  min_value: 6.5
+  max_value: 7.8
+  min_inclusive: true
+  max_inclusive: false
+  label: "6.5 - 7.8 (normal)"
+  order: 1
+- id: ph_high
+  evidence_id: ph_level
+  range_key: high
+  min_value: 7.8
+  min_inclusive: true
+  label: ">= 7.8 (high)"
+  order: 2
+
+# temperature_f (generic tropical community range)
+- id: temp_low
+  evidence_id: temperature_f
+  range_key: low
+  max_value: 72
+  max_inclusive: false
+  label: "< 72°F (low)"
+  order: 0
+- id: temp_normal
+  evidence_id: temperature_f
+  range_key: normal
+  min_value: 72
+  max_value: 82
+  min_inclusive: true
+  max_inclusive: false
+  label: "72 - 82°F (normal)"
+  order: 1
+- id: temp_high
+  evidence_id: temperature_f
+  range_key: high
+  min_value: 82
+  min_inclusive: true
+  label: ">= 82°F (high)"
+  order: 2
+
+# dissolved_oxygen_ppm
+- id: oxygen_critical
+  evidence_id: dissolved_oxygen_ppm
+  range_key: critical
+  max_value: 3
+  max_inclusive: false
+  label: "< 3 ppm (critical)"
+  order: 0
+- id: oxygen_low
+  evidence_id: dissolved_oxygen_ppm
+  range_key: low
+  min_value: 3
+  max_value: 5
+  min_inclusive: true
+  max_inclusive: false
+  label: "3 - 5 ppm (low)"
+  order: 1
+- id: oxygen_adequate
+  evidence_id: dissolved_oxygen_ppm
+  range_key: adequate
+  min_value: 5
+  min_inclusive: true
+  label: ">= 5 ppm (adequate)"
+  order: 2
+
+# tank_age_days
+- id: tank_new
+  evidence_id: tank_age_days
+  range_key: new
+  max_value: 30
+  max_inclusive: false
+  label: "< 30 days (new)"
+  order: 0
+- id: tank_establishing
+  evidence_id: tank_age_days
+  range_key: establishing
+  min_value: 30
+  max_value: 90
+  min_inclusive: true
+  max_inclusive: false
+  label: "30 - 90 days (establishing)"
+  order: 1
+- id: tank_established
+  evidence_id: tank_age_days
+  range_key: established
+  min_value: 90
+  min_inclusive: true
+  label: ">= 90 days (established)"
+  order: 2

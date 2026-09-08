@@ -1,0 +1,39 @@
+# Safety rules are independent of the Bayesian scoring above -- they fire
+# purely off observed evidence states, regardless of what the ranked
+# candidates say, and (for urgent rules) pin a forced_question_id that
+# preempts the normal information-gain question pick for that turn.
+
+- id: critical_dissolved_oxygen
+  description: Confirmed critical dissolved oxygen reading.
+  all_of:
+    - {evidence_id: dissolved_oxygen_ppm, equals_state: critical}
+  severity: urgent
+  message: "Dissolved oxygen is at a critical level -- fish can suffocate within hours."
+  escalation_text: "Add surface agitation/aeration immediately (air stone, water change, reduce stocking) and retest oxygen within the hour."
+
+- id: critical_ammonia
+  description: Confirmed critical ammonia reading.
+  all_of:
+    - {evidence_id: ammonia_ppm, equals_state: critical}
+  severity: urgent
+  message: "Ammonia is at a critical, potentially lethal level."
+  escalation_text: "Do an immediate partial water change (25-50%) with dechlorinated, temperature-matched water and stop feeding until it drops."
+  forced_question_id: ask_gasping
+
+- id: critical_nitrite
+  description: Confirmed critical nitrite reading.
+  all_of:
+    - {evidence_id: nitrite_ppm, equals_state: critical}
+  severity: urgent
+  message: "Nitrite is at a critical level -- this blocks oxygen transport in the blood ('brown blood disease')."
+  escalation_text: "Do an immediate partial water change and consider adding aquarium salt (if species-appropriate) to reduce nitrite uptake."
+  forced_question_id: ask_gasping
+
+- id: respiratory_distress_general
+  description: Visible respiratory distress with no confirmed cause yet.
+  any_of:
+    - {evidence_id: gasping, equals_state: "true"}
+    - {evidence_id: surface_breathing, equals_state: "true"}
+  severity: caution
+  message: "Gasping or surface breathing can signal a fast-moving emergency (low oxygen, an ammonia/nitrite spike, or overheating)."
+  escalation_text: "Test dissolved oxygen, ammonia, nitrite, and temperature now, and add aeration as a precaution while you investigate."

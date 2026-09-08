@@ -1,0 +1,456 @@
+# The core likelihood table: P(evidence_state | problem present) vs
+# P(evidence_state | problem absent), for every (problem, evidence, state)
+# combination worth encoding. Negative evidence ("confirmed safe ammonia
+# reduces ammonia_toxicity") is just another explicit row for that state --
+# no special-casing needed in the engine.
+#
+# Values are deliberately approximate, expert-reviewable estimates, not
+# measured statistics -- provenance/rationale is inline per row so a
+# domain expert can challenge specific numbers in a PR review.
+
+# ============================== ammonia_toxicity ==============================
+- problem_id: ammonia_toxicity
+  evidence_id: ammonia_ppm
+  evidence_state: critical
+  likelihood_positive: 0.85
+  likelihood_background: 0.03
+  rationale: Critical ammonia is close to definitional for this problem.
+- problem_id: ammonia_toxicity
+  evidence_id: ammonia_ppm
+  evidence_state: high
+  likelihood_positive: 0.65
+  likelihood_background: 0.08
+- problem_id: ammonia_toxicity
+  evidence_id: ammonia_ppm
+  evidence_state: elevated
+  likelihood_positive: 0.35
+  likelihood_background: 0.15
+- problem_id: ammonia_toxicity
+  evidence_id: ammonia_ppm
+  evidence_state: safe
+  likelihood_positive: 0.03
+  likelihood_background: 0.70
+  rationale: Confirmed-safe ammonia should sharply reduce this candidate.
+- problem_id: ammonia_toxicity
+  evidence_id: gasping
+  evidence_state: "true"
+  likelihood_positive: 0.6
+  likelihood_background: 0.15
+- problem_id: ammonia_toxicity
+  evidence_id: gasping
+  evidence_state: "false"
+  likelihood_positive: 0.4
+  likelihood_background: 0.85
+- problem_id: ammonia_toxicity
+  evidence_id: rapid_breathing
+  evidence_state: "true"
+  likelihood_positive: 0.55
+  likelihood_background: 0.2
+- problem_id: ammonia_toxicity
+  evidence_id: surface_breathing
+  evidence_state: "true"
+  likelihood_positive: 0.5
+  likelihood_background: 0.15
+- problem_id: ammonia_toxicity
+  evidence_id: red_streaks_or_gills
+  evidence_state: "true"
+  likelihood_positive: 0.55
+  likelihood_background: 0.1
+  rationale: Ammonia burns gill tissue, producing visible redness/inflammation.
+- problem_id: ammonia_toxicity
+  evidence_id: red_streaks_or_gills
+  evidence_state: "false"
+  likelihood_positive: 0.45
+  likelihood_background: 0.9
+- problem_id: ammonia_toxicity
+  evidence_id: lethargy
+  evidence_state: "true"
+  likelihood_positive: 0.6
+  likelihood_background: 0.35
+- problem_id: ammonia_toxicity
+  evidence_id: num_fish_affected
+  evidence_state: most_or_all
+  likelihood_positive: 0.65
+  likelihood_background: 0.25
+  rationale: Ammonia is a whole-tank water condition, not a single-fish issue.
+- problem_id: ammonia_toxicity
+  evidence_id: num_fish_affected
+  evidence_state: single
+  likelihood_positive: 0.1
+  likelihood_background: 0.35
+- problem_id: ammonia_toxicity
+  evidence_id: onset_timing
+  evidence_state: sudden
+  likelihood_positive: 0.55
+  likelihood_background: 0.3
+- problem_id: ammonia_toxicity
+  evidence_id: tank_age_days
+  evidence_state: new
+  likelihood_positive: 0.6
+  likelihood_background: 0.2
+- problem_id: ammonia_toxicity
+  evidence_id: recent_fish_added
+  evidence_state: "true"
+  likelihood_positive: 0.5
+  likelihood_background: 0.2
+- problem_id: ammonia_toxicity
+  evidence_id: filter_disrupted
+  evidence_state: "true"
+  likelihood_positive: 0.45
+  likelihood_background: 0.1
+  rationale: Loss of biofiltration is a classic ammonia-spike trigger.
+
+# ============================== nitrite_toxicity ==============================
+- problem_id: nitrite_toxicity
+  evidence_id: nitrite_ppm
+  evidence_state: critical
+  likelihood_positive: 0.85
+  likelihood_background: 0.03
+- problem_id: nitrite_toxicity
+  evidence_id: nitrite_ppm
+  evidence_state: high
+  likelihood_positive: 0.65
+  likelihood_background: 0.06
+- problem_id: nitrite_toxicity
+  evidence_id: nitrite_ppm
+  evidence_state: elevated
+  likelihood_positive: 0.35
+  likelihood_background: 0.12
+- problem_id: nitrite_toxicity
+  evidence_id: nitrite_ppm
+  evidence_state: safe
+  likelihood_positive: 0.03
+  likelihood_background: 0.75
+  rationale: Confirmed-safe nitrite should sharply reduce this candidate.
+- problem_id: nitrite_toxicity
+  evidence_id: gasping
+  evidence_state: "true"
+  likelihood_positive: 0.65
+  likelihood_background: 0.15
+  rationale: Nitrite blocks oxygen transport in blood, so distress can be even more pronounced than with ammonia.
+- problem_id: nitrite_toxicity
+  evidence_id: rapid_breathing
+  evidence_state: "true"
+  likelihood_positive: 0.6
+  likelihood_background: 0.2
+- problem_id: nitrite_toxicity
+  evidence_id: surface_breathing
+  evidence_state: "true"
+  likelihood_positive: 0.55
+  likelihood_background: 0.15
+- problem_id: nitrite_toxicity
+  evidence_id: lethargy
+  evidence_state: "true"
+  likelihood_positive: 0.55
+  likelihood_background: 0.35
+- problem_id: nitrite_toxicity
+  evidence_id: num_fish_affected
+  evidence_state: most_or_all
+  likelihood_positive: 0.6
+  likelihood_background: 0.25
+- problem_id: nitrite_toxicity
+  evidence_id: onset_timing
+  evidence_state: gradual
+  likelihood_positive: 0.5
+  likelihood_background: 0.3
+  rationale: Nitrite typically rises over the second stage of cycling, not instantly.
+- problem_id: nitrite_toxicity
+  evidence_id: tank_age_days
+  evidence_state: establishing
+  likelihood_positive: 0.55
+  likelihood_background: 0.2
+- problem_id: nitrite_toxicity
+  evidence_id: tank_age_days
+  evidence_state: new
+  likelihood_positive: 0.35
+  likelihood_background: 0.2
+
+# ============================== low_oxygen ==============================
+- problem_id: low_oxygen
+  evidence_id: dissolved_oxygen_ppm
+  evidence_state: critical
+  likelihood_positive: 0.9
+  likelihood_background: 0.02
+- problem_id: low_oxygen
+  evidence_id: dissolved_oxygen_ppm
+  evidence_state: low
+  likelihood_positive: 0.6
+  likelihood_background: 0.15
+- problem_id: low_oxygen
+  evidence_id: dissolved_oxygen_ppm
+  evidence_state: adequate
+  likelihood_positive: 0.02
+  likelihood_background: 0.75
+  rationale: Confirmed-adequate oxygen should sharply reduce this candidate.
+- problem_id: low_oxygen
+  evidence_id: gasping
+  evidence_state: "true"
+  likelihood_positive: 0.75
+  likelihood_background: 0.15
+- problem_id: low_oxygen
+  evidence_id: surface_breathing
+  evidence_state: "true"
+  likelihood_positive: 0.8
+  likelihood_background: 0.12
+  rationale: Surface breathing (piping) is the single most classic low-oxygen sign.
+- problem_id: low_oxygen
+  evidence_id: rapid_breathing
+  evidence_state: "true"
+  likelihood_positive: 0.6
+  likelihood_background: 0.2
+- problem_id: low_oxygen
+  evidence_id: temperature_f
+  evidence_state: high
+  likelihood_positive: 0.5
+  likelihood_background: 0.2
+  rationale: Warmer water holds less dissolved oxygen.
+- problem_id: low_oxygen
+  evidence_id: num_fish_affected
+  evidence_state: most_or_all
+  likelihood_positive: 0.7
+  likelihood_background: 0.25
+- problem_id: low_oxygen
+  evidence_id: onset_timing
+  evidence_state: sudden
+  likelihood_positive: 0.6
+  likelihood_background: 0.3
+- problem_id: low_oxygen
+  evidence_id: filter_disrupted
+  evidence_state: "true"
+  likelihood_positive: 0.55
+  likelihood_background: 0.1
+  rationale: Filter/pump downtime often removes the main source of surface agitation.
+
+# ============================== temperature_shock ==============================
+- problem_id: temperature_shock
+  evidence_id: temperature_f
+  evidence_state: low
+  likelihood_positive: 0.6
+  likelihood_background: 0.1
+- problem_id: temperature_shock
+  evidence_id: temperature_f
+  evidence_state: high
+  likelihood_positive: 0.55
+  likelihood_background: 0.12
+- problem_id: temperature_shock
+  evidence_id: temperature_f
+  evidence_state: normal
+  likelihood_positive: 0.05
+  likelihood_background: 0.78
+  rationale: A normal current reading argues against an ongoing temperature problem.
+- problem_id: temperature_shock
+  evidence_id: onset_timing
+  evidence_state: sudden
+  likelihood_positive: 0.75
+  likelihood_background: 0.3
+  rationale: >-
+    "Shock" implies a rapid change, not a gradual drift.
+- problem_id: temperature_shock
+  evidence_id: lethargy
+  evidence_state: "true"
+  likelihood_positive: 0.65
+  likelihood_background: 0.35
+- problem_id: temperature_shock
+  evidence_id: gasping
+  evidence_state: "true"
+  likelihood_positive: 0.4
+  likelihood_background: 0.18
+- problem_id: temperature_shock
+  evidence_id: num_fish_affected
+  evidence_state: most_or_all
+  likelihood_positive: 0.6
+  likelihood_background: 0.25
+- problem_id: temperature_shock
+  evidence_id: recent_water_change_large
+  evidence_state: "true"
+  likelihood_positive: 0.5
+  likelihood_background: 0.15
+  rationale: Mismatched water-change temperature is a common trigger.
+
+# ============================== ph_instability ==============================
+- problem_id: ph_instability
+  evidence_id: ph_swings_reported
+  evidence_state: "true"
+  likelihood_positive: 0.7
+  likelihood_background: 0.05
+- problem_id: ph_instability
+  evidence_id: ph_level
+  evidence_state: low
+  likelihood_positive: 0.5
+  likelihood_background: 0.15
+- problem_id: ph_instability
+  evidence_id: ph_level
+  evidence_state: high
+  likelihood_positive: 0.45
+  likelihood_background: 0.15
+- problem_id: ph_instability
+  evidence_id: ph_level
+  evidence_state: normal
+  likelihood_positive: 0.15
+  likelihood_background: 0.6
+  rationale: A single normal reading doesn't rule out swings, so this is a weaker negative than a direct "no swings" answer.
+- problem_id: ph_instability
+  evidence_id: lethargy
+  evidence_state: "true"
+  likelihood_positive: 0.5
+  likelihood_background: 0.35
+- problem_id: ph_instability
+  evidence_id: gasping
+  evidence_state: "true"
+  likelihood_positive: 0.3
+  likelihood_background: 0.18
+- problem_id: ph_instability
+  evidence_id: recent_water_change_large
+  evidence_state: "true"
+  likelihood_positive: 0.45
+  likelihood_background: 0.15
+  rationale: A large water change with differing source-water chemistry is a common swing trigger.
+- problem_id: ph_instability
+  evidence_id: num_fish_affected
+  evidence_state: most_or_all
+  likelihood_positive: 0.55
+  likelihood_background: 0.25
+
+# ============================== ich ==============================
+- problem_id: ich
+  evidence_id: white_spots
+  evidence_state: "true"
+  likelihood_positive: 0.95
+  likelihood_background: 0.01
+  rationale: Pathognomonic sign for Ich.
+- problem_id: ich
+  evidence_id: white_spots
+  evidence_state: "false"
+  likelihood_positive: 0.05
+  likelihood_background: 0.95
+  rationale: Absence of white spots makes Ich very unlikely.
+- problem_id: ich
+  evidence_id: flashing_scratching
+  evidence_state: "true"
+  likelihood_positive: 0.6
+  likelihood_background: 0.1
+- problem_id: ich
+  evidence_id: excess_mucus
+  evidence_state: "true"
+  likelihood_positive: 0.4
+  likelihood_background: 0.15
+- problem_id: ich
+  evidence_id: appetite_loss
+  evidence_state: "true"
+  likelihood_positive: 0.5
+  likelihood_background: 0.3
+- problem_id: ich
+  evidence_id: lethargy
+  evidence_state: "true"
+  likelihood_positive: 0.45
+  likelihood_background: 0.35
+- problem_id: ich
+  evidence_id: num_fish_affected
+  evidence_state: several
+  likelihood_positive: 0.55
+  likelihood_background: 0.25
+  rationale: Ich spreads across multiple fish but rarely hits literally all fish at first presentation.
+- problem_id: ich
+  evidence_id: onset_timing
+  evidence_state: gradual
+  likelihood_positive: 0.6
+  likelihood_background: 0.3
+- problem_id: ich
+  evidence_id: recent_fish_added
+  evidence_state: "true"
+  likelihood_positive: 0.55
+  likelihood_background: 0.2
+  rationale: New fish are the most common vector for introducing the parasite.
+
+# ============================== bacterial_infection ==============================
+- problem_id: bacterial_infection
+  evidence_id: frayed_fins
+  evidence_state: "true"
+  likelihood_positive: 0.65
+  likelihood_background: 0.12
+- problem_id: bacterial_infection
+  evidence_id: red_streaks_or_gills
+  evidence_state: "true"
+  likelihood_positive: 0.55
+  likelihood_background: 0.12
+- problem_id: bacterial_infection
+  evidence_id: clamped_fins
+  evidence_state: "true"
+  likelihood_positive: 0.5
+  likelihood_background: 0.2
+- problem_id: bacterial_infection
+  evidence_id: excess_mucus
+  evidence_state: "true"
+  likelihood_positive: 0.35
+  likelihood_background: 0.15
+- problem_id: bacterial_infection
+  evidence_id: lethargy
+  evidence_state: "true"
+  likelihood_positive: 0.55
+  likelihood_background: 0.35
+- problem_id: bacterial_infection
+  evidence_id: appetite_loss
+  evidence_state: "true"
+  likelihood_positive: 0.5
+  likelihood_background: 0.3
+- problem_id: bacterial_infection
+  evidence_id: num_fish_affected
+  evidence_state: single
+  likelihood_positive: 0.5
+  likelihood_background: 0.3
+  rationale: Bacterial infections often start localized to one weakened/injured fish.
+- problem_id: bacterial_infection
+  evidence_id: white_spots
+  evidence_state: "false"
+  likelihood_positive: 0.85
+  likelihood_background: 0.5
+  rationale: Helps differentiate from Ich, which strongly implies white spots present.
+- problem_id: bacterial_infection
+  evidence_id: onset_timing
+  evidence_state: gradual
+  likelihood_positive: 0.55
+  likelihood_background: 0.3
+
+# ============================== new_tank_syndrome ==============================
+- problem_id: new_tank_syndrome
+  evidence_id: tank_age_days
+  evidence_state: new
+  likelihood_positive: 0.8
+  likelihood_background: 0.15
+- problem_id: new_tank_syndrome
+  evidence_id: ammonia_ppm
+  evidence_state: elevated
+  likelihood_positive: 0.5
+  likelihood_background: 0.2
+- problem_id: new_tank_syndrome
+  evidence_id: ammonia_ppm
+  evidence_state: high
+  likelihood_positive: 0.35
+  likelihood_background: 0.15
+- problem_id: new_tank_syndrome
+  evidence_id: nitrite_ppm
+  evidence_state: elevated
+  likelihood_positive: 0.45
+  likelihood_background: 0.15
+  rationale: Cycling tanks often show mild simultaneous pressure on both ammonia and nitrite, unlike a single acute spike.
+- problem_id: new_tank_syndrome
+  evidence_id: recent_fish_added
+  evidence_state: "true"
+  likelihood_positive: 0.6
+  likelihood_background: 0.2
+- problem_id: new_tank_syndrome
+  evidence_id: num_fish_affected
+  evidence_state: most_or_all
+  likelihood_positive: 0.55
+  likelihood_background: 0.25
+- problem_id: new_tank_syndrome
+  evidence_id: onset_timing
+  evidence_state: gradual
+  likelihood_positive: 0.6
+  likelihood_background: 0.3
+  rationale: Bioload outpacing an immature filter builds up over days, unlike a sudden event.
+- problem_id: new_tank_syndrome
+  evidence_id: lethargy
+  evidence_state: "true"
+  likelihood_positive: 0.45
+  likelihood_background: 0.35

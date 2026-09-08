@@ -1,0 +1,135 @@
+# Observable symptoms, parameters, and context. `data_type` determines how
+# a value is captured: boolean (yes/no), categorical (one of a fixed set
+# of states), or numeric (a raw reading, bucketed via evidence_ranges.yaml
+# into the states problem_evidence.yaml actually reasons about).
+
+# --- respiratory_distress group ---
+- id: gasping
+  name: Gasping at the surface
+  data_type: boolean
+  evidence_group_id: respiratory_distress
+  rationale: Classic acute-distress sign, shared by several water-quality/oxygen problems.
+
+- id: rapid_breathing
+  name: Rapid gill movement
+  data_type: boolean
+  evidence_group_id: respiratory_distress
+  rationale: Same underlying oxygen-exchange stress as gasping, observed differently.
+
+- id: surface_breathing
+  name: Spending unusual time at the surface
+  data_type: boolean
+  evidence_group_id: respiratory_distress
+  rationale: A milder/earlier form of the same respiratory-distress signal.
+
+# --- lethargy_cluster group ---
+- id: lethargy
+  name: Reduced activity
+  data_type: boolean
+  evidence_group_id: lethargy_cluster
+
+- id: appetite_loss
+  name: Loss of appetite
+  data_type: boolean
+  evidence_group_id: lethargy_cluster
+
+- id: hiding
+  name: Hiding more than usual
+  data_type: boolean
+  evidence_group_id: lethargy_cluster
+
+# --- ungrouped, highly specific symptom ---
+- id: white_spots
+  name: Small white, salt-grain-like spots
+  data_type: boolean
+  rationale: Pathognomonic for Ich -- not correlated with other symptom groups, kept standalone.
+
+# --- fin_damage group ---
+- id: frayed_fins
+  name: Frayed or eroding fins
+  data_type: boolean
+  evidence_group_id: fin_damage
+
+- id: clamped_fins
+  name: Fins held clamped to the body
+  data_type: boolean
+  evidence_group_id: fin_damage
+
+# --- external_irritation group ---
+- id: red_streaks_or_gills
+  name: Red streaks or inflamed gills
+  data_type: boolean
+  evidence_group_id: external_irritation
+
+- id: excess_mucus
+  name: Excessive slime/mucus coating
+  data_type: boolean
+  evidence_group_id: external_irritation
+
+- id: flashing_scratching
+  name: Darting/scratching against decor or substrate
+  data_type: boolean
+  evidence_group_id: external_irritation
+
+# --- progression / scope (categorical, ungrouped -- these describe the
+# case as a whole rather than a single correlated symptom) ---
+- id: num_fish_affected
+  name: Number of fish showing symptoms
+  data_type: categorical
+
+- id: onset_timing
+  name: How quickly symptoms started
+  data_type: categorical
+
+# --- water parameters (numeric, bucketed via evidence_ranges.yaml) ---
+- id: ammonia_ppm
+  name: Ammonia
+  data_type: numeric
+  unit: ppm
+
+- id: nitrite_ppm
+  name: Nitrite
+  data_type: numeric
+  unit: ppm
+
+- id: nitrate_ppm
+  name: Nitrate
+  data_type: numeric
+  unit: ppm
+
+- id: ph_level
+  name: pH
+  data_type: numeric
+  unit: pH
+
+- id: temperature_f
+  name: Water temperature
+  data_type: numeric
+  unit: "°F"
+
+- id: dissolved_oxygen_ppm
+  name: Dissolved oxygen
+  data_type: numeric
+  unit: ppm
+
+- id: tank_age_days
+  name: Tank age
+  data_type: numeric
+  unit: days
+
+# --- setup / recent-change context (ungrouped booleans) ---
+- id: recent_fish_added
+  name: New fish added in the last 2 weeks
+  data_type: boolean
+
+- id: recent_water_change_large
+  name: Large (>30%) water change in the last 2 days
+  data_type: boolean
+
+- id: filter_disrupted
+  name: Filter cleaned, replaced, or turned off recently
+  data_type: boolean
+
+- id: ph_swings_reported
+  name: pH fluctuates noticeably between tests
+  data_type: boolean

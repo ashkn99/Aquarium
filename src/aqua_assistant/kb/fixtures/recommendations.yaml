@@ -1,0 +1,64 @@
+# Per-problem action bundles, deliberately separate from diagnosis. All
+# wording is hedged (consistent with / most likely / cannot rule out --
+# never "definitely" or "guaranteed") since a top-ranked candidate is a
+# relative plausibility estimate, not a certain diagnosis.
+
+# ============================== ammonia_toxicity ==============================
+- {problem_id: ammonia_toxicity, kind: confirmation_check, order: 0, text: "Test ammonia (total and free, if your kit distinguishes) with a fresh sample -- a current reading is far more informative than remembering a past one."}
+- {problem_id: ammonia_toxicity, kind: immediate_action, order: 0, text: "Do an immediate 25-50% water change with dechlorinated, temperature-matched water to dilute ammonia."}
+- {problem_id: ammonia_toxicity, kind: immediate_action, order: 1, text: "Stop feeding for 24-48 hours to reduce further ammonia production."}
+- {problem_id: ammonia_toxicity, kind: follow_up_action, order: 0, text: "Add a source of beneficial bacteria (from an established filter or a bottled starter) and retest ammonia daily until it reaches zero."}
+- {problem_id: ammonia_toxicity, kind: avoid, order: 0, text: "Avoid adding new fish or increasing feeding until ammonia has read zero for several consecutive days."}
+- {problem_id: ammonia_toxicity, kind: escalation_criterion, order: 0, text: "Fish gasping at the surface or losing balance despite water changes is consistent with a severe, fast-moving event -- consider consulting an aquatic vet or an experienced local fish store urgently."}
+
+# ============================== nitrite_toxicity ==============================
+- {problem_id: nitrite_toxicity, kind: confirmation_check, order: 0, text: "Test nitrite directly -- it is a distinct test from both ammonia and nitrate."}
+- {problem_id: nitrite_toxicity, kind: immediate_action, order: 0, text: "Do an immediate partial water change to dilute nitrite."}
+- {problem_id: nitrite_toxicity, kind: immediate_action, order: 1, text: "If your species tolerates it, adding aquarium salt can reduce nitrite's toxic effect -- confirm salt tolerance for your specific fish first."}
+- {problem_id: nitrite_toxicity, kind: follow_up_action, order: 0, text: "Retest nitrite daily; it typically falls as the tank finishes cycling, often over one to two weeks."}
+- {problem_id: nitrite_toxicity, kind: avoid, order: 0, text: "Avoid adding new fish until nitrite reads zero for several consecutive days."}
+- {problem_id: nitrite_toxicity, kind: escalation_criterion, order: 0, text: "Pale or brown-tinged gills alongside high nitrite is consistent with severe toxicity and warrants urgent water changes and, if available, expert guidance."}
+
+# ============================== low_oxygen ==============================
+- {problem_id: low_oxygen, kind: confirmation_check, order: 0, text: "Test dissolved oxygen if you have a kit, or observe whether fish cluster at the surface, especially at night or early morning when oxygen is lowest."}
+- {problem_id: low_oxygen, kind: immediate_action, order: 0, text: "Increase surface agitation immediately -- add an air stone, powerhead, or partial water change with cooler water."}
+- {problem_id: low_oxygen, kind: immediate_action, order: 1, text: "Reduce stocking density or remove any dead/decaying matter that may be consuming oxygen."}
+- {problem_id: low_oxygen, kind: follow_up_action, order: 0, text: "Check that your filter's outflow is agitating the surface, not just circulating water below it."}
+- {problem_id: low_oxygen, kind: avoid, order: 0, text: "Avoid overstocking and avoid letting tank temperature run high, since warmer water holds less dissolved oxygen."}
+- {problem_id: low_oxygen, kind: escalation_criterion, order: 0, text: "Multiple fish gasping at the surface at the same time is consistent with an acute emergency requiring action within the hour, not the day."}
+
+# ============================== temperature_shock ==============================
+- {problem_id: temperature_shock, kind: confirmation_check, order: 0, text: "Check the thermometer reading against your target range for your species, and note how quickly it changed."}
+- {problem_id: temperature_shock, kind: immediate_action, order: 0, text: "Bring the temperature back toward the target range gradually -- no more than a degree or two per hour -- rather than correcting it all at once."}
+- {problem_id: temperature_shock, kind: follow_up_action, order: 0, text: "Check your heater, or identify the heat/cold source (room temperature, direct sun, drafts) that caused the swing."}
+- {problem_id: temperature_shock, kind: avoid, order: 0, text: "Avoid adding water more than a couple of degrees different from tank temperature during water changes."}
+- {problem_id: temperature_shock, kind: escalation_criterion, order: 0, text: "A fish lying on its side or unresponsive after a temperature swing is consistent with a severe shock event and warrants immediate stabilization."}
+
+# ============================== ph_instability ==============================
+- {problem_id: ph_instability, kind: confirmation_check, order: 0, text: "Test pH at the same time of day on two consecutive days to see whether it's genuinely swinging rather than a one-off reading."}
+- {problem_id: ph_instability, kind: immediate_action, order: 0, text: "Avoid making a sudden large correction to pH -- a big swing is usually more harmful than a stable, slightly-off pH."}
+- {problem_id: ph_instability, kind: follow_up_action, order: 0, text: "Look for a driver of instability, such as low buffering capacity (KH), overstocking, or CO2 swings from a planted-tank light cycle."}
+- {problem_id: ph_instability, kind: avoid, order: 0, text: "Avoid pH 'quick fix' chemicals unless you understand your water's buffering capacity -- they are consistent with causing more instability, not less."}
+- {problem_id: ph_instability, kind: escalation_criterion, order: 0, text: "Sudden lethargy or gasping right after a pH swing is consistent with acute pH shock and may need a careful, buffered water change."}
+
+# ============================== ich ==============================
+- {problem_id: ich, kind: confirmation_check, order: 0, text: "Look closely under good light for small white, salt-grain-like spots, especially on fins and gills, and re-check daily since it can appear and spread quickly."}
+- {problem_id: ich, kind: immediate_action, order: 0, text: "Gradually raise temperature toward the upper end of your species' safe range (this speeds the parasite's life cycle so treatment works faster) while treating with an appropriate ich medication or aquarium salt for your species."}
+- {problem_id: ich, kind: follow_up_action, order: 0, text: "Continue treatment for the full recommended course, even after visible spots disappear -- the parasite has a life-cycle stage it can hide in."}
+- {problem_id: ich, kind: avoid, order: 0, text: "Avoid mixing multiple medications at once, and avoid adding new fish until treatment is fully complete."}
+- {problem_id: ich, kind: escalation_criterion, order: 0, text: "Rapid spread across most fish, or breathing difficulty alongside visible spots, is consistent with a severe infestation needing prompt treatment."}
+
+# ============================== bacterial_infection ==============================
+- {problem_id: bacterial_infection, kind: confirmation_check, order: 0, text: "Look for frayed or reddened fins, red streaks, or cloudy patches, and check water quality parameters, since poor water quality is consistent with making fish more susceptible."}
+- {problem_id: bacterial_infection, kind: immediate_action, order: 0, text: "Improve water quality first (test and correct ammonia/nitrite/nitrate), since bacterial infections are often secondary to stress or poor conditions."}
+- {problem_id: bacterial_infection, kind: immediate_action, order: 1, text: "Consider a targeted antibacterial treatment appropriate for your species if symptoms are worsening."}
+- {problem_id: bacterial_infection, kind: follow_up_action, order: 0, text: "Isolate the affected fish in a hospital tank if possible, to reduce stress and allow closer monitoring."}
+- {problem_id: bacterial_infection, kind: avoid, order: 0, text: "Avoid overcrowding and avoid handling the fish more than necessary, which can worsen fin/skin damage."}
+- {problem_id: bacterial_infection, kind: escalation_criterion, order: 0, text: "Rapidly spreading redness, open sores, or multiple affected fish is consistent with a serious infection needing prompt treatment."}
+
+# ============================== new_tank_syndrome ==============================
+- {problem_id: new_tank_syndrome, kind: confirmation_check, order: 0, text: "Confirm how long the tank has been running and whether ammonia and nitrite are both still elevated, consistent with an incomplete nitrogen cycle."}
+- {problem_id: new_tank_syndrome, kind: immediate_action, order: 0, text: "Do frequent small water changes (10-20% every 1-2 days) to keep ammonia and nitrite low while the tank finishes cycling."}
+- {problem_id: new_tank_syndrome, kind: follow_up_action, order: 0, text: "Test ammonia, nitrite, and nitrate every few days and track the trend -- a completed cycle shows both ammonia and nitrite at zero with nitrate present."}
+- {problem_id: new_tank_syndrome, kind: avoid, order: 0, text: "Avoid adding more fish until the tank has fully cycled, since additional bioload is consistent with prolonging the problem."}
+- {problem_id: new_tank_syndrome, kind: escalation_criterion, order: 0, text: "Fish in visible distress in a tank under 30 days old is consistent with a cycling crisis and may need daily water changes until parameters stabilize."}

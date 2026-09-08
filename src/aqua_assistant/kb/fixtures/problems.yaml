@@ -1,0 +1,74 @@
+# The candidate problems the engine differentiates between. `prior_weight`
+# is a flat relative baseline (not adjusted per-case) -- contextual shifts
+# such as "new tank" or "recent fish added" are carried entirely by
+# evidence/likelihoods, not by special-cased priors, so the KB stays in
+# one place.
+
+- id: ammonia_toxicity
+  name: Ammonia toxicity
+  category: water_quality
+  description: Ammonia has accumulated to harmful levels, typically from bioload exceeding biological filtration.
+  prior_weight: 1.0
+  severity_default: urgent
+  rationale: One of the most common acute causes of sudden whole-tank distress.
+  source: Standard freshwater aquarium husbandry references.
+
+- id: nitrite_toxicity
+  name: Nitrite toxicity
+  category: water_quality
+  description: Nitrite has accumulated to harmful levels, often during the second stage of tank cycling.
+  prior_weight: 1.0
+  severity_default: urgent
+  rationale: Second-stage cycling byproduct; causes "brown blood disease" by blocking oxygen transport.
+  source: Standard freshwater aquarium husbandry references.
+
+- id: low_oxygen
+  name: Low dissolved oxygen
+  category: environmental
+  description: Insufficient dissolved oxygen for the current stocking/temperature/surface-agitation combination.
+  prior_weight: 0.8
+  severity_default: urgent
+  rationale: Common after equipment failure, heat waves, or overstocking; can kill within hours.
+
+- id: temperature_shock
+  name: Temperature shock
+  category: environmental
+  description: A rapid temperature swing outside the species' tolerated range.
+  prior_weight: 0.7
+  severity_default: caution
+  rationale: Commonly triggered by heater failure or mismatched water-change temperature.
+
+- id: ph_instability
+  name: pH instability
+  category: water_quality
+  description: pH swinging significantly rather than remaining stable, even if not extreme in absolute terms.
+  prior_weight: 0.6
+  severity_default: caution
+  rationale: Fish tolerate a stable "wrong" pH better than an unstable "right" one.
+
+- id: ich
+  name: Ich (white spot disease)
+  category: parasite
+  description: Infestation by the protozoan parasite Ichthyophthirius multifiliis.
+  prior_weight: 0.7
+  severity_default: caution
+  rationale: One of the most common freshwater parasitic diseases, especially after adding new fish.
+
+- id: bacterial_infection
+  name: Bacterial infection
+  category: disease
+  description: A bacterial infection of skin, fins, or gills, often secondary to stress or poor water quality.
+  prior_weight: 0.6
+  severity_default: caution
+  rationale: Frequently opportunistic, following an initial stressor such as poor water quality or injury.
+
+- id: new_tank_syndrome
+  name: New tank syndrome (overstocking / incomplete cycling)
+  category: husbandry
+  description: >
+    A newly set up or freshly re-stocked tank where biological filtration
+    hasn't caught up with bioload, producing overlapping ammonia/nitrite
+    pressure rather than a single acute spike.
+  prior_weight: 0.7
+  severity_default: caution
+  rationale: A very common root cause underlying many new-hobbyist water-quality problems.
