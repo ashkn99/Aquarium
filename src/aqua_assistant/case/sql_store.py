@@ -21,9 +21,24 @@ from aqua_assistant.kb.models import Base, CaseFeedbackORM, CaseORM, Observation
 from .models import Case, Observation
 
 
+def _normalize_db_url(db_url: str) -> str:
+    """Managed Postgres providers (Neon, Supabase, Render itself) hand out
+    plain `postgres://`/`postgresql://` URLs, which SQLAlchemy resolves to
+    the psycopg2 dialect by default -- but this project depends on
+    psycopg3 (`psycopg[binary]`, the `postgres` extra), so that default
+    guess fails at connect time. Rewriting to the explicit
+    `postgresql+psycopg://` dialect makes a copy-pasted provider URL work
+    without the user having to know or edit that detail."""
+    if db_url.startswith("postgres://"):
+        return "postgresql+psycopg://" + db_url[len("postgres://"):]
+    if db_url.startswith("postgresql://"):
+        return "postgresql+psycopg://" + db_url[len("postgresql://"):]
+    return db_url
+
+
 class SqlCaseStore:
     def __init__(self, db_url: str) -> None:
-        self._engine = create_engine(db_url)
+        self._engine = create_engine(_normalize_db_url(db_url))
         Base.metadata.create_all(self._engine)
 
     def create(self, entry_context: str | None = None) -> Case:

@@ -4,7 +4,17 @@ drop-in replacement behind the same interface engine.py depends on."""
 from __future__ import annotations
 
 from aqua_assistant.case.models import Observation
-from aqua_assistant.case.sql_store import SqlCaseStore
+from aqua_assistant.case.sql_store import SqlCaseStore, _normalize_db_url
+
+
+def test_normalize_rewrites_provider_urls_to_the_psycopg3_dialect():
+    assert _normalize_db_url("postgres://u:p@host/db") == "postgresql+psycopg://u:p@host/db"
+    assert _normalize_db_url("postgresql://u:p@host/db") == "postgresql+psycopg://u:p@host/db"
+
+
+def test_normalize_leaves_sqlite_and_explicit_dialects_untouched():
+    assert _normalize_db_url("sqlite:///cases.db") == "sqlite:///cases.db"
+    assert _normalize_db_url("postgresql+psycopg://u:p@host/db") == "postgresql+psycopg://u:p@host/db"
 
 
 def _store(tmp_path):
