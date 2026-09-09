@@ -13,7 +13,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.orm import Session
 
 from aqua_assistant.kb.models import Base, CaseFeedbackORM, CaseORM, ObservationORM
@@ -39,6 +39,30 @@ def _normalize_db_url(db_url: str) -> str:
 _OWN_TABLES = [CaseORM.__table__, ObservationORM.__table__, CaseFeedbackORM.__table__]
 
 
+def _add_missing_columns(engine) -> None:
+    """`create_all()` only creates tables that don't exist yet -- it never
+    alters one that's already there, so a column added to a model after
+    the table was first created on a live database (e.g. Case.concern_id,
+    added after this store's first deploy) silently never appears there,
+    and every insert referencing it fails. Since every column this
+    project has added so far is a plain nullable one, a straightforward
+    `ADD COLUMN` closes that gap without a full migration tool.
+    ponytail: nullable ADD COLUMN only -- no renames, drops, type changes,
+    or NOT NULL columns; reach for a real migration tool (e.g. Alembic)
+    if a future change needs any of those."""
+    inspector = inspect(engine)
+    existing_tables = set(inspector.get_table_names())
+    with engine.begin() as conn:
+        for table in _OWN_TABLES:
+            if table.name not in existing_tables:
+                continue
+            existing_columns = {c["name"] for c in inspector.get_columns(table.name)}
+            for column in table.columns:
+                if column.name not in existing_columns:
+                    ddl_type = column.type.compile(dialect=engine.dialect)
+                    conn.execute(text(f"ALTER TABLE {table.name} ADD COLUMN {column.name} {ddl_type}"))
+
+
 class SqlCaseStore:
     def __init__(self, db_url: str) -> None:
         self._engine = create_engine(_normalize_db_url(db_url))
@@ -47,6 +71,7 @@ class SqlCaseStore:
         # creating the KB's own tables here would leave them empty
         # forever (the KB is always loaded fresh from YAML elsewhere).
         Base.metadata.create_all(self._engine, tables=_OWN_TABLES)
+        _add_missing_columns(self._engine)
 
     def create(self, entry_context: str | None = None) -> Case:
         case = Case(entry_context=entry_context)

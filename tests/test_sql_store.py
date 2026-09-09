@@ -3,7 +3,7 @@ CaseStore for the same sequence of create/save/get calls -- it's a
 drop-in replacement behind the same interface engine.py depends on."""
 from __future__ import annotations
 
-from sqlalchemy import event
+from sqlalchemy import create_engine, event, text
 
 from aqua_assistant.case.models import Observation
 from aqua_assistant.case.sql_store import SqlCaseStore, _normalize_db_url
@@ -44,6 +44,31 @@ def test_save_works_with_foreign_keys_enforced_and_no_kb_tables_populated(tmp_pa
 
     fetched = store.get(case.id)
     assert fetched.observations[0].evidence_id == "gasping"
+
+
+def test_reopening_an_old_table_missing_a_new_column_self_heals(tmp_path):
+    """Regression test for a real production bug: create_all() only
+    creates tables that don't exist, so a column added to CaseORM after
+    a database's `cases` table was already created (exactly what
+    happened with concern_id on an already-deployed Neon database) used
+    to never appear there, and every subsequent create() failed. Simulate
+    an "old" deploy by hand-creating a cases table without concern_id,
+    then confirm opening a SqlCaseStore against it self-heals instead of
+    erroring on first use."""
+    db_path = tmp_path / "old_schema.db"
+    old_engine = create_engine(f"sqlite:///{db_path}")
+    with old_engine.begin() as conn:
+        conn.execute(
+            text(
+                "CREATE TABLE cases (id VARCHAR PRIMARY KEY, created_at VARCHAR, "
+                "updated_at VARCHAR, status VARCHAR, entry_context VARCHAR)"
+            )
+        )
+    old_engine.dispose()
+
+    store = SqlCaseStore(f"sqlite:///{db_path}")
+    case = store.create(entry_context="fish")  # must not raise
+    assert store.get(case.id).concern_id is None
 
 
 def _store(tmp_path):
