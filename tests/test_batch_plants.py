@@ -284,7 +284,6 @@ def test_full_case_starting_from_plants_context_converges_to_melt_transition(kb)
         "ammonia_ppm": ("raw_value", 0.0),
         "nitrite_ppm": ("raw_value", 0.0),
         "gasping": ("state", "false"),
-        "surface_breathing": ("state", "false"),
     }
     asked = []
     for _ in range(len(kb.questions)):

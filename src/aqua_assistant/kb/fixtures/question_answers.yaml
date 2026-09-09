@@ -11,9 +11,6 @@
 - {id: aq_rapid_breathing_yes, question_id: ask_rapid_breathing, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.85}
 - {id: aq_rapid_breathing_no, question_id: ask_rapid_breathing, evidence_state: "false", label: "No", order: 1, default_confidence: 0.8}
 
-- {id: aq_surface_breathing_yes, question_id: ask_surface_breathing, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.9}
-- {id: aq_surface_breathing_no, question_id: ask_surface_breathing, evidence_state: "false", label: "No", order: 1, default_confidence: 0.85}
-
 - {id: aq_lethargy_yes, question_id: ask_lethargy, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.85}
 - {id: aq_lethargy_no, question_id: ask_lethargy, evidence_state: "false", label: "No", order: 1, default_confidence: 0.8}
 
@@ -99,18 +96,12 @@
 - {id: aq_pinecone_scales_yes, question_id: ask_pinecone_scales, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.9}
 - {id: aq_pinecone_scales_no, question_id: ask_pinecone_scales, evidence_state: "false", label: "No", order: 1, default_confidence: 0.85}
 
-- {id: aq_bloated_body_yes, question_id: ask_bloated_body, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.9}
-- {id: aq_bloated_body_no, question_id: ask_bloated_body, evidence_state: "false", label: "No", order: 1, default_confidence: 0.85}
-
 # --- husbandry/behavior (batch 4) ---
 - {id: aq_torn_or_missing_fins_from_biting_yes, question_id: ask_torn_or_missing_fins_from_biting, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.8}
 - {id: aq_torn_or_missing_fins_from_biting_no, question_id: ask_torn_or_missing_fins_from_biting, evidence_state: "false", label: "No", order: 1, default_confidence: 0.75}
 
 - {id: aq_chasing_or_nipping_observed_yes, question_id: ask_chasing_or_nipping_observed, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.9}
 - {id: aq_chasing_or_nipping_observed_no, question_id: ask_chasing_or_nipping_observed, evidence_state: "false", label: "No", order: 1, default_confidence: 0.8}
-
-- {id: aq_overfeeding_reported_yes, question_id: ask_overfeeding_reported, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.75}
-- {id: aq_overfeeding_reported_no, question_id: ask_overfeeding_reported, evidence_state: "false", label: "No", order: 1, default_confidence: 0.75}
 
 - {id: aq_uneaten_food_accumulating_yes, question_id: ask_uneaten_food_accumulating, evidence_state: "true", label: "Yes", order: 0, default_confidence: 0.85}
 - {id: aq_uneaten_food_accumulating_no, question_id: ask_uneaten_food_accumulating, evidence_state: "false", label: "No", order: 1, default_confidence: 0.8}

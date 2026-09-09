@@ -16,12 +16,6 @@
   effort_cost: 1.0
   reliability: 0.75
   rationale: Harder for a non-expert to judge "normal" gill rate accurately.
-- id: ask_surface_breathing
-  text: Is the fish spending unusual time swimming right at the surface?
-  evidence_id: surface_breathing
-  priority_weight: 1.1
-  effort_cost: 1.0
-  reliability: 0.8
 - id: ask_lethargy
   text: Is the fish noticeably less active than usual?
   evidence_id: lethargy
@@ -234,13 +228,6 @@
   priority_weight: 1.1
   effort_cost: 1.0
   reliability: 0.85
-- id: ask_bloated_body
-  text: Is the fish's body noticeably bloated or swollen?
-  evidence_id: bloated_body
-  priority_weight: 1.0
-  effort_cost: 1.0
-  reliability: 0.85
-
 # --- husbandry/behavior (batch 4) ---
 - id: ask_torn_or_missing_fins_from_biting
   text: Are chunks of fin torn or missing, rather than ragged/eroding at the edges?
@@ -255,13 +242,6 @@
   priority_weight: 1.1
   effort_cost: 1.0
   reliability: 0.85
-- id: ask_overfeeding_reported
-  text: Do you feed more than your fish finish within a couple of minutes?
-  evidence_id: overfeeding_reported
-  priority_weight: 1.0
-  effort_cost: 1.0
-  reliability: 0.75
-  rationale: Self-assessment of "how much is too much" is somewhat subjective.
 - id: ask_uneaten_food_accumulating
   text: Do you see uneaten food building up in the tank?
   evidence_id: uneaten_food_accumulating

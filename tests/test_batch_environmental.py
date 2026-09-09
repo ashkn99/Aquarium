@@ -28,12 +28,11 @@ def obs(evidence_id, state, confidence=1.0):
 
 
 def test_co2_excess_outranks_low_oxygen_when_planted_tank_confirmed(kb):
-    """Both cause gasping/surface_breathing, but only co2_injection_excess
-    is essentially preconditioned on running CO2 injection."""
+    """Both cause gasping, but only co2_injection_excess is essentially
+    preconditioned on running CO2 injection."""
     observations = [
         obs("planted_tank_with_co2_injection", "true"),
         obs("gasping", "true"),
-        obs("surface_breathing", "true"),
         obs("ph_level", "low"),
     ]
     post = posterior(score_problems(kb, observations))
@@ -46,7 +45,6 @@ def test_low_oxygen_wins_without_co2_injection(kb):
     observations = [
         obs("planted_tank_with_co2_injection", "false"),
         obs("gasping", "true"),
-        obs("surface_breathing", "true"),
         obs("dissolved_oxygen_ppm", "critical"),
     ]
     post = posterior(score_problems(kb, observations))
@@ -144,7 +142,7 @@ def test_new_environmental_questions_are_eligible(kb):
 
 
 def test_co2_excess_safety_rule_fires_with_distress(kb):
-    alerts = evaluate_safety(kb, [obs("planted_tank_with_co2_injection", "true"), obs("surface_breathing", "true")])
+    alerts = evaluate_safety(kb, [obs("planted_tank_with_co2_injection", "true"), obs("gasping", "true")])
     rule_ids = {a.rule_id for a in alerts}
     assert "co2_injection_excess_active" in rule_ids
     rule = next(a for a in alerts if a.rule_id == "co2_injection_excess_active")

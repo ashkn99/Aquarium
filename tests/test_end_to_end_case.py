@@ -30,7 +30,6 @@ from .conftest import neutral_default
 AMMONIA_CASE_ANSWERS: dict[str, tuple[str, object]] = {
     "gasping": ("state", "true"),
     "rapid_breathing": ("state", "true"),
-    "surface_breathing": ("state", "true"),
     "lethargy": ("state", "true"),
     "appetite_loss": ("state", "true"),
     "hiding": ("state", "false"),
@@ -64,7 +63,6 @@ AMMONIA_CASE_ANSWERS: dict[str, tuple[str, object]] = {
     "white_fuzzy_patches_around_mouth": ("state", "false"),
     "abnormal_buoyancy_or_swimming": ("state", "false"),
     "pinecone_scales": ("state", "false"),
-    "bloated_body": ("state", "false"),
 }
 
 

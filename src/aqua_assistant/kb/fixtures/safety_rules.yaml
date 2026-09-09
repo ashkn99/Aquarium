@@ -33,9 +33,8 @@
   description: Visible respiratory distress with no confirmed cause yet.
   any_of:
     - {evidence_id: gasping, equals_state: "true"}
-    - {evidence_id: surface_breathing, equals_state: "true"}
   severity: caution
-  message: "Gasping or surface breathing can signal a fast-moving emergency (low oxygen, an ammonia/nitrite spike, or overheating)."
+  message: "Gasping at the surface can signal a fast-moving emergency (low oxygen, an ammonia/nitrite spike, or overheating)."
   escalation_text: "Test dissolved oxygen, ammonia, nitrite, and temperature now, and add aeration as a precaution while you investigate."
 
 - id: severe_chlorine_exposure
@@ -44,7 +43,6 @@
     - {evidence_id: used_untreated_tap_water, equals_state: "true"}
   any_of:
     - {evidence_id: gasping, equals_state: "true"}
-    - {evidence_id: surface_breathing, equals_state: "true"}
   severity: urgent
   message: "Untreated tap water plus visible respiratory distress is consistent with acute chlorine/chloramine poisoning, which can be fast-acting."
   escalation_text: "Do an immediate water change with properly dechlorinated water and dose the whole tank with a dechlorinator/conditioner right away."
@@ -55,7 +53,6 @@
     - {evidence_id: planted_tank_with_co2_injection, equals_state: "true"}
   any_of:
     - {evidence_id: gasping, equals_state: "true"}
-    - {evidence_id: surface_breathing, equals_state: "true"}
   severity: urgent
   message: "CO2 injection plus visible respiratory distress is consistent with a CO2 overdose, a well-known cause of fast overnight fish loss in planted tanks."
   escalation_text: "Turn off CO2 injection immediately and increase surface agitation/aeration to off-gas excess CO2."

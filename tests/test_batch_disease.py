@@ -103,47 +103,12 @@ def test_widespread_occurrence_strongly_disconfirms_swim_bladder(kb):
     assert negative < baseline
 
 
-# --------------------------------------------------- correlation group ---
-
-
-def test_dropsy_signs_group_discounts_correlated_confirmation(kb):
-    """pinecone_scales and bloated_body are in the dropsy_signs group --
-    observing both should contribute less to the score than the sum of
-    their two individual (undiscounted) contributions, since the weaker
-    signal gets discounted once a stronger group-mate is already counted.
-    Compares raw observation_contribution, not full scores (which also
-    embed the prior and would double-count it if naively summed)."""
-    from aqua_assistant.inference.scoring import observation_contribution
-
-    pinecone_contribution = observation_contribution(kb, "dropsy_systemic", obs("pinecone_scales", "true"))
-    bloat_contribution = observation_contribution(kb, "dropsy_systemic", obs("bloated_body", "true"))
-
-    combined_score = score_problems(
-        kb, [obs("pinecone_scales", "true"), obs("bloated_body", "true")]
-    )["dropsy_systemic"]
-    baseline_score = score_problems(kb, [])["dropsy_systemic"]
-    combined_contribution = combined_score - baseline_score
-
-    assert combined_contribution < pinecone_contribution + bloat_contribution
-
-
-# ------------------------------------------------------- contradictory ---
-
-
-def test_contradictory_dropsy_evidence_stays_bounded(kb):
-    """Pinecone scales confirmed (strong positive) directly contradicted
-    by bloated_body=false (the other classic sign absent). Must combine
-    without error and stay a valid distribution."""
-    pinecone_alone = posterior(score_problems(kb, [obs("pinecone_scales", "true")]))
-    contradictory = posterior(
-        score_problems(kb, [obs("pinecone_scales", "true"), obs("bloated_body", "false")])
-    )
-    assert sum(contradictory.values()) == pytest.approx(1.0, abs=1e-6)
-    assert all(0.0 < p < 1.0 for p in contradictory.values())
-    assert contradictory["dropsy_systemic"] < pinecone_alone["dropsy_systemic"]
-
-
-# ---------------------------------------------------------- selection ---
+# --------------------------------------------------------- selection ---
+# dropsy_signs used to group pinecone_scales with bloated_body; bloated_body
+# was removed as a near-duplicate question (bloating has other common
+# causes -- overfeeding, constipation -- while pinecone_scales is pathognomonic),
+# so the group-discount/contradiction tests that compared the two are gone
+# along with it.
 
 
 def test_new_disease_questions_are_eligible(kb):
@@ -154,24 +119,8 @@ def test_new_disease_questions_are_eligible(kb):
         "ask_white_fuzzy_patches_around_mouth",
         "ask_abnormal_buoyancy_or_swimming",
         "ask_pinecone_scales",
-        "ask_bloated_body",
     ]:
         assert qid in ids
-
-
-# NOTE: an isolated "is pinecone_scales worth less after bloated_body is
-# already confirmed" check was tried here and removed -- it does NOT hold
-# for this particular pair. pinecone_scales (LR ~85) is individually much
-# stronger than bloated_body (LR ~15), and dropsy_systemic is one of 19
-# candidates, so simulating pinecone_scales after bloated_body still
-# collapses a large amount of the *remaining* entropy even though the
-# scoring-level group discount (verified above) correctly prevents the
-# two from being double-counted if both come back positive. This is a
-# real, documented nuance of unequal-strength correlated evidence in a
-# large candidate pool, not a bug -- see the final report. What actually
-# matters in practice -- whether the engine gets stuck re-asking group
-# members back to back -- is covered by the redundant-question assertion
-# in every end-to-end scenario test below and in test_end_to_end_case.py.
 
 
 # ------------------------------------------------------------- safety ---
@@ -187,7 +136,6 @@ def test_no_safety_rules_fire_for_progressive_diseases(kb):
         obs("white_fuzzy_patches_around_mouth", "true"),
         obs("abnormal_buoyancy_or_swimming", "true"),
         obs("pinecone_scales", "true"),
-        obs("bloated_body", "true"),
         obs("lethargy", "true"),
         obs("appetite_loss", "true"),
     ]
@@ -199,14 +147,11 @@ def test_no_safety_rules_fire_for_progressive_diseases(kb):
 
 
 def test_full_case_converges_to_dropsy_without_redundant_group_questions(kb):
-    """The empirical check for the nuance documented above: even though
-    pinecone_scales can show high simulated gain right after bloated_body,
-    the engine must still reach convergence without asking the same
-    evidence twice or looping on the dropsy_signs group."""
+    """The engine must reach convergence without asking the same evidence
+    twice."""
     engine = AquariumInferenceEngine(kb)
     case_id = engine.start_case()
     answers = {
-        "bloated_body": ("state", "true"),
         "pinecone_scales": ("state", "true"),
         "lethargy": ("state", "true"),
         "appetite_loss": ("state", "true"),

@@ -62,8 +62,8 @@ def _rule_fires(rule: SafetyRule, observed: dict[str, str]) -> bool:
 def screening_evidence_ids(kb: KnowledgeBase) -> set[str]:
     """Evidence gated by a rule with no `all_of` clause -- the same
     KB-shape-derived definition `_rule_suspected` uses for "must be
-    screened directly, not gated on suspicion" (e.g. gasping/
-    surface_breathing under respiratory_distress_general).
+    screened directly, not gated on suspicion" (e.g. gasping under
+    respiratory_distress_general).
 
     Exposed so question selection can exclude these from entry-context
     routing's decay clock (see questions/selection.py::routing_bonus):
@@ -122,8 +122,8 @@ def _rule_suspected(rule: SafetyRule, observed: dict[str, str]) -> bool:
     compete for priority against ordinary diagnostic questions.
 
     A rule with no `all_of` clause (nothing to anchor a partial-signal
-    check on -- e.g. respiratory_distress_general's bare "gasping or
-    surface breathing") is therefore never "suspected" by this function
+    check on -- e.g. respiratory_distress_general's bare "gasping") is
+    therefore never "suspected" by this function
     from a clean case; it's handled separately, as a domain-scoped
     mandatory screen, by questions/selection.py (see
     screening_evidence_ids() below and select_best_question's docstring)

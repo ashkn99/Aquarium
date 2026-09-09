@@ -111,25 +111,26 @@ def test_no_concern_behaves_exactly_like_before(kb):
 
 
 def test_safety_suspicion_still_wins_over_a_declared_concern(kb):
-    """Once gasping reads true, the universal respiratory-distress screen
-    (safety/rules.py) still takes priority over an unrelated declared
-    concern -- a real emergency signal must never be diluted by a
-    pre-declared focus area."""
+    """Once gasping reads true, it suspects the compound rules sharing that
+    signal (severe_chlorine_exposure, co2_injection_excess_active), pulling
+    their own unanswered all_of evidence into the safety-suspicion tier --
+    which still takes priority over an unrelated declared concern. A real
+    emergency signal must never be diluted by a pre-declared focus area."""
     observations = [obs("gasping", "true")]
     post = posterior(score_problems(kb, observations))
     answered = {"gasping"}
     picked = select_best_question(kb, post, observations, answered, entry_context="fish", concern_id="fish_mortality")
-    assert kb.questions[picked.question_id].evidence_id == "surface_breathing"
+    assert kb.questions[picked.question_id].evidence_id in {"used_untreated_tap_water", "planted_tank_with_co2_injection"}
 
 
 def test_concern_tier_wins_over_unrelated_high_information_gain_markers(kb):
-    """Past the universal safety screen (gasping/surface_breathing, which
-    always wins first from a fresh case -- see safety/rules.py), with the
-    fish_appearance concern declared, the pick must come from that
-    concern's list even though unrelated fish-disease markers (e.g.
-    white_spots) carry much higher raw information gain."""
-    observations = [obs("gasping", "false"), obs("surface_breathing", "false")]
-    answered = {"gasping", "surface_breathing"}
+    """Past the universal safety screen (gasping, which always wins first
+    from a fresh case -- see safety/rules.py), with the fish_appearance
+    concern declared, the pick must come from that concern's list even
+    though unrelated fish-disease markers (e.g. white_spots) carry much
+    higher raw information gain."""
+    observations = [obs("gasping", "false")]
+    answered = {"gasping"}
     post = posterior(score_problems(kb, observations))
     picked = select_best_question(
         kb, post, observations, answered, entry_context="fish", concern_id="fish_appearance"

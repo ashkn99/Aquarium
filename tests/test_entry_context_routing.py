@@ -197,7 +197,6 @@ def test_pivots_away_from_plant_leaning_when_fish_emergency_evidence_dominates(k
     engine = AquariumInferenceEngine(kb)
     case_id = engine.start_case(entry_context="plants")
     engine.answer(case_id, "gasping", state="true")
-    engine.answer(case_id, "surface_breathing", state="true")
     engine.answer(case_id, "num_fish_affected", state="most_or_all")
     status = engine.get_status(case_id)
     q = status.best_next_question
@@ -205,7 +204,15 @@ def test_pivots_away_from_plant_leaning_when_fish_emergency_evidence_dominates(k
     # should be chasing the acute picture (water parameters, oxygen,
     # onset/context), not stuck on the plant-adjacent CO2 question alone
     # forever or reverting to unrelated disease markers.
-    assert ev_id in {"ammonia_ppm", "nitrite_ppm", "dissolved_oxygen_ppm", "onset_timing", "planted_tank_with_co2_injection", "filter_disrupted"}
+    assert ev_id in {
+        "ammonia_ppm",
+        "nitrite_ppm",
+        "dissolved_oxygen_ppm",
+        "onset_timing",
+        "planted_tank_with_co2_injection",
+        "filter_disrupted",
+        "used_untreated_tap_water",
+    }
 
 
 # ============================================================ I ===
@@ -312,7 +319,6 @@ def test_water_can_still_reach_dissolved_oxygen_via_information_gain(kb):
     engine = AquariumInferenceEngine(kb)
     case_id = engine.start_case(entry_context="water")
     engine.answer(case_id, "gasping", state="true")
-    engine.answer(case_id, "surface_breathing", state="true")
 
     status = engine.get_status(case_id)
     answered = engine.store.get(case_id).answered_evidence_ids()

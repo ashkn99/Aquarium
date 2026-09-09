@@ -31,25 +31,11 @@
     manifestations of skin or gill irritation.
   correlation_discount: 0.5
 
-- id: dropsy_signs
-  name: Dropsy presentation
-  description: >
-    Pinecone scales and a bloated body are two visible facets of the same
-    underlying fluid-retention process, not independent confirmations.
-  correlation_discount: 0.5
-
 - id: aggression_signs
   name: Aggression from tankmates
   description: >
     Torn fins from biting and observed chasing/nipping are two facets of
     the same underlying bullying behavior.
-  correlation_discount: 0.5
-
-- id: overfeeding_signs
-  name: Overfeeding indicators
-  description: >
-    A user's own "I'm overfeeding" self-report and observed leftover food
-    are correlated evidence of the same underlying habit.
   correlation_discount: 0.5
 
 - id: plant_general_decline

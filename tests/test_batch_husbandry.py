@@ -88,7 +88,7 @@ def test_no_recent_fish_added_nearly_rules_out_acclimation_stress(kb):
 
 def test_confirmed_no_overfeeding_reduces_overfeeding_candidate(kb):
     baseline = score_problems(kb, [])["overfeeding_poor_diet"]
-    negative = score_problems(kb, [obs("overfeeding_reported", "false")])["overfeeding_poor_diet"]
+    negative = score_problems(kb, [obs("uneaten_food_accumulating", "false")])["overfeeding_poor_diet"]
     assert negative < baseline
 
 
@@ -96,21 +96,6 @@ def test_adequate_hiding_places_reduces_environment_stress_candidate(kb):
     baseline = score_problems(kb, [])["inadequate_hiding_or_environment_stress"]
     negative = score_problems(kb, [obs("insufficient_hiding_places", "false")])["inadequate_hiding_or_environment_stress"]
     assert negative < baseline
-
-
-# ------------------------------------------------------- contradictory ---
-
-
-def test_contradictory_overfeeding_evidence_stays_bounded(kb):
-    """Self-reported overfeeding (positive) directly contradicted by no
-    visible uneaten food (negative). Must combine without error."""
-    overfeeding_alone = posterior(score_problems(kb, [obs("overfeeding_reported", "true")]))
-    contradictory = posterior(
-        score_problems(kb, [obs("overfeeding_reported", "true"), obs("uneaten_food_accumulating", "false")])
-    )
-    assert sum(contradictory.values()) == pytest.approx(1.0, abs=1e-6)
-    assert all(0.0 < p < 1.0 for p in contradictory.values())
-    assert contradictory["overfeeding_poor_diet"] < overfeeding_alone["overfeeding_poor_diet"]
 
 
 # ------------------------------------------------- correlation group ---
@@ -142,7 +127,6 @@ def test_new_husbandry_questions_are_eligible(kb):
     for qid in [
         "ask_torn_or_missing_fins_from_biting",
         "ask_chasing_or_nipping_observed",
-        "ask_overfeeding_reported",
         "ask_uneaten_food_accumulating",
         "ask_improper_acclimation_reported",
         "ask_insufficient_hiding_places",
@@ -185,7 +169,6 @@ def test_husbandry_problems_do_not_trigger_new_safety_rules(kb):
     observations = [
         obs("torn_or_missing_fins_from_biting", "true"),
         obs("chasing_or_nipping_observed", "true"),
-        obs("overfeeding_reported", "true"),
         obs("uneaten_food_accumulating", "true"),
         obs("improper_acclimation_reported", "true"),
         obs("insufficient_hiding_places", "true"),

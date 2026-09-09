@@ -39,11 +39,11 @@ def observation_contribution(kb: KnowledgeBase, problem_id: str, obs: Observatio
 
 def _grouped_contribution_total(kb: KnowledgeBase, problem_id: str, observations: list[Observation]) -> float:
     """Sum contributions for one problem, discounting correlated evidence
-    within the same evidence_group: e.g. gasping + rapid_breathing +
-    surface_breathing are all "respiratory distress" and shouldn't count as
-    three independent confirmations. The strongest signal in a group counts
-    fully; each additional member is discounted by `correlation_discount`
-    raised to its rank. Ungrouped evidence always contributes in full.
+    within the same evidence_group: e.g. gasping + rapid_breathing are both
+    "respiratory distress" and shouldn't count as two independent
+    confirmations. The strongest signal in a group counts fully; each
+    additional member is discounted by `correlation_discount` raised to its
+    rank. Ungrouped evidence always contributes in full.
     """
     by_group: dict[str | None, list[float]] = {}
     for obs in observations:

@@ -7,7 +7,7 @@
 # ahead of the rest of the KB, not just softly preferred. See that
 # module's docstring for the full tier ordering.
 #
-# gasping/surface_breathing/rapid_breathing are deliberately excluded
+# gasping/rapid_breathing are deliberately excluded
 # from every fish concern below -- they're already always screened first
 # regardless of concern (the universal TRIAGE screen, safety/rules.py),
 # so listing them here would be redundant.
@@ -47,7 +47,6 @@
     - torn_or_missing_fins_from_biting
     - abnormal_buoyancy_or_swimming
     - pinecone_scales
-    - bloated_body
 
 - id: fish_mortality
   entry_context_id: fish

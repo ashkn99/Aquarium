@@ -9,9 +9,9 @@ Priority order, most to least urgent:
      structural exception -- see safety/rules.py::_rule_suspected) a
      rule with no `all_of` clause at all, which has no possible partial
      precursor and so must be screened directly. In this KB that
-     exception is exactly `respiratory_distress_general` (gasping /
-     surface_breathing) -- a small, bounded, universal opening screen,
-     not the whole safety-linked evidence pool.
+     exception is exactly `respiratory_distress_general` (gasping) -- a
+     small, bounded, universal opening screen, not the whole safety-linked
+     evidence pool.
   3. branch-narrowed or KB-wide information gain + entry-context ranking
 
 An earlier version of this milestone made *every* unresolved safety rule
@@ -77,7 +77,7 @@ def test_pending_at_fresh_case_is_empty_until_something_real_points_somewhere(kb
     screen in questions/selection.py -- see
     test_every_context_opens_on_the_same_universal_screen for that half."""
     assert pending_safety_evidence(kb, []) == set()
-    assert screening_evidence_ids(kb) == {"gasping", "surface_breathing"}
+    assert screening_evidence_ids(kb) == {"gasping"}
 
 
 def test_dissolved_oxygen_can_never_be_pending_since_its_rule_is_single_condition(kb):
@@ -97,15 +97,13 @@ def test_dissolved_oxygen_can_never_be_pending_since_its_rule_is_single_conditio
 
 def test_pending_narrows_once_a_compound_rule_is_suspected_and_drops_when_ruled_out(kb):
     """severe_chlorine_exposure and co2_injection_excess_active both have
-    an any_of arm (gasping/surface_breathing) shared with
-    respiratory_distress_general, plus their own distinct all_of
-    precondition. Observing gasping=true suspects both compound rules
-    (their any_of is satisfied), pulling their still-unanswered all_of
-    evidence into the pending set alongside the always-pending screen's
-    remaining item -- but ruling one compound rule out must not affect
-    the other."""
+    an any_of arm (gasping) shared with respiratory_distress_general, plus
+    their own distinct all_of precondition. Observing gasping=true suspects
+    both compound rules (their any_of is satisfied), pulling their still-
+    unanswered all_of evidence into the pending set -- but ruling one
+    compound rule out must not affect the other."""
     pending = pending_safety_evidence(kb, [obs("gasping", "true")])
-    assert pending == {"surface_breathing", "used_untreated_tap_water", "planted_tank_with_co2_injection"}
+    assert pending == {"used_untreated_tap_water", "planted_tank_with_co2_injection"}
 
     pending2 = pending_safety_evidence(kb, [obs("gasping", "true"), obs("used_untreated_tap_water", "false")])
     assert "used_untreated_tap_water" not in pending2  # severe_chlorine_exposure ruled out
@@ -120,38 +118,22 @@ def test_pending_drops_evidence_once_rule_is_firing(kb):
     assert "ammonia_ppm" not in pending
 
 
-def test_pending_any_of_ruled_out_only_once_every_branch_is_answered_false(kb):
-    """severe_chlorine_exposure (all_of used_untreated_tap_water, any_of
-    gasping/surface_breathing) stays suspected as long as either any_of
-    branch is unanswered, once suspected -- answering just one false must
-    not remove the other from pending."""
-    suspected = [obs("used_untreated_tap_water", "true"), obs("gasping", "false")]
-    pending_one = pending_safety_evidence(kb, suspected)
-    assert "surface_breathing" in pending_one
-
-    suspected_both_false = [*suspected, obs("surface_breathing", "false")]
-    pending_both = pending_safety_evidence(kb, suspected_both_false)
-    assert "surface_breathing" not in pending_both  # any_of ruled out -> rule dead
-    assert "used_untreated_tap_water" not in pending_both  # already answered anyway
-
-
 def test_pending_all_of_and_any_of_combination(kb):
     """co2_injection_excess_active (all_of planted_tank_with_co2_injection,
-    any_of gasping/surface_breathing): ruled out once its own all_of
-    condition is contradicted, even though the shared any_of arm
-    (gasping=true) is satisfied -- but severe_chlorine_exposure, sharing
-    that same any_of arm with its own distinct all_of precondition,
-    remains independently suspected and pending."""
+    any_of gasping): ruled out once its own all_of condition is
+    contradicted, even though the shared any_of arm (gasping=true) is
+    satisfied -- but severe_chlorine_exposure, sharing that same any_of arm
+    with its own distinct all_of precondition, remains independently
+    suspected and pending."""
     observations = [obs("gasping", "true"), obs("planted_tank_with_co2_injection", "false")]
     pending = pending_safety_evidence(kb, observations)
     # co2_injection_excess_active is ruled out (all_of contradicted) --
-    # its own all_of evidence is already answered anyway, so this only
-    # matters in that it must not keep surface_breathing pending via
-    # *this* rule specifically (severe_chlorine_exposure still does, below).
+    # its own all_of evidence is already answered anyway, so nothing of
+    # its remains pending.
     assert "planted_tank_with_co2_injection" not in pending
     # severe_chlorine_exposure: unaffected by the other rule's ruling-out,
     # still suspected via the shared any_of arm.
-    assert pending == {"used_untreated_tap_water", "surface_breathing"}
+    assert pending == {"used_untreated_tap_water"}
 
 
 # ==================================================== A: gasping regression ===
@@ -222,8 +204,8 @@ def test_co2_evidence_fast_tracked_once_respiratory_distress_is_confirmed(kb):
     """planted_tank_with_co2_injection gates co2_injection_excess_active, a
     compound rule (all_of + any_of respiratory distress). It only becomes
     suspected -- and thus fast-tracked -- once the shared any_of arm
-    (gasping/surface_breathing) is actually observed true, not merely
-    because the case exists. Uses entry_context="fish", where the
+    (gasping) is actually observed true, not merely because the case
+    exists. Uses entry_context="fish", where the
     domain-scoped mandatory screen (see selection.py) still applies, so
     gasping is actually reachable within the driven turns -- see
     test_dissolved_oxygen_and_co2_not_fast_tracked_under_an_irrelevant_domain
@@ -231,7 +213,7 @@ def test_co2_evidence_fast_tracked_once_respiratory_distress_is_confirmed(kb):
     engine = AquariumInferenceEngine(kb)
     case_id = engine.start_case(entry_context="fish")
     asked, _ = _drive(engine, case_id, {}, max_turns=8)
-    assert "planted_tank_with_co2_injection" not in asked[:8]  # gasping/surface_breathing read false -> never suspected
+    assert "planted_tank_with_co2_injection" not in asked[:8]  # gasping read false -> never suspected
 
     engine2 = AquariumInferenceEngine(kb)
     case_id2 = engine2.start_case(entry_context="fish")
@@ -244,16 +226,15 @@ def test_co2_evidence_fast_tracked_once_respiratory_distress_is_confirmed(kb):
 def test_dissolved_oxygen_and_co2_not_fast_tracked_under_an_irrelevant_domain(kb):
     """The domain-scoped mandatory screen (questions/selection.py) means
     aquarium_environment (no fish_symptom weight) never force-screens
-    gasping/surface_breathing at all -- so a compound rule sharing that
-    any_of arm can't get suspected through it either. This is the fix for
-    a real bug found by manual testing: every entry context, including
-    ones with nothing to do with fish vitals, used to open on "is the
-    fish gasping at the surface?"."""
+    gasping at all -- so a compound rule sharing that any_of arm can't get
+    suspected through it either. This is the fix for a real bug found by
+    manual testing: every entry context, including ones with nothing to do
+    with fish vitals, used to open on "is the fish gasping at the
+    surface?"."""
     engine = AquariumInferenceEngine(kb)
     case_id = engine.start_case(entry_context="aquarium_environment")
     asked, _ = _drive(engine, case_id, {}, max_turns=8)
     assert "gasping" not in asked[:8]
-    assert "surface_breathing" not in asked[:8]
 
 
 def test_co2_overdose_scenario_safety_fires_early_relative_to_session(kb):
@@ -269,7 +250,6 @@ def test_co2_overdose_scenario_safety_fires_early_relative_to_session(kb):
     answer_script = {
         "planted_tank_with_co2_injection": ("state", "true"),
         "gasping": ("state", "true"),
-        "surface_breathing": ("state", "true"),
     }
     for turn in range(1, 9):
         status = engine.get_status(case_id)
@@ -387,7 +367,7 @@ def test_safety_priority_pool_is_bounded_not_unbounded(kb):
     all_rule_evidence = {c.evidence_id for r in kb.safety_rules for c in (*r.all_of, *r.any_of)}
     pending = pending_safety_evidence(kb, [])
     assert pending <= all_rule_evidence
-    assert len(all_rule_evidence) < 10  # today's KB: 8 -- a sanity ceiling, not a magic behavior threshold
+    assert len(all_rule_evidence) < 10  # today's KB: 7 -- a sanity ceiling, not a magic behavior threshold
 
 
 def test_routing_bonus_math_is_unaffected_by_safety_priority(kb):
@@ -416,8 +396,8 @@ def test_screen_opens_only_domain_relevant_contexts(kb):
     (water/plants/aquarium_environment), used to open on "is the fish
     gasping at the surface?" regardless of what the user declared. The
     domain-scoped mandatory screen (questions/selection.py) now only
-    forces gasping/surface_breathing for contexts that actually declare
-    the fish_symptom domain (fish) or declare no domain at all (unsure)
+    forces gasping for contexts that actually declare the fish_symptom
+    domain (fish) or declare no domain at all (unsure)
     -- water/plants/aquarium_environment fall through to normal ranking
     instead, same as any other diagnostic question."""
     def first_pick(entry_context):
@@ -439,8 +419,8 @@ def test_entry_context_differentiates_quickly_once_relevant(kb):
     immediately -- bounded only by the KB's own documented
     near-pathognomonic white_spots outlier (unrelated to this milestone,
     see PROJECT_STATUS.md), which still briefly dominates raw information
-    gain regardless of context. fish/unsure still take the 2-item screen
-    first, so need a couple more turns before differentiating."""
+    gain regardless of context. fish/unsure still take the 1-item screen
+    first, so need a turn more before differentiating."""
     def pick_after(entry_context, turns):
         engine = AquariumInferenceEngine(kb)
         case_id = engine.start_case(entry_context=entry_context)
@@ -516,7 +496,6 @@ def test_previously_regressed_plant_melt_scenario_still_converges_correctly(kb):
         "ammonia_ppm": ("raw_value", 0.0),
         "nitrite_ppm": ("raw_value", 0.0),
         "gasping": ("state", "false"),
-        "surface_breathing": ("state", "false"),
     }
     asked, status = _drive(engine, case_id, answers)
     assert status.should_stop

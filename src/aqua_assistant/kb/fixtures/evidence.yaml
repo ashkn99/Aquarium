@@ -30,13 +30,6 @@
   topic: fish_symptom
   rationale: Same underlying oxygen-exchange stress as gasping, observed differently.
 
-- id: surface_breathing
-  name: Spending unusual time at the surface
-  data_type: boolean
-  evidence_group_id: respiratory_distress
-  topic: fish_symptom
-  rationale: A milder/earlier form of the same respiratory-distress signal.
-
 # --- lethargy_cluster group ---
 - id: lethargy
   name: Reduced activity
@@ -234,15 +227,8 @@
 - id: pinecone_scales
   name: Scales standing out from the body like a pinecone
   data_type: boolean
-  evidence_group_id: dropsy_signs
   topic: fish_disease_marker
-  rationale: Pathognomonic sign for dropsy, though it appears later than general bloating.
-
-- id: bloated_body
-  name: Noticeably bloated/swollen body
-  data_type: boolean
-  evidence_group_id: dropsy_signs
-  topic: fish_disease_marker
+  rationale: Pathognomonic sign for dropsy -- kept as the sole dropsy marker in place of the less-specific bloated_body question (bloating has other common causes, e.g. overfeeding/constipation).
 
 # --- husbandry/behavior (batch 4) ---
 - id: torn_or_missing_fins_from_biting
@@ -259,17 +245,11 @@
   topic: fish_symptom
   rationale: Direct behavioral observation, the most diagnostic single fact for aggression.
 
-- id: overfeeding_reported
-  name: Feeding more than fish finish within a couple of minutes
-  data_type: boolean
-  evidence_group_id: overfeeding_signs
-  topic: general_context
-
 - id: uneaten_food_accumulating
   name: Uneaten food visibly accumulating in the tank
   data_type: boolean
-  evidence_group_id: overfeeding_signs
   topic: general_context
+  rationale: An objective observation, kept as the sole overfeeding marker in place of the more subjective self-reported "do you overfeed" question.
 
 - id: improper_acclimation_reported
   name: New fish added without a slow drip/float acclimation process

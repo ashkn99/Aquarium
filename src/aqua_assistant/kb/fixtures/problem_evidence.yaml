@@ -47,11 +47,6 @@
   likelihood_positive: 0.55
   likelihood_background: 0.2
 - problem_id: ammonia_toxicity
-  evidence_id: surface_breathing
-  evidence_state: "true"
-  likelihood_positive: 0.5
-  likelihood_background: 0.15
-- problem_id: ammonia_toxicity
   evidence_id: red_streaks_or_gills
   evidence_state: "true"
   likelihood_positive: 0.55
@@ -107,11 +102,6 @@
   likelihood_background: 0.8
   rationale: Absence of rapid breathing weakly argues against significant ammonia burn, though early-stage stress may not yet affect breathing.
 - problem_id: ammonia_toxicity
-  evidence_id: surface_breathing
-  evidence_state: "false"
-  likelihood_positive: 0.45
-  likelihood_background: 0.85
-- problem_id: ammonia_toxicity
   evidence_id: lethargy
   evidence_state: "false"
   likelihood_positive: 0.45
@@ -164,11 +154,6 @@
   likelihood_positive: 0.6
   likelihood_background: 0.2
 - problem_id: nitrite_toxicity
-  evidence_id: surface_breathing
-  evidence_state: "true"
-  likelihood_positive: 0.55
-  likelihood_background: 0.15
-- problem_id: nitrite_toxicity
   evidence_id: lethargy
   evidence_state: "true"
   likelihood_positive: 0.55
@@ -205,11 +190,6 @@
   evidence_state: "false"
   likelihood_positive: 0.45
   likelihood_background: 0.8
-- problem_id: nitrite_toxicity
-  evidence_id: surface_breathing
-  evidence_state: "false"
-  likelihood_positive: 0.45
-  likelihood_background: 0.85
 - problem_id: nitrite_toxicity
   evidence_id: lethargy
   evidence_state: "false"
@@ -256,12 +236,6 @@
   evidence_state: "true"
   likelihood_positive: 0.75
   likelihood_background: 0.15
-- problem_id: low_oxygen
-  evidence_id: surface_breathing
-  evidence_state: "true"
-  likelihood_positive: 0.8
-  likelihood_background: 0.12
-  rationale: Surface breathing (piping) is the single most classic low-oxygen sign.
 - problem_id: low_oxygen
   evidence_id: rapid_breathing
   evidence_state: "true"
@@ -990,11 +964,6 @@
   likelihood_positive: 0.6
   likelihood_background: 0.15
 - problem_id: co2_injection_excess
-  evidence_id: surface_breathing
-  evidence_state: "true"
-  likelihood_positive: 0.55
-  likelihood_background: 0.15
-- problem_id: co2_injection_excess
   evidence_id: onset_timing
   evidence_state: sudden
   likelihood_positive: 0.5
@@ -1011,16 +980,6 @@
   likelihood_positive: 0.4
   likelihood_background: 0.85
   rationale: Respiratory distress is the hallmark sign of a CO2 overdose, so its absence is meaningful disconfirmation.
-- problem_id: co2_injection_excess
-  evidence_id: surface_breathing
-  evidence_state: "false"
-  likelihood_positive: 0.45
-  likelihood_background: 0.85
-# --- plant KB expansion (batch 5): cross-link to a new plant-side evidence
-# item -- an unstable CO2 system (timer/solenoid issues, inconsistent
-# bubble count) is a plausible route to an overdose spike, not just to
-# chronic under-dosing (see plant_co2_deficiency below), so it's given a
-# light positive here too.
 - problem_id: co2_injection_excess
   evidence_id: co2_fluctuation_reported
   evidence_state: "true"
@@ -1264,16 +1223,6 @@
   likelihood_background: 0.95
   rationale: Kept a fairly strong (not absolute) negative, since bloating alone without pinecone scales can still be early-stage dropsy.
 - problem_id: dropsy_systemic
-  evidence_id: bloated_body
-  evidence_state: "true"
-  likelihood_positive: 0.75
-  likelihood_background: 0.05
-- problem_id: dropsy_systemic
-  evidence_id: bloated_body
-  evidence_state: "false"
-  likelihood_positive: 0.2
-  likelihood_background: 0.85
-- problem_id: dropsy_systemic
   evidence_id: lethargy
   evidence_state: "true"
   likelihood_positive: 0.6
@@ -1351,17 +1300,6 @@
   rationale: Injury from a specific chasing/biting incident can appear suddenly.
 
 # ============================== overfeeding_poor_diet ==============================
-- problem_id: overfeeding_poor_diet
-  evidence_id: overfeeding_reported
-  evidence_state: "true"
-  likelihood_positive: 0.7
-  likelihood_background: 0.1
-  rationale: Direct self-report, the most diagnostic single fact for this problem.
-- problem_id: overfeeding_poor_diet
-  evidence_id: overfeeding_reported
-  evidence_state: "false"
-  likelihood_positive: 0.1
-  likelihood_background: 0.8
 - problem_id: overfeeding_poor_diet
   evidence_id: uneaten_food_accumulating
   evidence_state: "true"
