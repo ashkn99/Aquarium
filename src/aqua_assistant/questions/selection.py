@@ -14,6 +14,27 @@ math -- it only nudges which *question* gets asked next, by adding a
 small, decaying bonus to a question's ranking score based on its
 evidence's `topic`. It is computed here, in the selection layer, and is
 never passed into inference/scoring.py.
+
+`select_best_question` also applies a safety-priority *tier*, ahead of
+that ranking: unanswered evidence belonging to a *suspected* safety rule
+(see safety/rules.py::pending_safety_evidence()) is preferred over
+unrelated diagnostic markers, however high their raw information gain.
+This is a selection-time filter, not another additive bonus -- it narrows
+which questions are even ranked, rather than nudging their score -- and
+it is independent of, and composes cleanly with, entry-context routing.
+
+Below that tier, `select_best_question` also applies branch narrowing
+(diagnostic-scope narrowing): once one `Problem.category` has come to
+dominate the posterior, information gain for ranking purposes is
+recomputed within that category (plus any outside problem that still
+holds a non-trivial share of the posterior) instead of across the whole
+KB. See `narrowed_problem_ids()`. This prevents ~30 problems competing
+equally on turn 1 from drowning out the handful of questions that would
+actually distinguish within the area the evidence already points to. The
+real posterior (returned to callers, used for safety/stopping) is never
+touched by this -- narrowing only affects which *question* looks best,
+via a second, throwaway posterior computed with the existing
+`score_problems(..., problem_ids=...)` subsetting support.
 """
 from __future__ import annotations
 
@@ -23,6 +44,7 @@ from aqua_assistant.case.models import Observation
 from aqua_assistant.inference.entropy import entropy
 from aqua_assistant.inference.scoring import posterior, score_problems
 from aqua_assistant.kb.knowledge_base import KnowledgeBase
+from aqua_assistant.safety.rules import pending_safety_evidence, screening_evidence_ids
 
 # How many answered observations it takes for entry-context routing to
 # fully decay to zero influence. Linear decay: full weight at 0 answered
@@ -31,6 +53,19 @@ from aqua_assistant.kb.knowledge_base import KnowledgeBase
 # conversation, not to persist as a standing bias once real evidence is
 # accumulating and information gain has plenty to work with.
 ROUTING_DECAY_TURNS = 6
+
+# Aggregate posterior mass a single Problem.category needs to hold before
+# branch narrowing kicks in for question ranking. Deliberately just past
+# a majority -- a category "clearly leading" (not merely "biggest of
+# several small slices") is what should stop the whole KB from competing
+# on every turn.
+BRANCH_DOMINANCE_THRESHOLD = 0.55
+
+# A problem outside the dominant branch stays in the narrowed candidate
+# set as long as it holds at least this much posterior mass, so a
+# genuine competitor is never silently dropped just for sitting in a
+# different category.
+BRANCH_OUTSIDER_FLOOR = 0.03
 
 
 @dataclass
@@ -90,9 +125,10 @@ def simulate_answer(
     evidence_id: str,
     state: str,
     confidence: float = 0.9,
+    problem_ids: list[str] | None = None,
 ) -> dict[str, float]:
     simulated = [*observations, Observation(evidence_id=evidence_id, observed_state=state, confidence=confidence)]
-    return posterior(score_problems(kb, simulated))
+    return posterior(score_problems(kb, simulated, problem_ids))
 
 
 def expected_information_gain(
@@ -100,7 +136,12 @@ def expected_information_gain(
     posterior_dist: dict[str, float],
     observations: list[Observation],
     evidence_id: str,
+    problem_ids: list[str] | None = None,
 ) -> float:
+    """`problem_ids`, when given, must match the universe `posterior_dist`
+    was itself computed over (e.g. a branch-narrowed posterior) -- the
+    before/after entropy comparison is only meaningful when both sides are
+    taken over the same set of candidate problems."""
     current_entropy = entropy(posterior_dist)
     states = possible_states(kb, evidence_id)
     if not states:
@@ -114,7 +155,7 @@ def expected_information_gain(
         p = raw_p / total_prob
         if p <= 0:
             continue
-        expected_entropy += p * entropy(simulate_answer(kb, observations, evidence_id, state))
+        expected_entropy += p * entropy(simulate_answer(kb, observations, evidence_id, state, problem_ids=problem_ids))
 
     return max(0.0, current_entropy - expected_entropy)
 
@@ -162,11 +203,18 @@ def build_question_explanation(
     posterior_dist: dict[str, float],
     observations: list[Observation],
     entry_context: str | None = None,
+    problem_ids: list[str] | None = None,
 ) -> QuestionExplanation:
     q = kb.questions[question_id]
-    info_gain = expected_information_gain(kb, posterior_dist, observations, q.evidence_id)
+    info_gain = expected_information_gain(kb, posterior_dist, observations, q.evidence_id, problem_ids)
     adjusted = info_gain * q.reliability * q.priority_weight / q.effort_cost
-    bonus = routing_bonus(kb, entry_context, q.evidence_id, len(observations))
+    # Answers to the universal TRIAGE screen (screening_evidence_ids) don't
+    # count against routing's decay clock -- they happen before
+    # orientation gets any real turns to act on, so they must not
+    # silently burn down its opening window (see screening_evidence_ids).
+    screening_ids = screening_evidence_ids(kb)
+    routing_observations = sum(1 for o in observations if o.evidence_id not in screening_ids)
+    bonus = routing_bonus(kb, entry_context, q.evidence_id, routing_observations)
     return QuestionExplanation(
         question_id=q.id,
         text=q.text,
@@ -181,23 +229,105 @@ def build_question_explanation(
     )
 
 
+def narrowed_problem_ids(kb: KnowledgeBase, posterior_dist: dict[str, float]) -> set[str] | None:
+    """The candidate-problem scope for branch-narrowed question ranking, or
+    None if no branch is dominant yet (ranking should stay KB-wide).
+
+    Branches are `Problem.category` -- reused as-is, no new KB concept.
+    Once one category holds >= BRANCH_DOMINANCE_THRESHOLD of the posterior,
+    the scope becomes that category's problems, plus any problem outside
+    it that still holds >= BRANCH_OUTSIDER_FLOOR (a real competitor is
+    never dropped just for sitting in a different category)."""
+    if not posterior_dist:
+        return None
+    branch_mass: dict[str, float] = {}
+    for pid, p in posterior_dist.items():
+        branch_mass[kb.problems[pid].category] = branch_mass.get(kb.problems[pid].category, 0.0) + p
+    top_branch, top_mass = max(branch_mass.items(), key=lambda kv: kv[1])
+    if top_mass < BRANCH_DOMINANCE_THRESHOLD:
+        return None
+    return {
+        pid
+        for pid, p in posterior_dist.items()
+        if kb.problems[pid].category == top_branch or p >= BRANCH_OUTSIDER_FLOOR
+    }
+
+
 def select_best_question(
     kb: KnowledgeBase,
     posterior_dist: dict[str, float],
     observations: list[Observation],
     answered_evidence_ids: set[str],
     entry_context: str | None = None,
+    info_gain_epsilon: float = 0.02,
 ) -> QuestionExplanation | None:
     """Ranks eligible questions by final_score = adjusted_value (pure
     information gain, unchanged) + routing_bonus (entry-context preference,
     0.0 when entry_context is None). With no entry_context this is
     identical to plain information-gain ranking -- routing is additive and
-    optional, never a replacement for the underlying selector."""
+    optional, never a replacement for the underlying selector.
+
+    Selection applies two things ahead of that ranking, in order (the
+    first tier -- a forced safety question -- is decided upstream in
+    engine.py and never reaches this function):
+
+      1. TRIAGE (safety interrupt): unanswered evidence belonging to a
+         *suspected* safety rule (safety.rules.pending_safety_evidence())
+         -- one with at least one condition already observed matching,
+         not merely unresolved -- and still carrying genuine information
+         (adjusted_value >= info_gain_epsilon). If any such question is
+         eligible, selection is restricted to just those, ranked by the
+         same final_score. A rule drops out the moment it fires, is ruled
+         out, or its remaining evidence stops teaching us anything --
+         at which point this tier is simply empty and normal ranking
+         resumes. Evaluated against the full KB-wide posterior/candidate
+         set, regardless of branch narrowing below, so a real safety
+         concern can never be diluted by diagnostic-scope narrowing.
+
+      2. TARGETED BRANCH (diagnostic-scope narrowing): if tier 1 doesn't
+         apply, questions are ranked against a branch-narrowed posterior
+         when one is dominant (see narrowed_problem_ids()) instead of the
+         full KB. This is a second, throwaway posterior computed purely
+         for ranking -- the real posterior passed in is never mutated or
+         returned narrowed. Early on (no branch dominant yet), this is
+         identical to plain KB-wide information gain, which is exactly
+         what should rank branch-splitting questions highest anyway.
+
+    The `adjusted_value >= info_gain_epsilon` guard on tier 1 exists so it
+    can never *force* a question the engine would otherwise consider not
+    worth asking at all: `info_gain_epsilon` is the same threshold
+    `AquariumInferenceEngine._check_stop()` already uses for exactly that
+    judgment (default matches its own default), reused here rather than
+    duplicated with a different number.
+    """
     candidates = eligible_questions(kb, answered_evidence_ids)
     if not candidates:
         return None
+
+    pending_safety = pending_safety_evidence(kb, observations)
+    if pending_safety:
+        full_explanations = [
+            build_question_explanation(kb, q.id, posterior_dist, observations, entry_context) for q in candidates
+        ]
+        safety_tier = [
+            e
+            for e in full_explanations
+            if kb.questions[e.question_id].evidence_id in pending_safety and e.adjusted_value >= info_gain_epsilon
+        ]
+        if safety_tier:
+            safety_tier.sort(key=lambda e: (-e.final_score, e.effort_cost, e.question_id))
+            return safety_tier[0]
+
+    scope = narrowed_problem_ids(kb, posterior_dist)
+    if scope is None:
+        scoped_posterior, scope_ids = posterior_dist, None
+    else:
+        scope_ids = sorted(scope)
+        scoped_posterior = posterior(score_problems(kb, observations, scope_ids))
+
     explanations = [
-        build_question_explanation(kb, q.id, posterior_dist, observations, entry_context) for q in candidates
+        build_question_explanation(kb, q.id, scoped_posterior, observations, entry_context, scope_ids)
+        for q in candidates
     ]
     explanations.sort(key=lambda e: (-e.final_score, e.effort_cost, e.question_id))
     return explanations[0]

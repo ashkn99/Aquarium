@@ -13,11 +13,12 @@ from aqua_assistant.kb.loader import load_knowledge_base
 from aqua_assistant.questions.selection import (
     build_question_explanation,
     eligible_questions,
-    possible_states,
     routing_bonus,
     select_best_question,
 )
 from aqua_assistant.safety.rules import evaluate_safety
+
+from .conftest import neutral_default
 
 
 @pytest.fixture(scope="module")
@@ -31,8 +32,15 @@ def obs(evidence_id, state, confidence=1.0):
 
 def _first_n(kb, entry_context, n):
     """Drive n turns of a fresh case under entry_context (answering
-    false/first-state/0.0 throughout, so nothing story-specific ever gets
-    revealed), returning the (evidence_id, topic) pairs asked."""
+    conftest.neutral_default() throughout, so nothing story-specific ever
+    gets revealed), returning the (evidence_id, topic) pairs asked.
+
+    Uses neutral_default() rather than a naive false/states[0]/0.0 default
+    -- a raw 0.0 reads as "critical" for dissolved_oxygen_ppm, which used
+    to never matter here (that question rarely got asked this early) but
+    started fabricating a false low-oxygen crisis once safety-aware
+    question prioritization began pulling it forward -- same class of bug
+    documented in PROJECT_STATUS.md's neutral-default gotcha."""
     engine = AquariumInferenceEngine(kb)
     case_id = engine.start_case(entry_context=entry_context)
     asked = []
@@ -43,12 +51,11 @@ def _first_n(kb, entry_context, n):
         q = status.best_next_question
         ev_id = kb.questions[q.question_id].evidence_id
         asked.append((ev_id, kb.evidence[ev_id].topic))
-        states = possible_states(kb, ev_id)
-        if kb.evidence[ev_id].data_type == "numeric":
-            engine.answer(case_id, ev_id, raw_value=0.0, question_id=q.question_id)
+        kind, val = neutral_default(kb, ev_id)
+        if kind == "raw_value":
+            engine.answer(case_id, ev_id, raw_value=val, question_id=q.question_id)
         else:
-            state = "false" if "false" in states else states[0]
-            engine.answer(case_id, ev_id, state=state, question_id=q.question_id)
+            engine.answer(case_id, ev_id, state=val, question_id=q.question_id)
     return asked
 
 
@@ -125,10 +132,20 @@ def test_plant_routing_favors_its_plant_adjacent_topic_early(kb):
 def test_plants_context_is_no_longer_thin(kb):
     """Regression guard for the previously-documented 'plants entry context
     is too thin' limitation (a single plant-adjacent evidence item). With
-    real plant-health evidence in the KB, the early opening should include
+    real plant-health evidence in the KB, the opening should include
     multiple plant_symptom questions, not just a CO2 fallback plus generic
-    triage."""
-    topics = [t for _, t in _first_n(kb, "plants", 6)]
+    triage.
+
+    Window widened from 6 to 16 turns for the safety-aware-prioritization
+    milestone: turns 1-6 are now the bounded, KB-wide safety-linked-
+    evidence pool (sudden_multiple_fish_death, dissolved_oxygen_ppm,
+    nitrite_ppm, ammonia_ppm, used_untreated_tap_water,
+    planted_tank_with_co2_injection) ahead of *any* context's domain
+    questions, plant_symptom included -- see
+    test_entry_context_still_differentiates_which_pending_safety_evidence_comes_first
+    in test_safety_priority.py for the dedicated check that context still
+    differentiates *within* that pool, from turn 1."""
+    topics = [t for _, t in _first_n(kb, "plants", 16)]
     assert topics.count("plant_symptom") >= 2
 
 

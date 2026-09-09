@@ -128,7 +128,9 @@ class AquariumInferenceEngine:
             # pick -- entry-context routing plays no part in it.
             best_question = build_question_explanation(self.kb, primary_alert.forced_question_id, post, observations)
         else:
-            best_question = select_best_question(self.kb, post, observations, answered, case.entry_context)
+            best_question = select_best_question(
+                self.kb, post, observations, answered, case.entry_context, self.info_gain_epsilon
+            )
 
         if forced_pending:
             # A pending safety confirmation must never be suppressed by the
@@ -176,5 +178,13 @@ class AquariumInferenceEngine:
         if best_question is None:
             return True, "no_eligible_questions"
         if best_question.adjusted_value < self.info_gain_epsilon:
+            # Nothing left is informative enough to ask -- the engine has
+            # no choice but to stop either way. But if the posterior is
+            # still well above the "confidently converged" bar, this is a
+            # weak stop (ran out of questions before reaching a clear
+            # answer), not a strong one -- worth reporting honestly rather
+            # than under the same label as a real convergence.
+            if uncertainty > self.entropy_stop_threshold * 2:
+                return True, "diminishing_information_gain_ambiguous"
             return True, "diminishing_information_gain"
         return False, None
