@@ -2,11 +2,13 @@
 // pick entry context -> answer one question at a time -> final result.
 
 const startScreen = document.getElementById("start-screen");
+const concernScreen = document.getElementById("concern-screen");
 const questionScreen = document.getElementById("question-screen");
 const resultScreen = document.getElementById("result-screen");
 
 let caseId = null;
 let currentQuestion = null;
+let entryContextsById = {};
 
 async function api(path, options) {
   const res = await fetch(path, {
@@ -21,7 +23,7 @@ async function api(path, options) {
 }
 
 function showScreen(screen) {
-  for (const s of [startScreen, questionScreen, resultScreen]) s.hidden = s !== screen;
+  for (const s of [startScreen, concernScreen, questionScreen, resultScreen]) s.hidden = s !== screen;
 }
 
 function renderSafetyAlerts(container, alerts) {
@@ -137,6 +139,42 @@ async function startCase(entryContext) {
     body: JSON.stringify({ entry_context: entryContext }),
   });
   caseId = case_id;
+
+  const concerns = entryContext ? entryContextsById[entryContext]?.concerns || [] : [];
+  if (concerns.length > 0) {
+    renderConcernScreen(concerns);
+    return;
+  }
+  await proceedPastConcern();
+}
+
+function renderConcernScreen(concerns) {
+  showScreen(concernScreen);
+  const container = document.getElementById("concern-options");
+  container.innerHTML = "";
+  for (const concern of concerns) {
+    const btn = document.createElement("button");
+    btn.textContent = concern.name;
+    btn.title = concern.description;
+    btn.onclick = () => pickConcern(concern.id);
+    container.appendChild(btn);
+  }
+  const skipBtn = document.createElement("button");
+  skipBtn.textContent = "Not sure / something else";
+  skipBtn.onclick = () => pickConcern(null);
+  container.appendChild(skipBtn);
+}
+
+async function pickConcern(concernId) {
+  const status = await api(`/api/cases/${caseId}/concern`, {
+    method: "POST",
+    body: JSON.stringify({ concern_id: concernId }),
+  });
+  document.getElementById("disclaimer").textContent = status.disclaimer;
+  renderStatus(status);
+}
+
+async function proceedPastConcern() {
   const status = await api(`/api/cases/${caseId}/status`);
   document.getElementById("disclaimer").textContent = status.disclaimer;
   renderStatus(status);
@@ -155,11 +193,11 @@ const VISIBLE_ENTRY_CONTEXTS = ["fish", "water", "plants", "unsure"];
 
 async function loadEntryContexts() {
   const contexts = await api("/api/entry-contexts");
-  const byId = Object.fromEntries(contexts.map((ec) => [ec.id, ec]));
+  entryContextsById = Object.fromEntries(contexts.map((ec) => [ec.id, ec]));
   const container = document.getElementById("entry-contexts");
   container.innerHTML = "";
   for (const id of VISIBLE_ENTRY_CONTEXTS) {
-    const ec = byId[id];
+    const ec = entryContextsById[id];
     if (!ec) continue;
     const btn = document.createElement("button");
     btn.textContent = ec.name;

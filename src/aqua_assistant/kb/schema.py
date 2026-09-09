@@ -150,3 +150,24 @@ class EntryContext(Frozen):
     name: str
     description: str = ""
     topic_weights: dict[str, float] = Field(default_factory=dict)
+
+
+class Concern(Frozen):
+    """A specific concern within an entry context (e.g. "spots on the
+    body" under "my fish"), picked as a second, more targeted step right
+    after entry_context.
+
+    Unlike entry_context's soft topic_weights bonus, a concern's
+    `evidence_ids` are consumed as a priority *tier* by question
+    selection (see questions/selection.py::concern_pending_evidence) --
+    a filter on which evidence gets asked first, not another additive
+    score. Still never diagnostic evidence itself: it's never passed into
+    scoring.py's likelihood/posterior math, same boundary entry_context
+    already keeps.
+    """
+
+    id: str
+    entry_context_id: str
+    name: str
+    description: str = ""
+    evidence_ids: list[str] = Field(default_factory=list)

@@ -82,7 +82,13 @@ class SqlCaseStore:
                 )
                 for o in obs_rows
             ]
-            return Case(id=row.id, status=row.status, observations=observations, entry_context=row.entry_context)
+            return Case(
+                id=row.id,
+                status=row.status,
+                observations=observations,
+                entry_context=row.entry_context,
+                concern_id=row.concern_id,
+            )
 
     def save(self, case: Case) -> None:
         """Persists whatever is new (`case.observations` grows by append
@@ -118,6 +124,7 @@ class SqlCaseStore:
 
             row = session.get(CaseORM, case.id)
             row.status = case.status
+            row.concern_id = case.concern_id
             row.updated_at = datetime.now(timezone.utc).isoformat()
             session.commit()
 

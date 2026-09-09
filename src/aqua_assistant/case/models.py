@@ -30,6 +30,7 @@ class Case:
     status: str = "open"
     observations: list[Observation] = field(default_factory=list)
     entry_context: str | None = None
+    concern_id: str | None = None
 
     def add_observation(self, obs: Observation) -> None:
         """Superseding rather than deleting keeps a correction's audit

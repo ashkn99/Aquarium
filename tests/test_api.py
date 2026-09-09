@@ -49,6 +49,38 @@ def test_list_entry_contexts(client):
     assert ids == {"fish", "water", "plants", "aquarium_environment", "unsure"}
 
 
+def test_entry_contexts_carry_nested_concerns(client):
+    contexts = {ec["id"]: ec for ec in client.get("/api/entry-contexts").json()}
+    fish_concern_ids = {c["id"] for c in contexts["fish"]["concerns"]}
+    assert fish_concern_ids == {"fish_behavior", "fish_appearance", "fish_mortality"}
+    assert contexts["unsure"]["concerns"] == []
+
+
+def test_set_concern_updates_status(client):
+    case_id = client.post("/api/cases", json={"entry_context": "water"}).json()["case_id"]
+    resp = client.post(f"/api/cases/{case_id}/concern", json={"concern_id": "water_chemistry"})
+    assert resp.status_code == 200
+    status = resp.json()
+    assert status["case_id"] == case_id
+
+
+def test_set_concern_from_wrong_entry_context_returns_400(client):
+    case_id = client.post("/api/cases", json={"entry_context": "fish"}).json()["case_id"]
+    resp = client.post(f"/api/cases/{case_id}/concern", json={"concern_id": "water_chemistry"})
+    assert resp.status_code == 400
+
+
+def test_set_concern_on_unknown_case_returns_404(client):
+    resp = client.post("/api/cases/does-not-exist/concern", json={"concern_id": "fish_behavior"})
+    assert resp.status_code == 404
+
+
+def test_set_concern_null_is_accepted(client):
+    case_id = client.post("/api/cases", json={"entry_context": "fish"}).json()["case_id"]
+    resp = client.post(f"/api/cases/{case_id}/concern", json={"concern_id": None})
+    assert resp.status_code == 200
+
+
 def test_start_case_and_get_status(client):
     resp = client.post("/api/cases", json={"entry_context": "fish"})
     assert resp.status_code == 200

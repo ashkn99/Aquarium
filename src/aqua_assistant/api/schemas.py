@@ -17,10 +17,21 @@ class StartCaseResponse(BaseModel):
     case_id: str
 
 
+class ConcernOut(BaseModel):
+    id: str
+    name: str
+    description: str = ""
+
+
 class EntryContextOut(BaseModel):
     id: str
     name: str
     description: str = ""
+    concerns: list[ConcernOut] = []
+
+
+class SetConcernRequest(BaseModel):
+    concern_id: str | None = None
 
 
 class AnswerOption(BaseModel):

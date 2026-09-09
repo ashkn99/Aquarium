@@ -60,6 +60,25 @@ class AquariumInferenceEngine:
             raise ValueError(f"unknown entry_context {entry_context!r}")
         return self.store.create(entry_context=entry_context).id
 
+    def set_concern(self, case_id: str, concern_id: str | None) -> None:
+        """`concern_id` (see kb.concerns -- a second, more specific choice
+        offered right after entry_context) is, like entry_context, purely
+        a question-selection preference recorded on the case; it is never
+        read by scoring/posterior computation, only by question
+        selection (questions/selection.py's concern tier)."""
+        case = self.store.get(case_id)
+        if concern_id is not None:
+            concern = self.kb.concerns.get(concern_id)
+            if concern is None:
+                raise ValueError(f"unknown concern_id {concern_id!r}")
+            if concern.entry_context_id != case.entry_context:
+                raise ValueError(
+                    f"concern {concern_id!r} belongs to entry_context {concern.entry_context_id!r}, "
+                    f"not this case's {case.entry_context!r}"
+                )
+        case.concern_id = concern_id
+        self.store.save(case)
+
     def answer(
         self,
         case_id: str,
@@ -129,7 +148,7 @@ class AquariumInferenceEngine:
             best_question = build_question_explanation(self.kb, primary_alert.forced_question_id, post, observations)
         else:
             best_question = select_best_question(
-                self.kb, post, observations, answered, case.entry_context, self.info_gain_epsilon
+                self.kb, post, observations, answered, case.entry_context, self.info_gain_epsilon, case.concern_id
             )
 
         if forced_pending:

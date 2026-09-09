@@ -25,11 +25,13 @@ from .schemas import (
     AnswerRequest,
     CandidateOut,
     CaseStatusResponse,
+    ConcernOut,
     EntryContextOut,
     FeedbackRequest,
     NextQuestion,
     RecommendationsOut,
     SafetyAlertOut,
+    SetConcernRequest,
     StartCaseRequest,
     StartCaseResponse,
 )
@@ -124,7 +126,16 @@ def create_app() -> FastAPI:
     @app.get("/api/entry-contexts")
     def list_entry_contexts() -> list[EntryContextOut]:
         return [
-            EntryContextOut(id=ec.id, name=ec.name, description=ec.description) for ec in kb.entry_contexts.values()
+            EntryContextOut(
+                id=ec.id,
+                name=ec.name,
+                description=ec.description,
+                concerns=[
+                    ConcernOut(id=c.id, name=c.name, description=c.description)
+                    for c in kb.concerns_by_entry_context.get(ec.id, [])
+                ],
+            )
+            for ec in kb.entry_contexts.values()
         ]
 
     @app.post("/api/cases")
@@ -153,6 +164,16 @@ def create_app() -> FastAPI:
                 raw_value=body.raw_value,
                 question_id=body.question_id,
             )
+        except KeyError:
+            raise HTTPException(status_code=404, detail="case not found") from None
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+        return _status_response(case_id)
+
+    @app.post("/api/cases/{case_id}/concern")
+    def set_concern(case_id: str, body: SetConcernRequest) -> CaseStatusResponse:
+        try:
+            engine.set_concern(case_id, body.concern_id)
         except KeyError:
             raise HTTPException(status_code=404, detail="case not found") from None
         except ValueError as exc:

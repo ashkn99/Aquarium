@@ -168,6 +168,24 @@ class EntryContextTopicWeightORM(Base):
     weight: Mapped[float]
 
 
+class ConcernORM(Base):
+    __tablename__ = "concerns"
+
+    id: Mapped[str] = mapped_column(primary_key=True)
+    entry_context_id: Mapped[str] = mapped_column(ForeignKey("entry_contexts.id"))
+    name: Mapped[str]
+    description: Mapped[str] = mapped_column(default="")
+
+
+class ConcernEvidenceORM(Base):
+    __tablename__ = "concern_evidence"
+    __table_args__ = (UniqueConstraint("concern_id", "evidence_id"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    concern_id: Mapped[str] = mapped_column(ForeignKey("concerns.id"))
+    evidence_id: Mapped[str] = mapped_column(ForeignKey("evidence.id"))
+
+
 class CaseORM(Base):
     __tablename__ = "cases"
 
@@ -176,6 +194,7 @@ class CaseORM(Base):
     updated_at: Mapped[str]
     status: Mapped[str] = mapped_column(default="open")
     entry_context: Mapped[Optional[str]] = mapped_column(default=None)
+    concern_id: Mapped[Optional[str]] = mapped_column(default=None)
 
 
 class ObservationORM(Base):

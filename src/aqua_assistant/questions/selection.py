@@ -23,7 +23,14 @@ This is a selection-time filter, not another additive bonus -- it narrows
 which questions are even ranked, rather than nudging their score -- and
 it is independent of, and composes cleanly with, entry-context routing.
 
-Below that tier, `select_best_question` also applies branch narrowing
+Below that tier, `select_best_question` also applies a concern tier:
+unanswered evidence on the user's chosen `Concern` (a second, more
+specific choice after entry_context -- see kb.concerns / kb/schema.py)
+is preferred the same way, via concern_pending_evidence(). Unlike
+entry-context routing, this is a filter too, not a bonus -- it can
+actually skip unrelated questions rather than just reordering them.
+
+Below that, `select_best_question` also applies branch narrowing
 (diagnostic-scope narrowing): once one `Problem.category` has come to
 dominate the posterior, information gain for ranking purposes is
 recomputed within that category (plus any outside problem that still
@@ -229,6 +236,23 @@ def build_question_explanation(
     )
 
 
+def concern_pending_evidence(kb: KnowledgeBase, concern_id: str | None, answered_evidence_ids: set[str]) -> set[str]:
+    """Evidence ids on the user's chosen concern (kb.concerns, set via
+    engine.set_concern) that haven't been answered yet. Purely a lookup --
+    no scoring/likelihood involved -- consumed by select_best_question as
+    a priority tier, the same shape as
+    safety.rules.pending_safety_evidence(). Naturally empties once every
+    item on the concern is answered, at which point selection falls
+    through to branch narrowing / full-KB ranking with no special-casing
+    needed."""
+    if concern_id is None:
+        return set()
+    concern = kb.concerns.get(concern_id)
+    if concern is None:
+        return set()
+    return {eid for eid in concern.evidence_ids if eid not in answered_evidence_ids}
+
+
 def narrowed_problem_ids(kb: KnowledgeBase, posterior_dist: dict[str, float]) -> set[str] | None:
     """The candidate-problem scope for branch-narrowed question ranking, or
     None if no branch is dominant yet (ranking should stay KB-wide).
@@ -260,6 +284,7 @@ def select_best_question(
     answered_evidence_ids: set[str],
     entry_context: str | None = None,
     info_gain_epsilon: float = 0.02,
+    concern_id: str | None = None,
 ) -> QuestionExplanation | None:
     """Ranks eligible questions by final_score = adjusted_value (pure
     information gain, unchanged) + routing_bonus (entry-context preference,
@@ -267,7 +292,7 @@ def select_best_question(
     identical to plain information-gain ranking -- routing is additive and
     optional, never a replacement for the underlying selector.
 
-    Selection applies two things ahead of that ranking, in order (the
+    Selection applies three things ahead of that ranking, in order (the
     first tier -- a forced safety question -- is decided upstream in
     engine.py and never reaches this function):
 
@@ -284,39 +309,64 @@ def select_best_question(
          set, regardless of branch narrowing below, so a real safety
          concern can never be diluted by diagnostic-scope narrowing.
 
-      2. TARGETED BRANCH (diagnostic-scope narrowing): if tier 1 doesn't
-         apply, questions are ranked against a branch-narrowed posterior
-         when one is dominant (see narrowed_problem_ids()) instead of the
-         full KB. This is a second, throwaway posterior computed purely
-         for ranking -- the real posterior passed in is never mutated or
-         returned narrowed. Early on (no branch dominant yet), this is
-         identical to plain KB-wide information gain, which is exactly
-         what should rank branch-splitting questions highest anyway.
+      2. CONCERN (user-declared focus): unanswered evidence on the
+         concern the user picked as a second step after entry_context
+         (see kb.concerns / concern_pending_evidence()), same
+         adjusted_value >= info_gain_epsilon guard as tier 1. This is
+         what lets "my fish" -> "spots on the body" actually skip
+         unrelated questions instead of merely nudging their order --
+         unlike routing_bonus, this narrows which questions are even
+         ranked. It empties the same way tier 1 does: once every item on
+         the concern is answered or stops being informative, this tier is
+         simply empty and normal ranking resumes below. Also evaluated
+         against the full KB-wide posterior, so it composes independently
+         of branch narrowing.
 
-    The `adjusted_value >= info_gain_epsilon` guard on tier 1 exists so it
-    can never *force* a question the engine would otherwise consider not
-    worth asking at all: `info_gain_epsilon` is the same threshold
-    `AquariumInferenceEngine._check_stop()` already uses for exactly that
-    judgment (default matches its own default), reused here rather than
-    duplicated with a different number.
+      3. TARGETED BRANCH (diagnostic-scope narrowing): if neither tier
+         above applies, questions are ranked against a branch-narrowed
+         posterior when one is dominant (see narrowed_problem_ids())
+         instead of the full KB. This is a second, throwaway posterior
+         computed purely for ranking -- the real posterior passed in is
+         never mutated or returned narrowed. Early on (no branch dominant
+         yet), this is identical to plain KB-wide information gain, which
+         is exactly what should rank branch-splitting questions highest
+         anyway.
+
+    The `adjusted_value >= info_gain_epsilon` guard on tiers 1 and 2
+    exists so neither can ever *force* a question the engine would
+    otherwise consider not worth asking at all: `info_gain_epsilon` is
+    the same threshold `AquariumInferenceEngine._check_stop()` already
+    uses for exactly that judgment (default matches its own default),
+    reused here rather than duplicated with a different number.
     """
     candidates = eligible_questions(kb, answered_evidence_ids)
     if not candidates:
         return None
 
     pending_safety = pending_safety_evidence(kb, observations)
-    if pending_safety:
+    pending_concern = concern_pending_evidence(kb, concern_id, answered_evidence_ids)
+    if pending_safety or pending_concern:
         full_explanations = [
             build_question_explanation(kb, q.id, posterior_dist, observations, entry_context) for q in candidates
         ]
-        safety_tier = [
-            e
-            for e in full_explanations
-            if kb.questions[e.question_id].evidence_id in pending_safety and e.adjusted_value >= info_gain_epsilon
-        ]
-        if safety_tier:
-            safety_tier.sort(key=lambda e: (-e.final_score, e.effort_cost, e.question_id))
-            return safety_tier[0]
+        if pending_safety:
+            safety_tier = [
+                e
+                for e in full_explanations
+                if kb.questions[e.question_id].evidence_id in pending_safety and e.adjusted_value >= info_gain_epsilon
+            ]
+            if safety_tier:
+                safety_tier.sort(key=lambda e: (-e.final_score, e.effort_cost, e.question_id))
+                return safety_tier[0]
+        if pending_concern:
+            concern_tier = [
+                e
+                for e in full_explanations
+                if kb.questions[e.question_id].evidence_id in pending_concern and e.adjusted_value >= info_gain_epsilon
+            ]
+            if concern_tier:
+                concern_tier.sort(key=lambda e: (-e.final_score, e.effort_cost, e.question_id))
+                return concern_tier[0]
 
     scope = narrowed_problem_ids(kb, posterior_dist)
     if scope is None:

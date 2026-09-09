@@ -1,0 +1,125 @@
+# A second, more specific choice offered right after entry_context (see
+# entry_contexts.yaml) -- e.g. picking "fish" then narrowing to "spots on
+# the body". Unlike entry_context's soft topic_weights routing bonus, a
+# concern's evidence_ids are consumed as a priority *tier* by question
+# selection (questions/selection.py::concern_pending_evidence): while any
+# of them are still unanswered and still informative, they're asked
+# ahead of the rest of the KB, not just softly preferred. See that
+# module's docstring for the full tier ordering.
+#
+# gasping/surface_breathing/rapid_breathing are deliberately excluded
+# from every fish concern below -- they're already always screened first
+# regardless of concern (the universal TRIAGE screen, safety/rules.py),
+# so listing them here would be redundant.
+#
+# unsure has no concerns at all -- it stays pure adaptive triage with no
+# domain-specific push, same as its entry_context.
+#
+# To add a new concern: add a row here (tagging evidence already in the
+# KB, or adding new evidence first) -- no code changes needed, same
+# convention as entry_contexts.yaml's topic_weights.
+
+- id: fish_behavior
+  entry_context_id: fish
+  name: Acting differently
+  description: Lethargic, hiding, not eating, scratching, or aggressive toward tankmates.
+  evidence_ids:
+    - lethargy
+    - appetite_loss
+    - hiding
+    - flashing_scratching
+    - chasing_or_nipping_observed
+    - color_fading_or_pale
+
+- id: fish_appearance
+  entry_context_id: fish
+  name: Spots, marks, or growths on the body
+  description: Visible marks, discoloration, or growths on the skin, fins, or gills.
+  evidence_ids:
+    - white_spots
+    - cottony_fuzzy_growth
+    - gold_rust_dust_coating
+    - white_fuzzy_patches_around_mouth
+    - frayed_fins
+    - clamped_fins
+    - red_streaks_or_gills
+    - excess_mucus
+    - torn_or_missing_fins_from_biting
+    - abnormal_buoyancy_or_swimming
+    - pinecone_scales
+    - bloated_body
+
+- id: fish_mortality
+  entry_context_id: fish
+  name: Sudden illness or death
+  description: A fish died suddenly, or multiple fish are affected at once.
+  evidence_ids:
+    - sudden_multiple_fish_death
+    - num_fish_affected
+    - onset_timing
+
+- id: water_chemistry
+  entry_context_id: water
+  name: Ammonia, nitrite, or nitrate
+  description: Concerned about specific water-chemistry readings.
+  evidence_ids:
+    - ammonia_ppm
+    - nitrite_ppm
+    - nitrate_ppm
+
+- id: water_stability
+  entry_context_id: water
+  name: pH or temperature swings
+  description: Readings that fluctuate rather than sitting at one bad number.
+  evidence_ids:
+    - ph_level
+    - temperature_f
+    - ph_swings_reported
+
+- id: water_history
+  entry_context_id: water
+  name: Something changed recently
+  description: A recent water change, new fish, or maintenance event.
+  evidence_ids:
+    - used_untreated_tap_water
+    - water_change_frequency
+    - copper_source_exposure
+    - recent_water_change_large
+    - recent_fish_added
+    - filter_disrupted
+
+- id: plant_color
+  entry_context_id: plants
+  name: Leaf color or pattern changes
+  description: Yellowing, browning, or discoloration in a particular pattern.
+  evidence_ids:
+    - leaf_yellowing_or_discoloration
+    - leaf_browning_or_holes
+    - stunted_or_slow_new_growth
+    - older_leaves_affected_first
+    - new_growth_pale_or_distorted
+
+- id: plant_growth
+  entry_context_id: plants
+  name: Growth, light, or algae
+  description: Leggy growth, algae competing with plants, or lighting/fertilizing setup.
+  evidence_ids:
+    - leggy_stretching_growth
+    - visible_algae_growth
+    - low_light_duration_or_intensity
+    - long_photoperiod_or_intense_lighting
+    - fertilization_dosing_reported
+    - co2_fluctuation_reported
+
+- id: plant_damage
+  entry_context_id: plants
+  name: Physical damage, melting, or roots
+  description: Mechanical damage, rapid melting, or a rooting/planting problem.
+  evidence_ids:
+    - old_leaves_melting_rapidly
+    - leaves_shredded_or_bitten_pattern
+    - plant_floating_or_uprooted
+    - roots_visibly_rotting_or_blackened
+    - substrate_disturbed_or_shallow_for_roots
+    - herbivorous_livestock_present
+    - recently_planted_or_moved

@@ -20,6 +20,8 @@ from sqlalchemy.orm import Session
 from .knowledge_base import KnowledgeBase
 from .models import (
     Base,
+    ConcernEvidenceORM,
+    ConcernORM,
     EntryContextORM,
     EntryContextTopicWeightORM,
     EvidenceGroupORM,
@@ -33,6 +35,7 @@ from .models import (
     SafetyRuleORM,
 )
 from .schema import (
+    Concern,
     EntryContext,
     Evidence,
     EvidenceGroup,
@@ -76,9 +79,11 @@ def load_knowledge_base(fixtures_dir: Path | None = None, db_url: str = "sqlite:
     recommendations = [Recommendation(**d) for d in _load_yaml(fixtures_dir / "recommendations.yaml")]
     safety_rules = [_parse_safety_rule(d) for d in _load_yaml(fixtures_dir / "safety_rules.yaml")]
     entry_contexts = [EntryContext(**d) for d in _load_yaml(fixtures_dir / "entry_contexts.yaml")]
+    concerns = [Concern(**d) for d in _load_yaml(fixtures_dir / "concerns.yaml")]
 
     _persist_and_check(
-        db_url, groups, evidence, problems, ranges, questions, prob_ev, answers, recommendations, safety_rules, entry_contexts
+        db_url, groups, evidence, problems, ranges, questions, prob_ev, answers, recommendations, safety_rules,
+        entry_contexts, concerns,
     )
 
     return KnowledgeBase(
@@ -92,6 +97,7 @@ def load_knowledge_base(fixtures_dir: Path | None = None, db_url: str = "sqlite:
         recommendations=recommendations,
         safety_rules=safety_rules,
         entry_contexts={ec.id: ec for ec in entry_contexts},
+        concerns={c.id: c for c in concerns},
     )
 
 
@@ -107,6 +113,7 @@ def _persist_and_check(
     recommendations: list[Recommendation],
     safety_rules: list[SafetyRule],
     entry_contexts: list[EntryContext],
+    concerns: list[Concern],
 ) -> None:
     """Insert fixtures into SQLite in dependency order with foreign_keys=ON,
     so a broken reference (e.g. evidence pointing at a nonexistent group)
@@ -163,6 +170,16 @@ def _persist_and_check(
             EntryContextTopicWeightORM(entry_context_id=ec.id, topic=topic, weight=weight)
             for ec in entry_contexts
             for topic, weight in ec.topic_weights.items()
+        )
+
+        session.add_all(
+            ConcernORM(id=c.id, entry_context_id=c.entry_context_id, name=c.name, description=c.description)
+            for c in concerns
+        )
+        session.flush()
+
+        session.add_all(
+            ConcernEvidenceORM(concern_id=c.id, evidence_id=eid) for c in concerns for eid in c.evidence_ids
         )
 
         session.commit()

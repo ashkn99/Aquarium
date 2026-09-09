@@ -58,6 +58,18 @@ def test_create_and_get_round_trip(tmp_path):
     assert fetched.entry_context == "fish"
     assert fetched.status == "open"
     assert fetched.observations == []
+    assert fetched.concern_id is None
+
+
+def test_concern_id_persists_once_set_after_creation(tmp_path):
+    store = _store(tmp_path)
+    case = store.create(entry_context="fish")
+    assert store.get(case.id).concern_id is None
+
+    case.concern_id = "fish_mortality"
+    store.save(case)
+
+    assert store.get(case.id).concern_id == "fish_mortality"
 
 
 def test_save_persists_new_observations(tmp_path):
