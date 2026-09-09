@@ -175,6 +175,7 @@ class CaseORM(Base):
     created_at: Mapped[str]
     updated_at: Mapped[str]
     status: Mapped[str] = mapped_column(default="open")
+    entry_context: Mapped[Optional[str]] = mapped_column(default=None)
 
 
 class ObservationORM(Base):
@@ -190,3 +191,17 @@ class ObservationORM(Base):
     question_id: Mapped[Optional[str]] = mapped_column(ForeignKey("questions.id"), default=None)
     answered_at: Mapped[str]
     superseded: Mapped[bool] = mapped_column(default=False)
+
+
+class CaseFeedbackORM(Base):
+    """A tester's one-tap "was this helpful?" plus optional comment,
+    captured at the end of a case. No name/email/contact field --
+    keeps the public beta PII-free by construction."""
+
+    __tablename__ = "case_feedback"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
+    case_id: Mapped[str] = mapped_column(ForeignKey("cases.id"))
+    helpful: Mapped[bool]
+    comment: Mapped[Optional[str]] = mapped_column(default=None)
+    submitted_at: Mapped[str]

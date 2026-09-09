@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Aquarium Assistant</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main id="app">
+    <h1>Aquarium Assistant</h1>
+    <p class="disclaimer" id="disclaimer"></p>
+
+    <section id="start-screen">
+      <p>What are you concerned about?</p>
+      <div id="entry-contexts" class="options"></div>
+    </section>
+
+    <section id="question-screen" hidden>
+      <div class="progress">
+        <span id="uncertainty-label"></span>
+      </div>
+      <div id="safety-alerts"></div>
+      <p id="question-text"></p>
+      <div id="answer-options" class="options"></div>
+      <form id="numeric-form" hidden>
+        <input id="numeric-input" type="number" step="any" />
+        <button type="submit">Submit</button>
+      </form>
+    </section>
+
+    <section id="result-screen" hidden>
+      <div id="safety-alerts-final"></div>
+      <h2 id="result-title"></h2>
+      <p id="result-probability"></p>
+      <div id="recommendations"></div>
+      <div id="feedback">
+        <p>Was this helpful?</p>
+        <button id="feedback-yes">Yes</button>
+        <button id="feedback-no">No</button>
+        <textarea id="feedback-comment" placeholder="Anything to add? (optional)" hidden></textarea>
+        <button id="feedback-submit" hidden>Send feedback</button>
+        <p id="feedback-thanks" hidden>Thanks for the feedback.</p>
+      </div>
+      <button id="restart">Start a new case</button>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
