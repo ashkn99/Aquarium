@@ -1,12 +1,15 @@
 """Tests for the concern tier in question selection
 (questions/selection.py::concern_pending_evidence, consumed by
-select_best_question's tier 2).
+select_best_question's tier 3) and concern-seeded branch narrowing
+(concern_seeded_problem_ids, tier 4's fallback).
 
 Priority order: forced safety question (engine.py) > safety-suspicion
-tier > concern tier > branch narrowing > full-KB/routing ranking. Concern
-is evidence-side (which questions to ask) and, unlike entry-context
-routing, a hard filter -- not just a bonus -- so it can actually skip
-unrelated questions instead of merely reordering them.
+tier > domain-scoped mandatory screen > concern tier > branch narrowing
+(or concern-seeded scope, before real evidence makes a branch dominant)
+> full-KB/routing ranking. Concern is evidence-side (which questions to
+ask) and, unlike entry-context routing, a hard filter -- not just a
+bonus -- so it can actually skip unrelated questions instead of merely
+reordering them.
 """
 from __future__ import annotations
 
@@ -16,7 +19,12 @@ from aqua_assistant.case.models import Observation
 from aqua_assistant.inference.engine import AquariumInferenceEngine
 from aqua_assistant.inference.scoring import posterior, score_problems
 from aqua_assistant.kb.loader import load_knowledge_base
-from aqua_assistant.questions.selection import concern_pending_evidence, select_best_question
+from aqua_assistant.questions.selection import (
+    _entry_context_declares_a_domain,
+    concern_pending_evidence,
+    concern_seeded_problem_ids,
+    select_best_question,
+)
 
 from .conftest import neutral_default
 
@@ -187,3 +195,57 @@ def test_set_concern_to_none_clears_it(kb):
     engine.set_concern(case_id, None)
     case = engine.store.get(case_id)
     assert case.concern_id is None
+
+
+# ==================================================== _entry_context_declares_a_domain ===
+
+
+@pytest.mark.parametrize("ctx,expected", [("fish", True), ("water", True), ("plants", True), ("aquarium_environment", True), ("unsure", False), (None, False), ("not_a_real_context", False)])
+def test_entry_context_declares_a_domain(kb, ctx, expected):
+    assert _entry_context_declares_a_domain(kb, ctx) is expected
+
+
+# ==================================================== concern_seeded_problem_ids ===
+
+
+def test_concern_seeded_scope_is_none_without_a_concern(kb):
+    assert concern_seeded_problem_ids(kb, None) is None
+    assert concern_seeded_problem_ids(kb, "not_a_real_concern") is None
+
+
+def test_concern_seeded_scope_narrows_to_problems_the_evidence_actually_informs(kb):
+    """plant_damage's evidence (melting, shredded leaves, floating/uprooted,
+    rotting roots) only has likelihood rows against a small, specific set
+    of plant problems -- not the whole plant_health category, and
+    certainly not any fish/water problem."""
+    scope = concern_seeded_problem_ids(kb, "plant_damage")
+    assert scope == {"plant_livestock_damage", "plant_melt_transition", "plant_root_or_planting_problem"}
+
+
+def test_concern_seeded_scope_never_includes_unrelated_domain_problems(kb):
+    scope = concern_seeded_problem_ids(kb, "water_chemistry")
+    assert "ich" not in scope  # a fish/parasite problem, not informed by ammonia/nitrite/nitrate
+    assert "plant_root_or_planting_problem" not in scope
+
+
+# ==================================================== integration: concern narrows ranking ===
+
+
+def test_declared_concern_beats_the_kb_wide_dominant_marker_for_ranking(kb):
+    """white_spots is the KB's own documented, near-pathognomonic,
+    globally-dominant marker (PROJECT_STATUS.md) -- it wins turn 1 under
+    plain entry-context routing alone, with no concern declared. Once
+    plant_damage is declared, concern-seeded branch narrowing (tier 4's
+    fallback, since no real branch is dominant yet) restricts ranking to
+    the problems that concern's evidence actually informs, and
+    white_spots -- uninformative for any of them -- properly loses."""
+    post = posterior(score_problems(kb, []))
+
+    without_concern = select_best_question(kb, post, [], set(), entry_context="plants", concern_id=None)
+    assert kb.questions[without_concern.question_id].evidence_id == "white_spots"
+
+    with_concern = select_best_question(kb, post, [], set(), entry_context="plants", concern_id="plant_damage")
+    picked_evidence = kb.questions[with_concern.question_id].evidence_id
+    assert picked_evidence != "white_spots"
+    informed = kb.problems_informed_by_evidence.get(picked_evidence, set())
+    assert informed & concern_seeded_problem_ids(kb, "plant_damage")

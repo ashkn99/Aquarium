@@ -5,16 +5,27 @@ firing rule always surfaces ahead of the ranked candidates, and can pin a
 forced_question_id that preempts the normal information-gain argmax for
 that turn -- so information gain can never override a safety concern.
 
-`pending_safety_evidence()` is the one addition consumed outside this
-module (by questions/selection.py): it identifies unanswered evidence
-belonging to a safety rule that is *suspected* -- not merely unresolved,
-but with at least one of its own conditions already observed matching --
-so selection can prioritize confirming/ruling it out over unrelated
-diagnostic markers. Safety behaves as an interrupt this way: it only
-takes over once something concrete points at it, and lets go the moment
-the rule fires or is ruled out. It's still purely a read of the same rule
-definitions -- no new rule concept, no evidence ids hardcoded, and it
-never itself decides whether a rule fires.
+`pending_safety_evidence()` and `screening_evidence_ids()` are the two
+additions consumed outside this module (by questions/selection.py):
+
+- `pending_safety_evidence()` identifies unanswered evidence belonging
+  to a safety rule that is *suspected* -- not merely unresolved, but
+  with at least one of its own conditions already observed matching --
+  so selection can prioritize confirming/ruling it out over unrelated
+  diagnostic markers. Safety behaves as an interrupt this way: it only
+  takes over once something concrete points at it, and lets go the
+  moment the rule fires or is ruled out.
+- `screening_evidence_ids()` identifies evidence belonging to a rule
+  with no `all_of` clause -- structurally incapable of showing partial
+  signal, so "suspected" doesn't apply to it at all. Selection consumes
+  this shape-based fact for its own, domain-scoped mandatory-screen tier
+  (see questions/selection.py::select_best_question) rather than this
+  module deciding when it applies -- that decision needs entry_context,
+  which this module deliberately knows nothing about.
+
+Both are still purely reads of the same rule definitions -- no new rule
+concept, no evidence ids hardcoded, and neither decides whether a rule
+fires.
 """
 from __future__ import annotations
 
@@ -110,17 +121,14 @@ def _rule_suspected(rule: SafetyRule, observed: dict[str, str]) -> bool:
     observed yet is merely "not ruled out," not "suspected," and must not
     compete for priority against ordinary diagnostic questions.
 
-    Exception, derived from rule shape rather than any hardcoded id: a
-    rule with no `all_of` clause has nothing to anchor a partial-signal
-    check on in the first place -- its entire condition is an
-    undifferentiated `any_of` (a bare symptom check, e.g. "gasping or
-    surface breathing"), so there is no meaningful precursor to wait for.
-    Such a rule must be screened directly rather than gated on suspicion,
-    or it could never be asked about at all until it had already fired.
-    This still keeps the screened set small and bounded -- only rules
-    genuinely shaped this way qualify, not every unresolved rule."""
-    if not rule.all_of:
-        return True
+    A rule with no `all_of` clause (nothing to anchor a partial-signal
+    check on -- e.g. respiratory_distress_general's bare "gasping or
+    surface breathing") is therefore never "suspected" by this function
+    from a clean case; it's handled separately, as a domain-scoped
+    mandatory screen, by questions/selection.py (see
+    screening_evidence_ids() below and select_best_question's docstring)
+    rather than here -- this function only ever means genuine, evidence-
+    backed suspicion."""
     return any(_condition_met(observed, c.evidence_id, c.equals_state) for c in (*rule.all_of, *rule.any_of))
 
 

@@ -23,7 +23,23 @@ This is a selection-time filter, not another additive bonus -- it narrows
 which questions are even ranked, rather than nudging their score -- and
 it is independent of, and composes cleanly with, entry-context routing.
 
-Below that tier, `select_best_question` also applies a concern tier:
+Below that, a *domain-scoped mandatory screen*: evidence belonging to a
+safety rule with no `all_of` clause (safety/rules.py::
+screening_evidence_ids() -- structurally incapable of showing partial
+signal, so it can never become "suspected" above) is screened directly
+rather than gated on suspicion, same as tier 1 -- but only when its
+`topic` is actually relevant to the declared entry_context (or no domain
+was declared at all -- see `_entry_context_declares_a_domain()`). This
+is what stops a fish vital-sign check (e.g. "is the fish gasping")
+from opening *every* case regardless of entry_context -- a real bug
+found by manual testing: the KB-shape exception that makes such a rule
+un-suspectable was previously applied completely unconditionally,
+independent of what domain the user declared. Real evidence pointing
+that way still surfaces it via normal ranking/branch narrowing
+regardless of declared domain -- this only removes it as a *forced*
+opening question outside its own domain.
+
+Below that, `select_best_question` also applies a concern tier:
 unanswered evidence on the user's chosen `Concern` (a second, more
 specific choice after entry_context -- see kb.concerns / kb/schema.py)
 is preferred the same way, via concern_pending_evidence(). Unlike
@@ -41,7 +57,12 @@ actually distinguish within the area the evidence already points to. The
 real posterior (returned to callers, used for safety/stopping) is never
 touched by this -- narrowing only affects which *question* looks best,
 via a second, throwaway posterior computed with the existing
-`score_problems(..., problem_ids=...)` subsetting support.
+`score_problems(..., problem_ids=...)` subsetting support. Before any
+real evidence makes a branch dominant, `concern_seeded_problem_ids()`
+gives this the same throwaway-scope treatment seeded from the user's
+declared concern instead -- diagnostic scope narrows from the user's own
+stated focus immediately, not just once enough answers happen to imply
+it, while still yielding the moment real evidence disagrees.
 """
 from __future__ import annotations
 
@@ -198,6 +219,23 @@ def routing_bonus(
     return weight * decay
 
 
+def _entry_context_declares_a_domain(kb: KnowledgeBase, entry_context: str | None) -> bool:
+    """True iff the entry context expresses an actual domain preference
+    -- i.e. its topic_weights include some topic other than
+    general_context with nonzero weight. `unsure` deliberately only
+    weights general_context (see entry_contexts.yaml's own docstring:
+    "no domain-specific push"), so this is False for it and for no
+    entry_context at all, same as each other -- both mean "we don't know
+    where this belongs yet," derived from the KB's own declared shape
+    rather than checking for the literal id "unsure"."""
+    if not entry_context:
+        return False
+    context = kb.entry_contexts.get(entry_context)
+    if context is None:
+        return False
+    return any(topic != "general_context" and weight > 0 for topic, weight in context.topic_weights.items())
+
+
 def _distinguishes(kb: KnowledgeBase, posterior_dist: dict[str, float], evidence_id: str, top_n: int = 3) -> list[str]:
     informative_problems = kb.problems_informed_by_evidence.get(evidence_id, set())
     top = sorted(posterior_dist, key=lambda pid: posterior_dist[pid], reverse=True)[:top_n]
@@ -277,6 +315,32 @@ def narrowed_problem_ids(kb: KnowledgeBase, posterior_dist: dict[str, float]) ->
     }
 
 
+def concern_seeded_problem_ids(kb: KnowledgeBase, concern_id: str | None) -> set[str] | None:
+    """The candidate-problem scope implied by the user's declared concern,
+    for use only when no real branch dominance exists yet
+    (narrowed_problem_ids() returns None) -- the KB-derived diagnostic
+    area the user's own stated focus points to, seeded before any real
+    evidence has accumulated enough to narrow the posterior on its own.
+
+    Built from kb.problems_informed_by_evidence (already exists for
+    build_question_explanation's `distinguishes` field) -- the union, over
+    the concern's evidence_ids, of every problem with at least one
+    likelihood row for that evidence. None if the concern is unset,
+    unknown, or (unlikely, but possible for a future concern with only
+    general-context-style evidence) informs no problems at all, in which
+    case there's nothing to narrow to and full-KB ranking applies as
+    before."""
+    if concern_id is None:
+        return None
+    concern = kb.concerns.get(concern_id)
+    if concern is None:
+        return None
+    scope: set[str] = set()
+    for evidence_id in concern.evidence_ids:
+        scope |= kb.problems_informed_by_evidence.get(evidence_id, set())
+    return scope or None
+
+
 def select_best_question(
     kb: KnowledgeBase,
     posterior_dist: dict[str, float],
@@ -292,7 +356,7 @@ def select_best_question(
     identical to plain information-gain ranking -- routing is additive and
     optional, never a replacement for the underlying selector.
 
-    Selection applies three things ahead of that ranking, in order (the
+    Selection applies four things ahead of that ranking, in order (the
     first tier -- a forced safety question -- is decided upstream in
     engine.py and never reaches this function):
 
@@ -309,7 +373,20 @@ def select_best_question(
          set, regardless of branch narrowing below, so a real safety
          concern can never be diluted by diagnostic-scope narrowing.
 
-      2. CONCERN (user-declared focus): unanswered evidence on the
+      2. DOMAIN-SCOPED MANDATORY SCREEN: unanswered evidence belonging to
+         a safety rule with no `all_of` clause (safety.rules.
+         screening_evidence_ids()) -- structurally incapable of ever
+         showing partial signal, so tier 1's suspicion test can never
+         admit it -- is screened directly instead, but *only* when its
+         topic is relevant to the declared entry_context, or no domain
+         was declared at all (see `_entry_context_declares_a_domain()`).
+         This is what keeps a fish vital-sign check (e.g. "is the fish
+         gasping") from opening every case regardless of what the user
+         said they were worried about, while still asking it essentially
+         immediately for "fish"/no-declared-domain cases, exactly as
+         before. Same info_gain_epsilon guard as tier 1.
+
+      3. CONCERN (user-declared focus): unanswered evidence on the
          concern the user picked as a second step after entry_context
          (see kb.concerns / concern_pending_evidence()), same
          adjusted_value >= info_gain_epsilon guard as tier 1. This is
@@ -322,18 +399,23 @@ def select_best_question(
          against the full KB-wide posterior, so it composes independently
          of branch narrowing.
 
-      3. TARGETED BRANCH (diagnostic-scope narrowing): if neither tier
-         above applies, questions are ranked against a branch-narrowed
-         posterior when one is dominant (see narrowed_problem_ids())
-         instead of the full KB. This is a second, throwaway posterior
-         computed purely for ranking -- the real posterior passed in is
-         never mutated or returned narrowed. Early on (no branch dominant
-         yet), this is identical to plain KB-wide information gain, which
-         is exactly what should rank branch-splitting questions highest
-         anyway.
+      4. TARGETED BRANCH (diagnostic-scope narrowing): if none of the
+         tiers above apply, questions are ranked against a branch-
+         narrowed posterior when one is dominant (see
+         narrowed_problem_ids()) instead of the full KB -- or, before any
+         branch is dominant, against a posterior narrowed to the problems
+         the declared concern's evidence actually informs (see
+         concern_seeded_problem_ids()), so diagnostic scope narrows from
+         the user's own stated focus immediately rather than waiting for
+         enough answers to imply it. Either way this is a second,
+         throwaway posterior computed purely for ranking -- the real
+         posterior passed in is never mutated or returned narrowed. With
+         neither a dominant branch nor a concern, this is identical to
+         plain KB-wide information gain, which is exactly what should
+         rank branch-splitting questions highest anyway.
 
-    The `adjusted_value >= info_gain_epsilon` guard on tiers 1 and 2
-    exists so neither can ever *force* a question the engine would
+    The `adjusted_value >= info_gain_epsilon` guard on tiers 1-3 exists
+    so none of them can ever *force* a question the engine would
     otherwise consider not worth asking at all: `info_gain_epsilon` is
     the same threshold `AquariumInferenceEngine._check_stop()` already
     uses for exactly that judgment (default matches its own default),
@@ -344,8 +426,13 @@ def select_best_question(
         return None
 
     pending_safety = pending_safety_evidence(kb, observations)
+    mandatory_screen = screening_evidence_ids(kb) - answered_evidence_ids
+    if _entry_context_declares_a_domain(kb, entry_context):
+        mandatory_screen = {
+            eid for eid in mandatory_screen if routing_bonus(kb, entry_context, eid, num_observations=0) > 0
+        }
     pending_concern = concern_pending_evidence(kb, concern_id, answered_evidence_ids)
-    if pending_safety or pending_concern:
+    if pending_safety or mandatory_screen or pending_concern:
         full_explanations = [
             build_question_explanation(kb, q.id, posterior_dist, observations, entry_context) for q in candidates
         ]
@@ -358,6 +445,16 @@ def select_best_question(
             if safety_tier:
                 safety_tier.sort(key=lambda e: (-e.final_score, e.effort_cost, e.question_id))
                 return safety_tier[0]
+        if mandatory_screen:
+            screen_tier = [
+                e
+                for e in full_explanations
+                if kb.questions[e.question_id].evidence_id in mandatory_screen
+                and e.adjusted_value >= info_gain_epsilon
+            ]
+            if screen_tier:
+                screen_tier.sort(key=lambda e: (-e.final_score, e.effort_cost, e.question_id))
+                return screen_tier[0]
         if pending_concern:
             concern_tier = [
                 e
@@ -369,6 +466,8 @@ def select_best_question(
                 return concern_tier[0]
 
     scope = narrowed_problem_ids(kb, posterior_dist)
+    if scope is None:
+        scope = concern_seeded_problem_ids(kb, concern_id)
     if scope is None:
         scoped_posterior, scope_ids = posterior_dist, None
     else:

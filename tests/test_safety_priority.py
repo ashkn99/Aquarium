@@ -69,18 +69,15 @@ def _drive(engine, case_id, answer_script, max_turns=40):
 # ==================================================== pending_safety_evidence (unit) ===
 
 
-def test_pending_at_fresh_case_is_bounded_to_the_screening_only_rule(kb):
-    """At the very start of a case, nothing is known -- so only a rule
-    with no `all_of` clause (structurally impossible to partially
-    suspect, see safety/rules.py::_rule_suspected) can be pending.
-    Every other rule in this KB has an `all_of` clause and stays out of
-    the tier until something concrete actually points at it -- this is
-    the fix for the previous version's unconditional "every rule pending
-    from turn 1" behavior."""
-    pending = pending_safety_evidence(kb, [])
-    all_rule_evidence = {c.evidence_id for r in kb.safety_rules for c in (*r.all_of, *r.any_of)}
-    assert pending == screening_evidence_ids(kb) == {"gasping", "surface_breathing"}
-    assert pending < all_rule_evidence  # a small screen, not the whole pool
+def test_pending_at_fresh_case_is_empty_until_something_real_points_somewhere(kb):
+    """At the very start of a case, nothing is known -- so
+    pending_safety_evidence (genuine suspicion) is empty. The
+    respiratory-distress rule (no `all_of`, so it can never show partial
+    signal) is handled entirely separately, as a domain-scoped mandatory
+    screen in questions/selection.py -- see
+    test_every_context_opens_on_the_same_universal_screen for that half."""
+    assert pending_safety_evidence(kb, []) == set()
+    assert screening_evidence_ids(kb) == {"gasping", "surface_breathing"}
 
 
 def test_dissolved_oxygen_can_never_be_pending_since_its_rule_is_single_condition(kb):
@@ -124,26 +121,37 @@ def test_pending_drops_evidence_once_rule_is_firing(kb):
 
 
 def test_pending_any_of_ruled_out_only_once_every_branch_is_answered_false(kb):
-    """respiratory_distress_general (any_of gasping/surface_breathing) stays
-    live as long as either is unanswered -- answering just one false must
+    """severe_chlorine_exposure (all_of used_untreated_tap_water, any_of
+    gasping/surface_breathing) stays suspected as long as either any_of
+    branch is unanswered, once suspected -- answering just one false must
     not remove the other from pending."""
-    pending_one = pending_safety_evidence(kb, [obs("gasping", "false")])
+    suspected = [obs("used_untreated_tap_water", "true"), obs("gasping", "false")]
+    pending_one = pending_safety_evidence(kb, suspected)
     assert "surface_breathing" in pending_one
 
-    pending_both = pending_safety_evidence(kb, [obs("gasping", "false"), obs("surface_breathing", "false")])
-    assert "gasping" not in pending_both
-    assert "surface_breathing" not in pending_both
+    suspected_both_false = [*suspected, obs("surface_breathing", "false")]
+    pending_both = pending_safety_evidence(kb, suspected_both_false)
+    assert "surface_breathing" not in pending_both  # any_of ruled out -> rule dead
+    assert "used_untreated_tap_water" not in pending_both  # already answered anyway
 
 
 def test_pending_all_of_and_any_of_combination(kb):
     """co2_injection_excess_active (all_of planted_tank_with_co2_injection,
-    any_of gasping/surface_breathing): ruled out once the all_of condition
-    is contradicted, even if gasping/surface_breathing are untouched."""
-    pending = pending_safety_evidence(kb, [obs("planted_tank_with_co2_injection", "false")])
-    # The rule itself is ruled out, but gasping/surface_breathing remain
-    # pending via the still-live respiratory_distress_general rule.
-    assert "gasping" in pending
-    assert "surface_breathing" in pending
+    any_of gasping/surface_breathing): ruled out once its own all_of
+    condition is contradicted, even though the shared any_of arm
+    (gasping=true) is satisfied -- but severe_chlorine_exposure, sharing
+    that same any_of arm with its own distinct all_of precondition,
+    remains independently suspected and pending."""
+    observations = [obs("gasping", "true"), obs("planted_tank_with_co2_injection", "false")]
+    pending = pending_safety_evidence(kb, observations)
+    # co2_injection_excess_active is ruled out (all_of contradicted) --
+    # its own all_of evidence is already answered anyway, so this only
+    # matters in that it must not keep surface_breathing pending via
+    # *this* rule specifically (severe_chlorine_exposure still does, below).
+    assert "planted_tank_with_co2_injection" not in pending
+    # severe_chlorine_exposure: unaffected by the other rule's ruling-out,
+    # still suspected via the shared any_of arm.
+    assert pending == {"used_untreated_tap_water", "surface_breathing"}
 
 
 # ==================================================== A: gasping regression ===
@@ -214,17 +222,38 @@ def test_co2_evidence_fast_tracked_once_respiratory_distress_is_confirmed(kb):
     """planted_tank_with_co2_injection gates co2_injection_excess_active, a
     compound rule (all_of + any_of respiratory distress). It only becomes
     suspected -- and thus fast-tracked -- once the shared any_of arm
-    (gasping/surface_breathing, part of the universal screen) is actually
-    observed true, not merely because the case exists."""
+    (gasping/surface_breathing) is actually observed true, not merely
+    because the case exists. Uses entry_context="fish", where the
+    domain-scoped mandatory screen (see selection.py) still applies, so
+    gasping is actually reachable within the driven turns -- see
+    test_dissolved_oxygen_and_co2_not_fast_tracked_under_an_irrelevant_domain
+    for the water/aquarium_environment/plants side of this."""
     engine = AquariumInferenceEngine(kb)
-    case_id = engine.start_case(entry_context="aquarium_environment")
+    case_id = engine.start_case(entry_context="fish")
     asked, _ = _drive(engine, case_id, {}, max_turns=8)
     assert "planted_tank_with_co2_injection" not in asked[:8]  # gasping/surface_breathing read false -> never suspected
 
     engine2 = AquariumInferenceEngine(kb)
-    case_id2 = engine2.start_case(entry_context="aquarium_environment")
+    case_id2 = engine2.start_case(entry_context="fish")
     asked2, _ = _drive(engine2, case_id2, {"gasping": ("state", "true")}, max_turns=8)
-    assert "planted_tank_with_co2_injection" in asked2[:3]  # now suspected -> fast-tracked
+    # gasping=true suspects both compound rules sharing that any_of arm
+    # (severe_chlorine_exposure too) -- both get fast-tracked together.
+    assert "planted_tank_with_co2_injection" in asked2[:4]
+
+
+def test_dissolved_oxygen_and_co2_not_fast_tracked_under_an_irrelevant_domain(kb):
+    """The domain-scoped mandatory screen (questions/selection.py) means
+    aquarium_environment (no fish_symptom weight) never force-screens
+    gasping/surface_breathing at all -- so a compound rule sharing that
+    any_of arm can't get suspected through it either. This is the fix for
+    a real bug found by manual testing: every entry context, including
+    ones with nothing to do with fish vitals, used to open on "is the
+    fish gasping at the surface?"."""
+    engine = AquariumInferenceEngine(kb)
+    case_id = engine.start_case(entry_context="aquarium_environment")
+    asked, _ = _drive(engine, case_id, {}, max_turns=8)
+    assert "gasping" not in asked[:8]
+    assert "surface_breathing" not in asked[:8]
 
 
 def test_co2_overdose_scenario_safety_fires_early_relative_to_session(kb):
@@ -302,22 +331,21 @@ def test_critical_ammonia_evidence_handled_appropriately(kb):
 
 def test_already_firing_forced_safety_question_still_wins_over_safety_tier(kb):
     """Tier 0 (a firing rule's forced_question_id, decided in engine.py)
-    must still preempt tier 1 (the suspicion-gated pending-safety tier)
-    -- e.g. once critical_ammonia forces ask_gasping, the still-pending
-    universal screen (gasping/surface_breathing itself) must not compete
-    with it, even though gasping is literally the forced pick's own
-    evidence."""
+    must still preempt every selection-time tier -- e.g. once
+    critical_ammonia forces ask_gasping, that must win regardless of what
+    else selection would otherwise be considering."""
     engine = AquariumInferenceEngine(kb)
     case_id = engine.start_case(entry_context="unsure")
     engine.answer(case_id, "ammonia_ppm", raw_value=3.0)
     status = engine.get_status(case_id)
     assert status.safety_alerts
     assert status.best_next_question.question_id == "ask_gasping"
-    # Confirm the universal screen is indeed still pending -- the forced
-    # question is winning despite competition, not by default.
+    # Nothing else has been observed to create real suspicion for any
+    # other rule -- confirm tier 0's win is despite an empty pending set,
+    # not by default because something else was also competing for it.
     observations = engine.store.get(case_id).active_observations()
     pending = pending_safety_evidence(kb, observations)
-    assert pending == {"gasping", "surface_breathing"}
+    assert pending == set()
 
 
 @pytest.mark.parametrize("ctx", ["fish", "water", "plants", "aquarium_environment", "unsure"])
@@ -382,14 +410,16 @@ def test_routing_bonus_math_is_unaffected_by_safety_priority(kb):
     assert routing_bonus(kb, "plants", "used_untreated_tap_water", num_observations=0) == 0.0
 
 
-def test_every_context_opens_on_the_same_universal_screen(kb):
-    """From a fresh case, every entry context picks the same first
-    question: the universal screen (gasping, surface_breathing) has only
-    two members and both carry the same fish_symptom routing bonus within
-    any one context, so raw information gain alone decides between them,
-    with no room for entry-context routing to differentiate. This is the
-    intended TRIAGE shape -- a fixed, tiny opening screen before
-    orientation gets to steer anything -- not a regression in routing."""
+def test_screen_opens_only_domain_relevant_contexts(kb):
+    """Regression test for a real bug found by manual testing: every
+    entry context, including ones with nothing to do with fish vitals
+    (water/plants/aquarium_environment), used to open on "is the fish
+    gasping at the surface?" regardless of what the user declared. The
+    domain-scoped mandatory screen (questions/selection.py) now only
+    forces gasping/surface_breathing for contexts that actually declare
+    the fish_symptom domain (fish) or declare no domain at all (unsure)
+    -- water/plants/aquarium_environment fall through to normal ranking
+    instead, same as any other diagnostic question."""
     def first_pick(entry_context):
         engine = AquariumInferenceEngine(kb)
         case_id = engine.start_case(entry_context=entry_context)
@@ -397,22 +427,24 @@ def test_every_context_opens_on_the_same_universal_screen(kb):
         return kb.questions[status.best_next_question.question_id].evidence_id
 
     picks = {ctx: first_pick(ctx) for ctx in ["fish", "water", "plants", "aquarium_environment", "unsure"]}
-    assert set(picks.values()) == {"gasping"}
+    assert picks["fish"] == "gasping"
+    assert picks["unsure"] == "gasping"
+    for ctx in ("water", "plants", "aquarium_environment"):
+        assert picks[ctx] != "gasping", f"{ctx} incorrectly forced the fish vital-sign screen"
 
 
-def test_entry_context_differentiates_again_right_after_the_screen(kb):
-    """Once the two-item universal screen is answered (both false, no
-    suspicion raised) and the single globally-dominant white_spots
-    question (KB's own documented near-pathognomonic outlier, unrelated
-    to this milestone -- see PROJECT_STATUS.md) is also out of the way,
-    entry-context routing takes back over -- confirming the screen
-    doesn't cannibalize routing's whole decay window (see
-    questions/selection.py::screening_evidence_ids usage in
-    build_question_explanation)."""
-    def fourth_pick(entry_context):
+def test_entry_context_differentiates_quickly_once_relevant(kb):
+    """water/plants/aquarium_environment skip the (irrelevant) screen
+    entirely, so they should differentiate from each other almost
+    immediately -- bounded only by the KB's own documented
+    near-pathognomonic white_spots outlier (unrelated to this milestone,
+    see PROJECT_STATUS.md), which still briefly dominates raw information
+    gain regardless of context. fish/unsure still take the 2-item screen
+    first, so need a couple more turns before differentiating."""
+    def pick_after(entry_context, turns):
         engine = AquariumInferenceEngine(kb)
         case_id = engine.start_case(entry_context=entry_context)
-        for _ in range(3):
+        for _ in range(turns):
             status = engine.get_status(case_id)
             q = status.best_next_question
             ev = kb.questions[q.question_id].evidence_id
@@ -420,8 +452,11 @@ def test_entry_context_differentiates_again_right_after_the_screen(kb):
         status = engine.get_status(case_id)
         return kb.questions[status.best_next_question.question_id].evidence_id
 
-    picks = {ctx: fourth_pick(ctx) for ctx in ["fish", "water", "plants", "aquarium_environment", "unsure"]}
-    assert len(set(picks.values())) > 1, f"every context still picked the same question post-screen: {picks}"
+    no_screen_picks = {ctx: pick_after(ctx, 1) for ctx in ["water", "plants", "aquarium_environment"]}
+    assert len(set(no_screen_picks.values())) > 1, f"no-screen contexts didn't differentiate: {no_screen_picks}"
+
+    screened_picks = {ctx: pick_after(ctx, 3) for ctx in ["fish", "unsure"]}
+    assert len(set(screened_picks.values())) > 1, f"fish/unsure didn't differentiate: {screened_picks}"
 
 
 # ==================================================== determinism ===
