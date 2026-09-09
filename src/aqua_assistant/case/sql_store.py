@@ -36,10 +36,17 @@ def _normalize_db_url(db_url: str) -> str:
     return db_url
 
 
+_OWN_TABLES = [CaseORM.__table__, ObservationORM.__table__, CaseFeedbackORM.__table__]
+
+
 class SqlCaseStore:
     def __init__(self, db_url: str) -> None:
         self._engine = create_engine(_normalize_db_url(db_url))
-        Base.metadata.create_all(self._engine)
+        # Scoped to just these 3 tables, not Base.metadata as a whole:
+        # this database is the persistent case store, not a KB copy --
+        # creating the KB's own tables here would leave them empty
+        # forever (the KB is always loaded fresh from YAML elsewhere).
+        Base.metadata.create_all(self._engine, tables=_OWN_TABLES)
 
     def create(self, entry_context: str | None = None) -> Case:
         case = Case(entry_context=entry_context)

@@ -179,16 +179,29 @@ class CaseORM(Base):
 
 
 class ObservationORM(Base):
+    """`evidence_id`/`question_id` are deliberately plain strings, not
+    foreign keys into `evidence`/`questions`: those tables only ever get
+    populated in the KB fixture-loader's own throwaway validation
+    database (see kb/loader.py) -- the persistent case-store database
+    (this table's actual home, e.g. a deployed Postgres instance) never
+    has them populated, so an FK here would reject every real insert.
+    Validity of these ids is already enforced at the application layer
+    (the engine looks them up in the loaded KnowledgeBase and raises if
+    absent) -- this is not a loss of integrity checking, just checking it
+    in the right place. `case_id` stays a real FK: `cases` and
+    `observations` are both part of, and always populated in, this same
+    persistent database."""
+
     __tablename__ = "observations"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     case_id: Mapped[str] = mapped_column(ForeignKey("cases.id"))
-    evidence_id: Mapped[str] = mapped_column(ForeignKey("evidence.id"))
+    evidence_id: Mapped[str]
     observed_state: Mapped[str]
     raw_value: Mapped[Optional[float]] = mapped_column(default=None)
     confidence: Mapped[float] = mapped_column(default=1.0)
     source: Mapped[str] = mapped_column(default="manual")
-    question_id: Mapped[Optional[str]] = mapped_column(ForeignKey("questions.id"), default=None)
+    question_id: Mapped[Optional[str]] = mapped_column(default=None)
     answered_at: Mapped[str]
     superseded: Mapped[bool] = mapped_column(default=False)
 

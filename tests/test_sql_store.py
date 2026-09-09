@@ -3,6 +3,8 @@ CaseStore for the same sequence of create/save/get calls -- it's a
 drop-in replacement behind the same interface engine.py depends on."""
 from __future__ import annotations
 
+from sqlalchemy import event
+
 from aqua_assistant.case.models import Observation
 from aqua_assistant.case.sql_store import SqlCaseStore, _normalize_db_url
 
@@ -15,6 +17,33 @@ def test_normalize_rewrites_provider_urls_to_the_psycopg3_dialect():
 def test_normalize_leaves_sqlite_and_explicit_dialects_untouched():
     assert _normalize_db_url("sqlite:///cases.db") == "sqlite:///cases.db"
     assert _normalize_db_url("postgresql+psycopg://u:p@host/db") == "postgresql+psycopg://u:p@host/db"
+
+
+def test_save_works_with_foreign_keys_enforced_and_no_kb_tables_populated(tmp_path):
+    """Regression test for a real production bug: SQLite doesn't enforce
+    foreign keys by default, so every other test in this file (and the
+    manual local smoke test before deploying) silently passed even though
+    observations.evidence_id/question_id used to carry a FK into the
+    KB's evidence/questions tables -- tables this store never populates
+    (the KB is always loaded fresh from YAML elsewhere; this database
+    only ever holds cases/observations/case_feedback). Postgres enforces
+    foreign keys unconditionally, so it broke on first deploy. This test
+    explicitly turns SQLite's enforcement on (matching kb/loader.py's own
+    pattern) to catch this class of bug locally instead of only in
+    production."""
+    db_path = tmp_path / "fk_enforced.db"
+    store = SqlCaseStore(f"sqlite:///{db_path}")
+
+    @event.listens_for(store._engine, "connect")
+    def _enable_fk(dbapi_connection, _):
+        dbapi_connection.execute("PRAGMA foreign_keys=ON")
+
+    case = store.create(entry_context="fish")
+    case.add_observation(Observation(evidence_id="gasping", observed_state="true", question_id="ask_gasping"))
+    store.save(case)  # must not raise a foreign-key violation
+
+    fetched = store.get(case.id)
+    assert fetched.observations[0].evidence_id == "gasping"
 
 
 def _store(tmp_path):
