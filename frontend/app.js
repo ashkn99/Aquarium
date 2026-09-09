@@ -9,18 +9,45 @@ const resultScreen = document.getElementById("result-screen");
 let caseId = null;
 let currentQuestion = null;
 let entryContextsById = {};
+let questionIndex = 0;
+
+// Coarse, human framing for the uncertainty score -- a bare "72%" doesn't
+// tell a first-time user whether that's good or bad or how much is left.
+function uncertaintyPhase(uncertainty) {
+  if (uncertainty >= 0.75) return "just getting started";
+  if (uncertainty >= 0.4) return "narrowing it down";
+  return "close to an answer";
+}
 
 async function api(path, options) {
-  const res = await fetch(path, {
-    headers: { "Content-Type": "application/json" },
-    ...options,
-  });
+  document.getElementById("error-banner").hidden = true;
+  let res;
+  try {
+    res = await fetch(path, {
+      headers: { "Content-Type": "application/json" },
+      ...options,
+    });
+  } catch {
+    throw new Error("Couldn't reach the server. Check your connection and try again.");
+  }
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
-    throw new Error(body.detail || `request failed (${res.status})`);
+    throw new Error(body.detail || `Something went wrong (${res.status}). Please try again.`);
   }
   return res.status === 204 ? null : res.json();
 }
+
+// Every click handler below is an unawaited async call (`onclick = () =>
+// submitAnswer(...)`), so a thrown error has nowhere to be caught except
+// here -- without this, a failed request (cold start, rate limit, a
+// network blip) left the user staring at a button that silently did
+// nothing.
+window.addEventListener("unhandledrejection", (event) => {
+  const banner = document.getElementById("error-banner");
+  banner.textContent = event.reason?.message || "Something went wrong. Please try again.";
+  banner.hidden = false;
+  event.preventDefault();
+});
 
 function showScreen(screen) {
   for (const s of [startScreen, concernScreen, questionScreen, resultScreen]) s.hidden = s !== screen;
@@ -60,8 +87,9 @@ function renderStatus(status) {
   }
 
   showScreen(questionScreen);
+  questionIndex += 1;
   document.getElementById("uncertainty-label").textContent =
-    `Uncertainty: ${Math.round(status.uncertainty * 100)}%`;
+    `Question ${questionIndex} · ${uncertaintyPhase(status.uncertainty)}`;
   renderSafetyAlerts(document.getElementById("safety-alerts"), status.safety_alerts);
 
   currentQuestion = status.next_question;
@@ -240,6 +268,7 @@ document.getElementById("feedback-submit").onclick = async () => {
 document.getElementById("restart").onclick = () => {
   caseId = null;
   currentQuestion = null;
+  questionIndex = 0;
   showScreen(startScreen);
 };
 
