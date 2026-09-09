@@ -142,21 +142,31 @@ async function startCase(entryContext) {
   renderStatus(status);
 }
 
+// The KB defines more entry contexts than are worth surfacing as
+// top-level starting points (e.g. "aquarium_environment" overlaps
+// heavily with "water" and adds a 5th choice to an onboarding screen
+// that should stay simple) -- this is a presentation-layer trim, not a
+// KB change: the other contexts still work if ever addressed directly,
+// they're just not offered as a button here. "unsure" already IS the
+// KB's own no-particular-guess context (named "I'm not sure"), so it's
+// used directly rather than duplicating it with a separate null-context
+// button.
+const VISIBLE_ENTRY_CONTEXTS = ["fish", "water", "plants", "unsure"];
+
 async function loadEntryContexts() {
   const contexts = await api("/api/entry-contexts");
+  const byId = Object.fromEntries(contexts.map((ec) => [ec.id, ec]));
   const container = document.getElementById("entry-contexts");
   container.innerHTML = "";
-  for (const ec of contexts) {
+  for (const id of VISIBLE_ENTRY_CONTEXTS) {
+    const ec = byId[id];
+    if (!ec) continue;
     const btn = document.createElement("button");
     btn.textContent = ec.name;
     btn.title = ec.description;
     btn.onclick = () => startCase(ec.id);
     container.appendChild(btn);
   }
-  const unsureBtn = document.createElement("button");
-  unsureBtn.textContent = "Not sure";
-  unsureBtn.onclick = () => startCase(null);
-  container.appendChild(unsureBtn);
 }
 
 document.getElementById("numeric-form").addEventListener("submit", (e) => {
